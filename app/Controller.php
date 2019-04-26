@@ -114,7 +114,7 @@ class Controller
                 $params['resultado'] = $m->buscarUsuario($params['email'], $params['password']);
                 $_SESSION['usuarioconectado'] = $params['resultado'];
             } else{
-                $params['mensaje'] = "No existe ese usuario-password en la base de datos";
+                $params['mensaje'] = "No existe ese usuario-password en la base de datos.";
             }
 
             
