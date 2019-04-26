@@ -1,0 +1,63 @@
+#contacto{
+  letter-spacing: 2px;
+  }
+#contacto a{
+  color: #027F6D;
+  text-decoration: none;
+}
+#icono{
+  color:#96edff;
+}
+
+
+@media (max-width: 575.98px) {
+
+  #contacto{
+    padding-bottom: 800px;
+  }
+  #contacto .maps iframe{
+    width: 100%;
+    height: 50px;
+  }
+ }
+
+
+@media (min-width: 576px) {
+
+   #contacto{padding-bottom: 800px;}
+
+   #contacto .maps iframe{
+     width: 100%;
+     height: 50px;
+   }
+ }
+
+@media (min-width: 768px) {
+
+  #contacto{
+    padding-bottom: 350px;
+  }
+
+  #contacto .maps iframe{
+    width: 100%;
+    height: 50px;
+  }
+}
+
+@media (min-width: 992px) {
+  #contacto{
+    padding-bottom: 200px;
+  }
+
+   #contacto .maps iframe{
+     width: 100%;
+     height: 600px;
+   }
+}
+
+
+#author a{
+  color: #027F6D;
+  text-decoration: none;
+    
+}
