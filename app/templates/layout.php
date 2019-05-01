@@ -2,9 +2,9 @@
 
 ob_start();
 
-  if (!isset($_SESSION['usuarioconectado'])) {
-     Location('index.php?ctl=login');
-  }
+if (!isset($_SESSION['usuarioconectado'])) {
+    header('Location:index.php?ctl=login');
+}
 
 ?>
 <!DOCTYPE HTML>
@@ -69,18 +69,24 @@ ob_start();
                     <a class="nav-link" style="color:#33cbad" id="fondodelmenu" href='index.php?ctl=perfil'><i class="far fa-user"></i> Perfil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" style="color:#33cbad" id="fondodelmenu" href='index.php?ctl=mensajes'><i class="fas fa-comment-alt"></i> Mensajes</a>
+                    <a class="nav-link" style="color:#33cbad" id="fondodelmenu" href='index.php?ctl=mensajes'><i class="fas fa-comment-alt"></i> Mensajes
+                        <?php
+                            if ($params['countMensajesPV']) {
+                                echo "<span class='badge badge-success'>" . $params['countMensajesPV'] . "</span></a>";
+                            }
+                        ?>
+                    </a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="fondodelmenu" style="color:#33cbad" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cog"></i>
                         <!-- MOSTRAR DATOS DEL ARRAY DE SESIÓN -->
-                            <?php echo implode(array_column($_SESSION['usuarioconectado'], 'nombre'))." ".implode(array_column($_SESSION['usuarioconectado'], 'apellidos')); ?>
+                        Configuración
                         <!-- ** mostré los valores con implode mas la función array_column que trae la columna del array que le pases ** -->
                     </a>
                     <div class="dropdown-menu" aria-labelledby="dropdown05">
                         <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=configuracion'><i class="fas fa-wrench"></i> Configuración</a>
                         <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=contacto'><i class="fas fa-phone"></i> Contacto</a>
-                        <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=login'><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+                        <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=logout'><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
                     </div>
                 </li>
             </ul>
@@ -110,4 +116,4 @@ ob_start();
     <!-- FIN DE LISTA DE SCRIPTS DE BOOTSTRAP -->
 </body>
 
-</html> 
+</html>

@@ -5,12 +5,157 @@ class Controller
 
     public function inicio()
     {
-     $params = array(
-            'mensaje' => 'Bienvenido al curso de symfony 1.4',
-            'fecha' => date('d-m-Y'),
-            'resultado' => $_SESSION['usuarioconectado']
+        $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, config::$mvc_bd_hostname);
+
+        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
+        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $visitas = implode(array_column($arrayUsuario, "visitas"));
+        $idUsuario = implode(array_column($arrayUsuario, "id"));
+        $correoUsuario = implode(array_column($arrayUsuario, "correo"));
+
+        $arrayNotificaciones = $m->findNotificaciones($idUsuario);
+        $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
+        $arrayPeticionesAmistad = $m->findCountPeticionesById($idUsuario);
+        $arrayComentarios = $m->findCountComentariosById($idUsuario);
+        $arrayComentariosFotos = $m->findCountComentariosFotosById($idUsuario);
+        $countNotificaciones = implode(array_column($arrayNotificaciones, "count(*)"));
+        $countMensajesPV = implode(array_column($arrayMensajesPrivados, "count(*)"));
+        $countPeticiones = implode(array_column($arrayPeticionesAmistad, "count(*)"));
+        $countComentarios = implode(array_column($arrayComentarios, "count(*)"));
+        $countComentariosFotos = implode(array_column($arrayComentariosFotos, "count(*)"));
+
+        $arrayEstado = $m->findEstadoById($idUsuario);
+        $arrayPublicaciones = $m->findEstadosAmigos($correoUsuario);
+
+        $estadoActualTexto = implode(array_column($arrayEstado, "estadoCuerpo"));
+        $estadoActualFecha = implode(array_column($arrayEstado, "fecha"));
+
+        if ($estadoActualFecha != "0000-00-00 00:00:00") {
+            $fechaActual = new DateTime('now');
+            $fechaDeEstado = new DateTime($estadoActualFecha);
+            $diff = $fechaActual->diff($fechaDeEstado);
+
+            $estadoActualFechaSegundos = $diff->s;
+            $estadoActualFechaMinutos = $diff->i;
+            $estadoActualFechaHoras = $diff->h;
+            $estadoActualFechaDias = $diff->d;
+
+            if ($estadoActualFechaDias > 7) {
+                $estadoActualFecha = "más de una semana.";
+            } else {
+                if ($estadoActualFechaDias == 0) {
+                    if ($estadoActualFechaHoras < 1) {
+                        if ($estadoActualFechaHoras < 1) {
+                            if ($estadoActualFechaMinutos < 1) {
+                                if ($estadoActualFechaSegundos < 2) {
+                                    if ($estadoActualFechaSegundos == 0) {
+                                        $estadoActualFecha = $estadoActualFechaSegundos . " segundos.";
+                                    } else {
+                                        $estadoActualFecha = $estadoActualFechaSegundos . " segundo.";
+                                    }
+                                } else {
+                                    $estadoActualFecha = $estadoActualFechaSegundos . " segundos.";
+                                }
+                            } else {
+                                if ($estadoActualFechaMinutos < 2) {
+                                    $estadoActualFecha = $estadoActualFechaMinutos . " minuto.";
+                                } else {
+                                    $estadoActualFecha = $estadoActualFechaMinutos . " minutos.";
+                                }
+                            }
+                        } else {
+                            $estadoActualFecha = $estadoActualFechaHoras . " hora.";
+                        }
+                    } else {
+                        if ($estadoActualFechaHoras < 2) {
+                            $estadoActualFecha = $estadoActualFechaHoras . " hora.";
+                        } else {
+                            $estadoActualFecha = $estadoActualFechaHoras . " horas.";
+                        }
+                    }
+                } elseif ($estadoActualFechaDias > 0) {
+                    if ($estadoActualFechaDias < 2) {
+                        $estadoActualFecha = $estadoActualFechaDias . " día.";
+                    } else {
+                        $estadoActualFecha = $estadoActualFechaDias . " días.";
+                    }
+                }
+            }
+        } else {
+            $estadoActualFecha = null;
+        }
+
+
+        $params = array(
+            'visitas' => $visitas,
+            'existeNotificaciones' => $countNotificaciones,
+            'countMensajesPV' => $countMensajesPV,
+            'countPeticiones' => $countPeticiones,
+            'countComentarios' => $countComentarios,
+            'countComentariosFotos' => $countComentariosFotos,
+            'estadoActual' => $estadoActualTexto,
+            'estadoActualFecha' => $estadoActualFecha,
+            'publicacionesAmigos' => $arrayPublicaciones
         );
+
         require __DIR__ . '/templates/inicio.php';
+    }
+    function formatearFecha($estadoActualFecha)
+    {
+        if ($estadoActualFecha != "0000-00-00 00:00:00") {
+            $fechaActual = new DateTime('now');
+            $fechaDeEstado = new DateTime($estadoActualFecha);
+            $diff = $fechaActual->diff($fechaDeEstado);
+
+            $estadoActualFechaSegundos = $diff->s;
+            $estadoActualFechaMinutos = $diff->i;
+            $estadoActualFechaHoras = $diff->h;
+            $estadoActualFechaDias = $diff->d;
+
+            if ($estadoActualFechaDias > 7) {
+                $estadoActualFecha = "más de una semana.";
+            } else {
+                if ($estadoActualFechaDias == 0) {
+                    if ($estadoActualFechaHoras < 1) {
+                        if ($estadoActualFechaHoras < 1) {
+                            if ($estadoActualFechaMinutos < 1) {
+                                if ($estadoActualFechaSegundos < 2) {
+                                    if ($estadoActualFechaSegundos == 0) {
+                                        $estadoActualFecha = $estadoActualFechaSegundos . " segundos.";
+                                    } else {
+                                        $estadoActualFecha = $estadoActualFechaSegundos . " segundo.";
+                                    }
+                                } else {
+                                    $estadoActualFecha = $estadoActualFechaSegundos . " segundos.";
+                                }
+                            } else {
+                                if ($estadoActualFechaMinutos < 2) {
+                                    $estadoActualFecha = $estadoActualFechaMinutos . " minuto.";
+                                } else {
+                                    $estadoActualFecha = $estadoActualFechaMinutos . " minutos.";
+                                }
+                            }
+                        } else {
+                            $estadoActualFecha = $estadoActualFechaHoras . " hora.";
+                        }
+                    } else {
+                        if ($estadoActualFechaHoras < 2) {
+                            $estadoActualFecha = $estadoActualFechaHoras . " hora.";
+                        } else {
+                            $estadoActualFecha = $estadoActualFechaHoras . " horas.";
+                        }
+                    }
+                } elseif ($estadoActualFechaDias > 0) {
+                    if ($estadoActualFechaDias < 2) {
+                        $estadoActualFecha = $estadoActualFechaDias . " día.";
+                    } else {
+                        $estadoActualFecha = $estadoActualFechaDias . " días.";
+                    }
+                }
+            }
+        } else {
+            $estadoActualFecha = null;
+        }
     }
 
     public function listar()
@@ -107,17 +252,16 @@ class Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $params['email'] = $_POST['email'];
             $params['password'] = $_POST['password'];
-
+            $params['resultado'] = $m->buscarSoloUsuario($params['email']);
             $verificacion = $m->verificar($params['password'], $params['email']);
 
-            if($verificacion == 1) {
-                $params['resultado'] = $m->buscarUsuario($params['email'], $params['password']);
+            if ($verificacion == 1) {
                 $_SESSION['usuarioconectado'] = $params['resultado'];
-            } else{
+            } else {
                 $params['mensaje'] = "No existe ese usuario-password en la base de datos";
             }
 
-            
+
             // implode($params['resultado'])
 
             // if (count($params['resultado']) == 0) {
@@ -246,7 +390,7 @@ class Controller
     public function logout()
     {
         session_destroy();
-        Location('../web/index.php');
+        header('Location: ../web/index.php?ctl=login');
     }
 
     public function insertar()

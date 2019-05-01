@@ -1,8 +1,5 @@
 <?php
-ob_start();
-// if (isset($_SESSION['usuarioconectado'])) {
-//     header("Location: index.php?ctl=logout");
-// }
+    ob_start();
 ?>
 
 <!DOCTYPE html>
