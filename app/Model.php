@@ -129,6 +129,23 @@ class Model
         return $estados;
     }
 
+    public function setConectado($idUsuario)
+    {
+
+        $sql = "UPDATE usuarios SET estado = 'online' WHERE `id` = '$idUsuario'";
+
+        $result = mysqli_query($this->conexion, $sql);
+
+        return $result;
+    }
+
+    public function setDesconectado($idUsuario)
+    { 
+        $sql = "UPDATE usuarios SET estado = 'offline' WHERE `id` = '$idUsuario'";
+
+        $result = mysqli_query($this->conexion, $sql);
+    }
+
 
     public function findEstadosAmigos($idUsuario)
     {
@@ -143,6 +160,52 @@ class Model
         }
 
         return $estados;
+    }
+
+    public function findIdUsuario($correo)
+    {
+
+        $sql = "select id from usuarios WHERE correo =" . $correo;
+
+        $result = mysqli_query($this->conexion, $sql);
+
+        $idUsuario = array();
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $idUsuario = $row;
+        }
+        $resultado = mysqli_fetch_row($result);
+
+        return $idUsuario;
+    }
+
+    // Insertar un usuario
+    public function insertarUsuario($correo, $pass, $nombre, $apellidos, $fechanac, $sexo, $telefono, $codpueblo, $estadocivil)
+    {
+        $correo = htmlspecialchars($correo);
+        $pass = htmlspecialchars($pass);
+        $nombre = htmlspecialchars($nombre);
+        $apellidos = htmlspecialchars($apellidos);
+        $fechanac = htmlspecialchars($fechanac);
+        $sexo = htmlspecialchars($sexo);
+        $telefono = htmlspecialchars($telefono);
+        $codpueblo = htmlspecialchars($codpueblo);
+        $estadocivil = htmlspecialchars($estadocivil);
+        $sql = "insert into usuarios(correo, pass, nombre, apellidos, fechanac, sexo, telefono, codpueblo, estadocivil) values ('$correo','$pass','$nombre','$apellidos','$fechanac','$sexo','$telefono',$codpueblo,'$estadocivil')";
+
+        $result = mysqli_query($this->conexion, $sql);
+    }
+
+    public function insertarEstado($idUsuario)
+    {
+        $sql = "INSERT INTO `estados`(`idUsuario`) VALUES ($idUsuario) ";
+        $result = mysqli_query($this->conexion, $sql);
+    }
+
+    public function insertarEstadoNuevo($estadoNuevo, $fechaActual, $idUsuario)
+    {
+        $sql = "INSERT INTO estados (estadoCuerpo, fecha, idUsuario) VALUES ('$estadoNuevo', '$fechaActual', $idUsuario) ";
+        $result = mysqli_query($this->conexion, $sql);
     }
 
     public function listaProvincias()

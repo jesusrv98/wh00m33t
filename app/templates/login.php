@@ -364,9 +364,7 @@
                                 </div>
                             </div>
                             <!-- Fin del cuerpo del modal -->
-                            <div class="statusMessage justify-content-center align-items-center d-none">
-                                
-                            </div>
+                            <div class="statusMessage justify-content-center align-items-center d-none"></div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                             </div>

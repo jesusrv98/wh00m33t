@@ -2,6 +2,55 @@
 ob_start();
 ?>
 <!--Parte izquierda -->
+<script src="js/jqueryGoogle.js"></script>
+<script>
+
+    function actualizarEstado() {
+        var estadoNuevo = $("#estadoNuevo").val();
+        var estadoViejo = "<?php echo $params['estadoActual'] ?>";
+
+        if (estadoNuevo.trim() == '') {
+            alert('No puede dejar su estado en blanco.');
+            $(this).focus();
+            return false;
+        }else {
+            var parametros = {
+                'estadoNuevo': estadoNuevo,
+                'estadoViejo': estadoViejo,
+                'idUsuario': <?php echo $params['idUsuario'] ?>
+            };
+            $.ajax({
+                data: parametros,
+                url: '../app/templates/includes/servletActualizarEstado.php',
+                type: 'post',
+                async: true,
+                success: function(msg) {
+                    if (msg == 'ok') {
+                        $(estadoViejo).val(estadoNuevo);
+                        $(estadoNuevo).val('');
+
+                        $('.statusMessage').removeClass('d-none');
+                        $('.statusMessage').addClass('d-block');
+                        
+                        $('.statusMessage').html("<div class='alert alert-success' role='alert' >Estado actualizado</div><p id='registroNuevo' style='cursor:pointer' onclick='registrarOtraVez()' class='text-primary text-center'>¿Quieres registrar otra cuenta?</p>");
+                    } else {
+                        $('.statusMessage').removeClass('d-none');
+                        $('.statusMessage').addClass('d-block');
+                        $('.statusMessage').html("<div class='alert alert-danger' role='alert' >Tu nuevo estado no puede ser el mismo que el anterior.</div>");
+                        alert(msg);
+                    }
+
+                },
+                error: function() {
+                    $('.statusMessage').removeClass('d-none');
+                    $('.statusMessage').addClass('d-block');
+                    $('.statusMessage').html("<div class='row'><div class='alert alert-danger col-12'  role='alert' >Ha habido un error.</div></div>");
+                }
+                
+            });
+        }
+    }
+</script>
 <div class="container-fluid">
     <div class="row">
         <div class="container col-12 col-sm-12 col-md-12 col-lg-3 col-xl-3 mt-2" style="border-right: 1px solid #33cbad; height: auto">
@@ -68,12 +117,12 @@ ob_start();
         <div class="container col-12 col-sm-12 col-md-12 col-lg-5 col-xl-5 mt-2" style="height: auto">
             <div class="row">
                 <div class="col-12 mt-3">
-                    <form action="index.php" method="POST">
-                        <input class="form-control" style="border-radius: 1em" type="text" name="nuevapubli" placeholder="Nuevo estado..." required />
+                    <form method="post">
+                        <input onsubmit="actualizarEstado()" class="form-control" id="estadoNuevo" style="border-radius: 1em" type="text" value="<?php echo $params['nuevoEstado'] ?>" name="nuevapubli" placeholder="Nuevo estado..." required />
                 </div>
                 <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10">
                     <p style="font-size:13px; margin-left: 0.5em; margin-top: 1em" class="text-muted"><b>Última actualización:</b>
-                        <?php echo $params['estadoActual'] ?>
+                        <?php echo $params['estadoActual']; ?>
                         <?php
                         if ($params['estadoActualFecha']) {
                             echo "Hace " . $params['estadoActualFecha'];
@@ -82,9 +131,10 @@ ob_start();
                     </p>
                 </div>
                 <div class="col-12 col-sm-12 col-md-12 col-lg-2 col-xl-2">
-                    <input style="margin-top: 0.8em;border: 0px;border-radius: 1em;background: #e6fbff;width: auto; color: #33cbad" class="btn" id="guardarpubli" type="submit" value="Guardar" />
+                    <button type="button" onclick="actualizarEstado()" style="margin-top: 0.8em;border: 0px;border-radius: 1em;background: #e6fbff;width: auto; color: #33cbad" class="btn" id="guardarpubli"> Guardar </button>
                 </div>
                 </form>
+                <div class="statusMessage justify-content-center align-items-center d-none col-12 mt-1"></div>
                 <!--Comienzo novedades-->
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-3">
                     <span style="color:#509184;font-size: 16px">Novedades</span>
@@ -120,60 +170,60 @@ ob_start();
                                     </div>
                                     <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                         <small class="text-muted">
-                                            <?php 
-                                               $estadoActualFecha = $publicacion['fecha'];
-                                                if ($estadoActualFecha != "0000-00-00 00:00:00") {
-                                                    $fechaActual = new DateTime('now');
-                                                    $fechaDeEstado = new DateTime($estadoActualFecha);
-                                                    $diff = $fechaActual->diff($fechaDeEstado);
-                                        
-                                                    $estadoActualFechaSegundos = $diff->s;
-                                                    $estadoActualFechaMinutos = $diff->i;
-                                                    $estadoActualFechaHoras = $diff->h;
-                                                    $estadoActualFechaDias = $diff->d;
-                                        
-                                                    if ($estadoActualFechaDias > 7) {
-                                                       echo "Hace más de una semana.";
-                                                    } else {
-                                                        if ($estadoActualFechaDias == 0) {
+                                            <?php
+                                            $estadoActualFecha = $publicacion['fecha'];
+                                            if ($estadoActualFecha != "0000-00-00 00:00:00") {
+                                                $fechaActual = new DateTime('now');
+                                                $fechaDeEstado = new DateTime($estadoActualFecha);
+                                                $diff = $fechaActual->diff($fechaDeEstado);
+
+                                                $estadoActualFechaSegundos = $diff->s;
+                                                $estadoActualFechaMinutos = $diff->i;
+                                                $estadoActualFechaHoras = $diff->h;
+                                                $estadoActualFechaDias = $diff->d;
+
+                                                if ($estadoActualFechaDias > 7) {
+                                                    echo "Hace más de una semana.";
+                                                } else {
+                                                    if ($estadoActualFechaDias == 0) {
+                                                        if ($estadoActualFechaHoras < 1) {
                                                             if ($estadoActualFechaHoras < 1) {
-                                                                if ($estadoActualFechaHoras < 1) {
-                                                                    if ($estadoActualFechaMinutos < 1) {
-                                                                        if ($estadoActualFechaSegundos < 2) {
-                                                                            if ($estadoActualFechaSegundos == 0) {
-                                                                                echo "Hace ". $estadoActualFechaSegundos . " segundos.";
-                                                                            } else {
-                                                                                echo "Hace ". $estadoActualFechaSegundos . " segundo.";
-                                                                            }
+                                                                if ($estadoActualFechaMinutos < 1) {
+                                                                    if ($estadoActualFechaSegundos < 2) {
+                                                                        if ($estadoActualFechaSegundos == 0) {
+                                                                            echo "Hace " . $estadoActualFechaSegundos . " segundos.";
                                                                         } else {
-                                                                            echo "Hace ". $estadoActualFechaSegundos . " segundos.";
+                                                                            echo "Hace " . $estadoActualFechaSegundos . " segundo.";
                                                                         }
                                                                     } else {
-                                                                        if ($estadoActualFechaMinutos < 2) {
-                                                                            echo "Hace ". $estadoActualFechaMinutos . " minuto.";
-                                                                        } else {
-                                                                            echo "Hace ". $estadoActualFechaMinutos . " minutos.";
-                                                                        }
+                                                                        echo "Hace " . $estadoActualFechaSegundos . " segundos.";
                                                                     }
                                                                 } else {
-                                                                    echo "Hace ". $estadoActualFechaHoras . " hora.";
+                                                                    if ($estadoActualFechaMinutos < 2) {
+                                                                        echo "Hace " . $estadoActualFechaMinutos . " minuto.";
+                                                                    } else {
+                                                                        echo "Hace " . $estadoActualFechaMinutos . " minutos.";
+                                                                    }
                                                                 }
                                                             } else {
-                                                                if ($estadoActualFechaHoras < 2) {
-                                                                    echo "Hace ". $estadoActualFechaHoras . " hora.";
-                                                                } else {
-                                                                    echo "Hace ". $estadoActualFechaHoras . " horas.";
-                                                                }
+                                                                echo "Hace " . $estadoActualFechaHoras . " hora.";
                                                             }
-                                                        } elseif ($estadoActualFechaDias > 0) {
-                                                            if ($estadoActualFechaDias < 2) {
-                                                                echo "Hace ". $estadoActualFechaDias . " día.";
+                                                        } else {
+                                                            if ($estadoActualFechaHoras < 2) {
+                                                                echo "Hace " . $estadoActualFechaHoras . " hora.";
                                                             } else {
-                                                                echo "Hace ". $estadoActualFechaDias . " días.";
+                                                                echo "Hace " . $estadoActualFechaHoras . " horas.";
                                                             }
+                                                        }
+                                                    } elseif ($estadoActualFechaDias > 0) {
+                                                        if ($estadoActualFechaDias < 2) {
+                                                            echo "Hace " . $estadoActualFechaDias . " día.";
+                                                        } else {
+                                                            echo "Hace " . $estadoActualFechaDias . " días.";
                                                         }
                                                     }
                                                 }
+                                            }
                                             ?>
                                         </small>
                                     </div>

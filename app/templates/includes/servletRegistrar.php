@@ -87,6 +87,10 @@
             } else {
                 $contrasenaEncriptada = $m -> encriptar($params['contrasena']);
                 $m->insertarUsuario($_GET['correo'], $contrasenaEncriptada, $_GET['nombre'], $_GET['apellidos'], $_GET['fechanac'], $genero, $_GET['telefono'], $_GET['selectPueblos'], $estadocivil);
+                $correo = $params['correo'];
+                $arrayUsuario = $m->buscarSoloUsuario($correo);
+                $idUsuario = implode(array_column($arrayUsuario, "id"));
+                $m->insertarEstado($idUsuario);
                 $msg = "ok";
             }
         } else {

@@ -95,7 +95,10 @@ class Controller
             'countComentariosFotos' => $countComentariosFotos,
             'estadoActual' => $estadoActualTexto,
             'estadoActualFecha' => $estadoActualFecha,
-            'publicacionesAmigos' => $arrayPublicaciones
+            'publicacionesAmigos' => $arrayPublicaciones,
+            'idUsuario' => $idUsuario,
+            'nuevoEstado' => ''
+
         );
 
         require __DIR__ . '/templates/inicio.php';
@@ -254,21 +257,17 @@ class Controller
             $params['password'] = $_POST['password'];
             $params['resultado'] = $m->buscarSoloUsuario($params['email']);
             $verificacion = $m->verificar($params['password'], $params['email']);
+            $idUsuario = $m->findIdUsuario($params['correo']);
 
             if ($verificacion == 1) {
                 $_SESSION['usuarioconectado'] = $params['resultado'];
+                $correo = $params['email'];
+                $arrayUsuario = $m->buscarSoloUsuario($correo);
+                $idUsuario = implode(array_column($arrayUsuario, "id"));
+                $m->setConectado($idUsuario);
             } else {
                 $params['mensaje'] = "No existe ese usuario-password en la base de datos";
             }
-
-
-            // implode($params['resultado'])
-
-            // if (count($params['resultado']) == 0) {
-            //     $params['mensaje'] = "No existe ese usuario-password en la base de datos: $verificacion ";
-            // } else {
-            //     $_SESSION['usuarioconectado'] = $params['resultado'];
-            // }
         }
         require __DIR__ . '/templates/login.php';
     }
@@ -389,6 +388,11 @@ class Controller
 
     public function logout()
     {
+        $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
+        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
+        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $idUsuario = implode(array_column($arrayUsuario, "id"));
+        $m->setDesconectado($idUsuario);
         session_destroy();
         header('Location: ../web/index.php?ctl=login');
     }
