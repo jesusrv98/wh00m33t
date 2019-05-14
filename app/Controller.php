@@ -30,6 +30,9 @@ class Controller
         $estadoActualTexto = implode(array_column($arrayEstado, "estadoCuerpo"));
         $estadoActualFecha = implode(array_column($arrayEstado, "fecha"));
 
+        $arrayUsuariosConectados = $m->findUsuariosConectado();
+        $countUsuariosConectado = $m->countfindUsuariosConectado();
+
         if ($estadoActualFecha != "0000-00-00 00:00:00") {
             $fechaActual = new DateTime('now');
             $fechaDeEstado = new DateTime($estadoActualFecha);
@@ -97,68 +100,65 @@ class Controller
             'estadoActualFecha' => $estadoActualFecha,
             'publicacionesAmigos' => $arrayPublicaciones,
             'idUsuario' => $idUsuario,
-            'nuevoEstado' => ''
+            'nuevoEstado' => '',
+            'nombreBusqueda' =>'',
+            'countUsuariosConectados' => $countUsuariosConectado,
+            'listaUsuariosConectados' => $arrayUsuariosConectados
 
         );
 
         require __DIR__ . '/templates/inicio.php';
     }
-    function formatearFecha($estadoActualFecha)
-    {
-        if ($estadoActualFecha != "0000-00-00 00:00:00") {
-            $fechaActual = new DateTime('now');
-            $fechaDeEstado = new DateTime($estadoActualFecha);
-            $diff = $fechaActual->diff($fechaDeEstado);
+   
 
-            $estadoActualFechaSegundos = $diff->s;
-            $estadoActualFechaMinutos = $diff->i;
-            $estadoActualFechaHoras = $diff->h;
-            $estadoActualFechaDias = $diff->d;
+    public function busqueda() {
+        $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
 
-            if ($estadoActualFechaDias > 7) {
-                $estadoActualFecha = "más de una semana.";
-            } else {
-                if ($estadoActualFechaDias == 0) {
-                    if ($estadoActualFechaHoras < 1) {
-                        if ($estadoActualFechaHoras < 1) {
-                            if ($estadoActualFechaMinutos < 1) {
-                                if ($estadoActualFechaSegundos < 2) {
-                                    if ($estadoActualFechaSegundos == 0) {
-                                        $estadoActualFecha = $estadoActualFechaSegundos . " segundos.";
-                                    } else {
-                                        $estadoActualFecha = $estadoActualFechaSegundos . " segundo.";
-                                    }
-                                } else {
-                                    $estadoActualFecha = $estadoActualFechaSegundos . " segundos.";
-                                }
-                            } else {
-                                if ($estadoActualFechaMinutos < 2) {
-                                    $estadoActualFecha = $estadoActualFechaMinutos . " minuto.";
-                                } else {
-                                    $estadoActualFecha = $estadoActualFechaMinutos . " minutos.";
-                                }
-                            }
-                        } else {
-                            $estadoActualFecha = $estadoActualFechaHoras . " hora.";
-                        }
-                    } else {
-                        if ($estadoActualFechaHoras < 2) {
-                            $estadoActualFecha = $estadoActualFechaHoras . " hora.";
-                        } else {
-                            $estadoActualFecha = $estadoActualFechaHoras . " horas.";
-                        }
-                    }
-                } elseif ($estadoActualFechaDias > 0) {
-                    if ($estadoActualFechaDias < 2) {
-                        $estadoActualFecha = $estadoActualFechaDias . " día.";
-                    } else {
-                        $estadoActualFecha = $estadoActualFechaDias . " días.";
-                    }
-                }
-            }
-        } else {
-            $estadoActualFecha = null;
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $nombre = $_POST['nombreBusqueda'];
         }
+
+        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
+        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $idUsuario = implode(array_column($arrayUsuario, "id"));
+
+        $listaUsuarios = $m->findUsuariosByNombre(trim($nombre));
+        $countBusqueda = $m->countfindUsuariosByNombre(trim($nombre));
+
+        $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
+        $countMensajesPV = implode(array_column($arrayMensajesPrivados, "count(*)"));
+
+        $mensaje = '';
+        if($nombre == ""){
+            if($countBusqueda >=2) {
+                $mensaje ="Se han encontrado <strong>".$countBusqueda."</strong> resultados.";
+            }elseif ($countBusqueda == 1) {
+                $mensaje ="Solo hemos encontrado <strong>".$countBusqueda."</strong> resultado.";
+            }else{
+                $mensaje ="Oh, hemos encontrado <strong>".$countBusqueda."</strong> resultados para tu busqueda.";
+            } 
+        }else{
+            if($countBusqueda >=2) {
+                $mensaje ="Se han encontrado ".$countBusqueda." resultados.";
+            }elseif ($countBusqueda == 1) {
+                $mensaje ="Solo hemos encontrado <strong>".$countBusqueda."</strong> resultado.";
+            }else{
+                $mensaje ="Oh, hemos encontrado <strong>".$countBusqueda."</strong> resultados para tu busqueda.";
+            } 
+        }
+
+        $params = array(
+            'countMensajesPV' => $countMensajesPV,
+            'nombreBusqueda' =>'',
+            'busqueda' => $listaUsuarios,
+            'palabraBuscada' => trim($nombre),
+            'mensajeBusqueda' => $mensaje,
+            'idUsuarioConectado' => $idUsuario
+        );
+
+        
+
+        require __DIR__ . '/templates/busquedaUsuarios.php';
     }
 
     public function listar()

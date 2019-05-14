@@ -90,8 +90,8 @@ if (!isset($_SESSION['usuarioconectado'])) {
                     </div>
                 </li>
             </ul>
-            <form class="form-inline my-2 my-md-0">
-                <input class="form-control form-control-sm" size="25" type="text" placeholder="Buscar..." />
+            <form action="index.php?ctl=busqueda" method="post" class="form-inline my-2 my-md-0">
+                <input class="form-control form-control-sm" size="25" type="text" name="nombreBusqueda" value="<?php $params['nombreBusqueda'] ?>" placeholder="Buscar usuarios..." />
             </form>
         </div>
     </nav>
@@ -105,7 +105,7 @@ if (!isset($_SESSION['usuarioconectado'])) {
 
     <!-- PIE -->
     <div>
-        <div align="center">- pie de página -</div>
+        <div style="text-align: center; vertical-align: bottom" >- WhoMeet &copy; 2019 -</div>
     </div>
     <!-- FIN DE PIE -->
 

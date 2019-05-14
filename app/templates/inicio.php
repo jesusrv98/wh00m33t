@@ -5,10 +5,14 @@ ob_start();
 <script src="js/jqueryGoogle.js"></script>
 <script>
 
-    function actualizarEstado() {
+    var bien = false;
+    
+    $(document).ready( function() {
+        $("#botonEstado").click( function() {
         var estadoNuevo = $("#estadoNuevo").val();
         var estadoViejo = "<?php echo $params['estadoActual'] ?>";
-
+        
+        
         if (estadoNuevo.trim() == '') {
             alert('No puede dejar su estado en blanco.');
             $(this).focus();
@@ -26,20 +30,18 @@ ob_start();
                 async: true,
                 success: function(msg) {
                     if (msg == 'ok') {
-                        $(estadoViejo).val(estadoNuevo);
-                        $(estadoNuevo).val('');
+
+                        bien = true;
 
                         $('.statusMessage').removeClass('d-none');
-                        $('.statusMessage').addClass('d-block');
-                        
-                        $('.statusMessage').html("<div class='alert alert-success' role='alert' >Estado actualizado</div><p id='registroNuevo' style='cursor:pointer' onclick='registrarOtraVez()' class='text-primary text-center'>¿Quieres registrar otra cuenta?</p>");
+                        $('.statusMessage').addClass('d-block');         
+                        $('.statusMessage').html("<div class='alert alert-success' role='alert' >Estado actualizado</div>");
                     } else {
                         $('.statusMessage').removeClass('d-none');
                         $('.statusMessage').addClass('d-block');
                         $('.statusMessage').html("<div class='alert alert-danger' role='alert' >Tu nuevo estado no puede ser el mismo que el anterior.</div>");
                         alert(msg);
                     }
-
                 },
                 error: function() {
                     $('.statusMessage').removeClass('d-none');
@@ -49,6 +51,12 @@ ob_start();
                 
             });
         }
+    });
+});
+if(bien == true){
+        estadoNuevo.val('');
+        estadoViejo.val('');
+        alert("HOLA");
     }
 </script>
 <div class="container-fluid">
@@ -131,7 +139,7 @@ ob_start();
                     </p>
                 </div>
                 <div class="col-12 col-sm-12 col-md-12 col-lg-2 col-xl-2">
-                    <button type="button" onclick="actualizarEstado()" style="margin-top: 0.8em;border: 0px;border-radius: 1em;background: #e6fbff;width: auto; color: #33cbad" class="btn" id="guardarpubli"> Guardar </button>
+                    <button type="button" id="botonEstado" style="margin-top: 0.8em;border: 0px;border-radius: 1em;background: #e6fbff;width: auto; color: #33cbad" class="btn" id="guardarpubli"> Guardar </button>
                 </div>
                 </form>
                 <div class="statusMessage justify-content-center align-items-center d-none col-12 mt-1"></div>
@@ -312,30 +320,14 @@ ob_start();
                         <!-- Inicio chat -->
                         <div class="col-12 border rounded pb-2 ml-1">
                             <div class="row">
-                                <div class="col-12 border pb-1 pt-1">
-                                    <h6>Chat(20) <i class="fas fa-circle" style="color:#77bf5c;"></i></h6>
+                                <div class="col-12 pb- pt-1">
+                                    <h6>Usuarios conectados (<?php echo $params['countUsuariosConectados'] ?>) <i class="fas fa-circle" style="color:#77bf5c;"></i></h6>
                                 </div>
-                                <div class="col-12">
-                                    <i class="fas fa-video" style="color:#77bf5c;font-size: 11px;"></i> Alejandro Rubio Peronomoreno
-                                </div>
-                                <div class="col-12">
-                                    <i class="fas fa-video" style="color:#77bf5c;font-size: 11px;"></i> Josema Delga2 Gor2
-                                </div>
-                                <div class="col-12">
-                                    <i class="fas fa-video" style="color:#77bf5c;font-size: 11px;"></i> Joni Mela Bolculo
-                                </div>
-                                <div class="col-12">
-                                    <i class="fas fa-video" style="color:#77bf5c;font-size: 11px;"></i> Jose Antonio Amieva Yamirocio
-                                </div>
-                                <div class="col-12">
-                                    <i class="fas fa-video" style="color:#77bf5c;font-size: 11px;"></i> Natividad de María y de Mario
-                                </div>
-                                <div class="col-12">
-                                    <i class="fas fa-circle" style="color:#77bf5c;font-size: 11px;"></i> Palomo Cojo Sinfrío
-                                </div>
-                                <div class="col-12">
-                                    <i class="fas fa-video" style="color:#77bf5c;font-size: 11px;"></i> Ricar2 Biyalovos
-                                </div>
+                                <?php foreach ($params['listaUsuariosConectados'] as $usuarioConectado) : ?>
+                                    <div class="col-12">
+                                        <i class="fas fa-circle" style="color:#77bf5c;font-size: 11px;"></i> <?php echo $usuarioConectado['nombre']." ".$usuarioConectado['apellidos'] ?>
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
                         </div>
                         <!-- Fin chat -->
@@ -344,7 +336,7 @@ ob_start();
             </div>
         </div>
         <!-- Pie de chat -->
-        <div class="container-fluid fixed-bottom">
+        <!-- <div class="container-fluid fixed-bottom">
             <div class="row">
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-2">
                     <button class="btn btn-primary" type="button">
@@ -353,7 +345,7 @@ ob_start();
                     </button>
                 </div>
             </div>
-        </div>;
+        </div> -->
         <!-- Final de pie de chat -->
         <!-- Final parte derecha -->
     </div>

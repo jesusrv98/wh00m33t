@@ -129,6 +129,19 @@ class Model
         return $estados;
     }
 
+    public function isAmigo($idUno, $idDos) {
+        $sql = "SELECT * FROM es_amigo WHERE (amigo =" . $idUno." AND amigo_fk_a = ".$idDos." ) OR (amigo=".$idDos." AND amigo_fk_a =".$idUno.") ";
+        $result = mysqli_query($this->conexion, $sql);
+        $isAmigo = false;
+
+        if($result) {
+            $numeroFilas = mysqli_num_rows($result);
+            if($numeroFilas == 2) {
+                $isAmigo = true;
+            }
+        }
+        return $isAmigo;
+    }
     public function setConectado($idUsuario)
     {
 
@@ -200,6 +213,56 @@ class Model
     {
         $sql = "INSERT INTO `estados`(`idUsuario`) VALUES ($idUsuario) ";
         $result = mysqli_query($this->conexion, $sql);
+    }
+
+    public function findUsuariosByNombre($nombre)
+    {           
+        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.idprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%".$nombre."%' AND u.id != ".implode(array_column($_SESSION['usuarioconectado'], "id"))." order by u.nombre ASC";
+
+        $result = mysqli_query($this->conexion, $sql);
+
+        $usuarios = array();
+        while ($row = mysqli_fetch_assoc($result)) {
+            $usuarios[] = $row;
+        }
+
+        return $usuarios;
+    }
+
+    public function countfindUsuariosByNombre($nombre)
+    {           
+        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.idprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%".$nombre."%' AND u.id != ".implode(array_column($_SESSION['usuarioconectado'], "id"))." order by u.nombre ASC";
+
+        $result = mysqli_query($this->conexion, $sql);
+
+        $contador = mysqli_num_rows($result);
+
+        return $contador;
+    }
+
+    public function findUsuariosConectado()
+    {           
+        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.idprovincia = pr.idprovincia WHERE u.id != ".implode(array_column($_SESSION['usuarioconectado'], "id"))." AND u.estado = 'Online' order by u.nombre ASC";
+
+        $result = mysqli_query($this->conexion, $sql);
+
+        $usuarios = array();
+        while ($row = mysqli_fetch_assoc($result)) {
+            $usuarios[] = $row;
+        }
+
+        return $usuarios;
+    }
+
+    public function countfindUsuariosConectado()
+    {           
+        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.idprovincia = pr.idprovincia WHERE u.id != ".implode(array_column($_SESSION['usuarioconectado'], "id"))." AND u.estado = 'Online' order by u.nombre ASC";
+
+        $result = mysqli_query($this->conexion, $sql);
+
+        $contador = mysqli_num_rows($result);
+
+        return $contador;
     }
 
     public function insertarEstadoNuevo($estadoNuevo, $fechaActual, $idUsuario)
