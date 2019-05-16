@@ -84,6 +84,12 @@ class Model
         return $peticiones;
     }
 
+    public function insertarNotificacionByTipo($id_fkTipo, $tipo, $idUsuario)
+    {
+        $sql="INSERT INTO notificaciones (id_fkTipo, tipo, idUsuario) VALUES (NULL, $id_fkTipo, '$tipo', $idUsuario)";
+        $result = mysqli_query($this->conexion, $sql);
+    }
+
     public function findCountComentariosById($idUsuario)
     {
         $sql = "select count(*) from notificaciones WHERE idUsuario =" . $idUsuario . " and tipo ='comentario' and vista = 0 ";
@@ -190,6 +196,27 @@ class Model
         $resultado = mysqli_fetch_row($result);
 
         return $idUsuario;
+    }
+
+    //Buscar comentarios de publicacion
+    public function findComentarioByIdEspacio($idEspacio)
+    {
+        $sql = "SELECT c.*, u.* FROM (comentarios c JOIN estados e ON c.id_espacioComentado = e.idEstado) JOIN usuarios u on c.id_usuario = u.id WHERE e.idEstado = $idEspacio";
+        $result = mysqli_query($this->conexion, $sql);
+
+        $comentarios = array();
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $comentarios[] = $row;
+        }
+
+        return $comentarios;
+    }
+
+    public function insertarComentarioByIdEspacio($idUsuario, $idEspacio, $textoComentario, $fechaActual)
+    {   
+        $sql = "INSERT INTO comentarios (idComentario, id_espacioComentado, id_usuario, textoComentario, fecha_comentario) VALUES (NULL, $idEspacio, $idUsuario, '$textoComentario', '$fechaActual')";
+        $result = mysqli_query($this->conexion, $sql);
     }
 
     // Insertar un usuario

@@ -165,6 +165,64 @@ class Controller
         require __DIR__ . '/templates/busquedaUsuarios.php';
     }
 
+    function formatearFecha($fechaEntrada){
+        $estadoActualFecha = $fechaEntrada;
+            if ($estadoActualFecha != "0000-00-00 00:00:00") {
+                $fechaActual = new DateTime('now');
+                $fechaDeEstado = new DateTime($estadoActualFecha);
+                $diff = $fechaActual->diff($fechaDeEstado);
+
+                $estadoActualFechaSegundos = $diff->s;
+                $estadoActualFechaMinutos = $diff->i;
+                $estadoActualFechaHoras = $diff->h;
+                $estadoActualFechaDias = $diff->d;
+
+                $textoFecha = "hola";
+                if ($estadoActualFechaDias > 7) {
+                    $textoFecha =  "Hace más de una semana.";
+                } else {
+                    if ($estadoActualFechaDias == 0) {
+                        if ($estadoActualFechaHoras < 1) {
+                            if ($estadoActualFechaHoras < 1) {
+                                if ($estadoActualFechaMinutos < 1) {
+                                    if ($estadoActualFechaSegundos < 2) {
+                                        if ($estadoActualFechaSegundos == 0) {
+                                            $textoFecha =  "Hace " . $estadoActualFechaSegundos . " segundos.";
+                                        } else {
+                                            $textoFecha =  "Hace " . $estadoActualFechaSegundos . " segundo.";
+                                        }
+                                    } else {
+                                        $textoFecha =  "Hace " . $estadoActualFechaSegundos . " segundos.";
+                                    }
+                                } else {
+                                    if ($estadoActualFechaMinutos < 2) {
+                                        $textoFecha =  "Hace " . $estadoActualFechaMinutos . " minuto.";
+                                    } else {
+                                        $textoFecha =  "Hace " . $estadoActualFechaMinutos . " minutos.";
+                                    }
+                                }
+                            } else {
+                                $textoFecha =  "Hace " . $estadoActualFechaHoras . " hora.";
+                            }
+                        } else {
+                            if ($estadoActualFechaHoras < 2) {
+                                $textoFecha = "Hace " . $estadoActualFechaHoras . " hora.";
+                            } else {
+                                $textoFecha = "Hace " . $estadoActualFechaHoras . " horas.";
+                            }
+                        }
+                    } elseif ($estadoActualFechaDias > 0) {
+                        if ($estadoActualFechaDias < 2) {
+                            $textoFecha = "Hace " . $estadoActualFechaDias . " día.";
+                        } else {
+                            $textoFecha = "Hace " . $estadoActualFechaDias . " días.";
+                        }
+                    }
+                }
+            }
+            return $textoFecha;
+    }
+
     public function listar()
     {
         $m = new Model(

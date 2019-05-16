@@ -1,63 +1,102 @@
 <?php
 ob_start();
+$c = new Controller();
 ?>
 <!--Parte izquierda -->
 <script src="js/jqueryGoogle.js"></script>
 <script>
+    $(document).ready(function() {
+        $("#botonEstado").click(function() {
+            var estadoNuevo = $("#estadoNuevo").val();
+            var estadoViejo = $("#estadoViejo").val();
 
-    var bien = false;
-    
-    $(document).ready( function() {
-        $("#botonEstado").click( function() {
-        var estadoNuevo = $("#estadoNuevo").val();
-        var estadoViejo = "<?php echo $params['estadoActual'] ?>";
-        
-        
-        if (estadoNuevo.trim() == '') {
-            alert('No puede dejar su estado en blanco.');
-            $(this).focus();
-            return false;
-        }else {
-            var parametros = {
-                'estadoNuevo': estadoNuevo,
-                'estadoViejo': estadoViejo,
-                'idUsuario': <?php echo $params['idUsuario'] ?>
-            };
-            $.ajax({
-                data: parametros,
-                url: '../app/templates/includes/servletActualizarEstado.php',
-                type: 'post',
-                async: true,
-                success: function(msg) {
-                    if (msg == 'ok') {
 
-                        bien = true;
+            if (estadoNuevo.trim() == '') {
+                alert('No puede dejar su estado en blanco.');
+                $(this).focus();
+                return false;
+            } else {
+                var parametros = {
+                    'estadoNuevo': estadoNuevo,
+                    'estadoViejo': estadoViejo,
+                    'idUsuario': <?php echo $params['idUsuario'] ?>
+                };
+                $.ajax({
+                    data: parametros,
+                    url: '../app/templates/includes/servletActualizarEstado.php',
+                    type: 'post',
+                    async: true,
+                    success: function(msg) {
+                        if (msg == 'ok') {
 
-                        $('.statusMessage').removeClass('d-none');
-                        $('.statusMessage').addClass('d-block');         
-                        $('.statusMessage').html("<div class='alert alert-success' role='alert' >Estado actualizado</div>");
-                    } else {
+                            $("#estadoNuevo").val('');
+                            $("#estadoViejo").text(estadoNuevo);
+                            $("#fechaCambiar").text('Hace un instante')
+
+                            $('.statusMessage').removeClass('d-none');
+                            $('.statusMessage').addClass('d-block');
+                            $('.statusMessage').html("<div class='alert alert-success' role='alert' >Estado actualizado</div>");
+                            
+                        } else {
+                            $('.statusMessage').removeClass('d-none');
+                            $('.statusMessage').addClass('d-block');
+                            $('.statusMessage').html("<div class='alert alert-danger' role='alert' >Tu nuevo estado no puede ser el mismo que el anterior.</div>");
+                            alert(msg);
+                        }
+                    },
+                    error: function() {
                         $('.statusMessage').removeClass('d-none');
                         $('.statusMessage').addClass('d-block');
-                        $('.statusMessage').html("<div class='alert alert-danger' role='alert' >Tu nuevo estado no puede ser el mismo que el anterior.</div>");
-                        alert(msg);
+                        $('.statusMessage').html("<div class='row'><div class='alert alert-danger col-12'  role='alert' >Ha habido un error.</div></div>");
                     }
-                },
-                error: function() {
-                    $('.statusMessage').removeClass('d-none');
-                    $('.statusMessage').addClass('d-block');
-                    $('.statusMessage').html("<div class='row'><div class='alert alert-danger col-12'  role='alert' >Ha habido un error.</div></div>");
-                }
-                
-            });
-        }
+
+                });
+            }
+        });
+        $('#botonComentar').click( function() {
+            debugger;
+            var comentarioNuevo = $("#comentarioNuevo").val();
+            var idEstado = $('#idEstado').val();
+            var idUsuarioDirigido = $('#idUsuarioDirigido').val();
+            var fotoPerfil = "<?php echo implode(array_column($_SESSION['usuarioconectado'], 'fotoPerfil')) ?>";
+            var nombre = "<?php echo implode(array_column($_SESSION['usuarioconectado'], 'nombre')) ?>";
+            var apellido = "<?php echo implode(array_column($_SESSION['usuarioconectado'], 'apellidos')) ?>";
+            var nombreUsuario = nombre+" "+apellido;
+
+            if (comentarioNuevo.trim() == '') {
+                alert('No puede comentar en blanco.');
+                $(this).focus();
+                return false;
+            } else {
+                var parametros = {
+                    'textoComentario': comentarioNuevo,
+                    'idUsuario': <?php echo $params['idUsuario'] ?>,
+                    'idEspacio': idEstado,
+                    'tipo': 'comentario',
+                    'idUsuarioDirigido' : idUsuarioDirigido
+                };
+                $.ajax({
+                    data: parametros,
+                    url: '../app/templates/includes/servletComentar.php',
+                    type: 'post',
+                    async: true,
+                    success: function(msg) {
+                        if (msg == 'ok') {
+                            alert("BIEN");
+                            $('.contenedorNuevosComentarios').removeClass('d-none');
+                            $('.contenedorNuevosComentarios').append("<div class='media mt-2'><div class='media-left'><img src='images/"+fotoPerfil+"' width='60' height='60' alt='Foto perfil' class='media-object rounded-circle mr-2 mt-1'></div><div class='media-body'><h4 class='media-heading'>"+nombreUsuario+"<small style='font-size: 0.8rem' class='text-muted'> Hace un momento</small></h4><p>"+comentarioNuevo+".</p></div></div>");
+                        } else {
+                           alert("mal comentado: "+msg);
+                        }
+                    },
+                    error: function() {
+                        alert("muy mal comentado: "+ +msg);
+                    }
+
+                });
+            }
+        });
     });
-});
-if(bien == true){
-        estadoNuevo.val('');
-        estadoViejo.val('');
-        alert("HOLA");
-    }
 </script>
 <div class="container-fluid">
     <div class="row">
@@ -67,53 +106,53 @@ if(bien == true){
                 <div class="col-12" style="margin-top: 1em">
                     <div class="row">
                         <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 ">
-                            <img class="img-thumbnail img-fluid" src="images/<?php echo implode(array_column($_SESSION['usuarioconectado'], 'fotoPerfil')); ?>" />
+                            <img class="img-thumbnail img-fluid" src="images/<?= implode(array_column($_SESSION['usuarioconectado'], 'fotoPerfil')); ?>" />
                         </div>
                         <div class="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8">
                             <div class="row">
                                 <div class="col-12">
-                                    <p style="color: #33cbad"><?php echo implode(array_column($_SESSION['usuarioconectado'], 'nombre')) . " " . implode(array_column($_SESSION['usuarioconectado'], 'apellidos')); ?></p>
+                                    <p style="color: #33cbad"><?= implode(array_column($_SESSION['usuarioconectado'], 'nombre')) . " " . implode(array_column($_SESSION['usuarioconectado'], 'apellidos')); ?></p>
                                 </div>
                                 <div class="col-12">
-                                    <p class="text-muted"><i class="fas fa-chart-bar"></i> <?php echo $params['visitas'] ?> visitas a tu perfil</p>
+                                    <p class="text-muted"><i class="fas fa-chart-bar"></i> <?= $params['visitas'] ?> visitas a tu perfil.</p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-12 col-sm-12 col-lg-12 col-md-12 col-xl-12">
                             <hr>
                             <?php
-                            if ($params['existeNotificaciones']) {
-                                if ($params['countMensajesPV']) {
-                                    if ($params['countMensajesPV'] == 1) {
-                                        echo "<p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-envelope'></i> Tienes " . $params['countMensajesPV'] . " mensaje privado nuevo.</p>";
-                                    } else {
-                                        echo "<p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-user-friends'></i> Tienes " . $params['countMensajesPV'] . " mensajes privados nuevos.</p>";
+                                if ($params['existeNotificaciones']) {
+                                    if ($params['countMensajesPV']) {
+                                        if ($params['countMensajesPV'] == 1) {
+                                            echo "<p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-envelope'></i> Tienes " . $params['countMensajesPV'] . " mensaje privado nuevo.</p>";
+                                        } else {
+                                            echo "<p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-user-friends'></i> Tienes " . $params['countMensajesPV'] . " mensajes privados nuevos.</p>";
+                                        }
                                     }
-                                }
-                                if ($params['countPeticiones']) {
-                                    if ($params['countPeticiones'] == 1) {
-                                        echo "<p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-user-friends'></i> Tienes " . $params['countPeticiones'] . " solicitud de amistad nueva.</p>";
-                                    } else {
-                                        echo "<p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-user-friends'></i> Tienes " . $params['countPeticiones'] . " solicitudes de amistades nuevas.</p>";
+                                    if ($params['countPeticiones']) {
+                                        if ($params['countPeticiones'] == 1) {
+                                            echo "<p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-user-friends'></i> Tienes " . $params['countPeticiones'] . " solicitud de amistad nueva.</p>";
+                                        } else {
+                                            echo "<p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-user-friends'></i> Tienes " . $params['countPeticiones'] . " solicitudes de amistades nuevas.</p>";
+                                        }
                                     }
-                                }
-                                if ($params['countComentarios']) {
-                                    if ($params['countComentarios'] == 1) {
-                                        echo "<p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-comment'></i> Tienes " . $params['countComentarios'] . " comentario nuevo.</p>";
-                                    } else {
-                                        echo "<p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-comment'></i> Tienes " . $params['countComentarios'] . " comentarios nuevos.</p>";
+                                    if ($params['countComentarios']) {
+                                        if ($params['countComentarios'] == 1) {
+                                            echo "<p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-comment'></i> Tienes " . $params['countComentarios'] . " comentario nuevo.</p>";
+                                        } else {
+                                            echo "<p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-comment'></i> Tienes " . $params['countComentarios'] . " comentarios nuevos.</p>";
+                                        }
                                     }
-                                }
-                                if ($params['countComentariosFotos']) {
-                                    if ($params['countComentariosFotos'] == 1) {
-                                        echo "<p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-comment-dots'></i> Tienes " . $params['countComentariosFotos'] . " comentario en foto nuevo.</p>";
-                                    } else {
-                                        echo "<p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-comment-dots'></i> Tienes " . $params['countComentariosFotos'] . " comentarios en fotos nuevos.</p>";
+                                    if ($params['countComentariosFotos']) {
+                                        if ($params['countComentariosFotos'] == 1) {
+                                            echo "<p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-comment-dots'></i> Tienes " . $params['countComentariosFotos'] . " comentario en foto nuevo.</p>";
+                                        } else {
+                                            echo "<p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-comment-dots'></i> Tienes " . $params['countComentariosFotos'] . " comentarios en fotos nuevos.</p>";
+                                        }
                                     }
+                                } else {
+                                    echo "<h4 class='text-muted'>No tienes notificaciones.</h4>";
                                 }
-                            } else {
-                                echo "<h4 class='text-muted'>No tienes notificaciones.</h4>";
-                            }
                             ?>
                         </div>
                     </div>
@@ -125,21 +164,22 @@ if(bien == true){
         <div class="container col-12 col-sm-12 col-md-12 col-lg-5 col-xl-5 mt-2" style="height: auto">
             <div class="row">
                 <div class="col-12 mt-3">
-                    <form method="post">
-                        <input onsubmit="actualizarEstado()" class="form-control" id="estadoNuevo" style="border-radius: 1em" type="text" value="<?php echo $params['nuevoEstado'] ?>" name="nuevapubli" placeholder="Nuevo estado..." required />
+                    <form method="post" name="formEstado" onsubmit="return false;$('#botonEstado').click();">
+                        <input class="form-control" id="estadoNuevo" style="border-radius: 1em" type="text" value="<?= $params['nuevoEstado'] ?>" name="nuevapubli" placeholder="Nuevo estado..." autocomplete="off"/>
                 </div>
                 <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10">
                     <p style="font-size:13px; margin-left: 0.5em; margin-top: 1em" class="text-muted"><b>Última actualización:</b>
-                        <?php echo $params['estadoActual']; ?>
+                        <?= "<span id='estadoViejo'>".$params['estadoActual']."</span>"; ?>
                         <?php
-                        if ($params['estadoActualFecha']) {
-                            echo "Hace " . $params['estadoActualFecha'];
-                        }
+                            if ($params['estadoActualFecha']) {
+                                echo "<small class='font-italic' id='fechaCambiar'>Hace " . $params['estadoActualFecha']."</small>";
+                            }
                         ?>
                     </p>
                 </div>
+
                 <div class="col-12 col-sm-12 col-md-12 col-lg-2 col-xl-2">
-                    <button type="button" id="botonEstado" style="margin-top: 0.8em;border: 0px;border-radius: 1em;background: #e6fbff;width: auto; color: #33cbad" class="btn" id="guardarpubli"> Guardar </button>
+                    <button type="button" id="botonEstado" style="margin-top: 0.8em;border: 0px;border-radius: 1em;background: #e6fbff;width: auto; color: #33cbad" class="btn"> Guardar </button>
                 </div>
                 </form>
                 <div class="statusMessage justify-content-center align-items-center d-none col-12 mt-1"></div>
@@ -159,89 +199,62 @@ if(bien == true){
                     <div class="tab-content" id="myTabContent">
                         <!-- Pestaña amigos -->
                         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                            <!-- Publicación -->
-                            <!-- 
-                                
-                             -->
-                            <!-- 
-                                 
-                              -->
                             <!-- AQUÍ FOREACH PARA CADA PUBLIC -->
                             <?php foreach ($params['publicacionesAmigos'] as $publicacion) : ?>
-                                <div class="row mt-3">
-                                    <div class="col-12 col-sm-12 col-md-1 col-lg-1 col-xl-1"><img class="rounded border" width="40" height="40" src="images/<?php echo $publicacion['fotoPerfil'] ?>" /></div>
-                                    <div class="col-12 col-sm-12 col-md-11 col-lg-11 col-xl-11">
-                                        <p style="color: #33cbad"><?php echo $publicacion['nombre'] ?> <?php echo $publicacion['apellidos'] ?></p>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                        <p><?php echo $publicacion['estadoCuerpo'] ?></p>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                        <small class="text-muted">
-                                            <?php
-                                            $estadoActualFecha = $publicacion['fecha'];
-                                            if ($estadoActualFecha != "0000-00-00 00:00:00") {
-                                                $fechaActual = new DateTime('now');
-                                                $fechaDeEstado = new DateTime($estadoActualFecha);
-                                                $diff = $fechaActual->diff($fechaDeEstado);
+                                <section style="border-bottom: 1px solid #33cbad;" class="container p-2 mt-2">
+                                    <div class="media">
+                                        <div class="media-left">
+                                            <img src="images/<?= $publicacion['fotoPerfil'] ?>" width="64" height="64" alt="Foto perfil" class="media-object rounded-circle mr-2 mt-1">
+                                        </div>
+                                        <div class="media-body">
+                                            <h4 class="media-heading" style="color: #33cbad;"><?= $publicacion['nombre'] . " " . $publicacion['apellidos'] ?></h4>
 
-                                                $estadoActualFechaSegundos = $diff->s;
-                                                $estadoActualFechaMinutos = $diff->i;
-                                                $estadoActualFechaHoras = $diff->h;
-                                                $estadoActualFechaDias = $diff->d;
-
-                                                if ($estadoActualFechaDias > 7) {
-                                                    echo "Hace más de una semana.";
-                                                } else {
-                                                    if ($estadoActualFechaDias == 0) {
-                                                        if ($estadoActualFechaHoras < 1) {
-                                                            if ($estadoActualFechaHoras < 1) {
-                                                                if ($estadoActualFechaMinutos < 1) {
-                                                                    if ($estadoActualFechaSegundos < 2) {
-                                                                        if ($estadoActualFechaSegundos == 0) {
-                                                                            echo "Hace " . $estadoActualFechaSegundos . " segundos.";
-                                                                        } else {
-                                                                            echo "Hace " . $estadoActualFechaSegundos . " segundo.";
-                                                                        }
-                                                                    } else {
-                                                                        echo "Hace " . $estadoActualFechaSegundos . " segundos.";
-                                                                    }
-                                                                } else {
-                                                                    if ($estadoActualFechaMinutos < 2) {
-                                                                        echo "Hace " . $estadoActualFechaMinutos . " minuto.";
-                                                                    } else {
-                                                                        echo "Hace " . $estadoActualFechaMinutos . " minutos.";
-                                                                    }
-                                                                }
-                                                            } else {
-                                                                echo "Hace " . $estadoActualFechaHoras . " hora.";
-                                                            }
-                                                        } else {
-                                                            if ($estadoActualFechaHoras < 2) {
-                                                                echo "Hace " . $estadoActualFechaHoras . " hora.";
-                                                            } else {
-                                                                echo "Hace " . $estadoActualFechaHoras . " horas.";
-                                                            }
-                                                        }
-                                                    } elseif ($estadoActualFechaDias > 0) {
-                                                        if ($estadoActualFechaDias < 2) {
-                                                            echo "Hace " . $estadoActualFechaDias . " día.";
-                                                        } else {
-                                                            echo "Hace " . $estadoActualFechaDias . " días.";
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            ?>
-                                        </small>
+                                            <p><?= $publicacion['estadoCuerpo'] ?></p>
+                                            <!-- Botón de responder -->
+                                            <p class="d-flex justify-content-between align-items-center">
+                                                <button class="btn btn-xs mr-3" style="background: #33cbad; color:white;" type="button" data-toggle="collapse" data-target="#collapseForm<?= $publicacion['idEstado'] ?>" aria-expanded="false" aria-controls="collapseForm">Ver comentarios</button>
+                                                <small class="text-muted">
+                                                    <?= $c->formatearFecha($publicacion['fecha']);
+                                                    ?>
+                                                </small>
+                                            </p>
+                                            <!-- Este es el cajón de respuesta -->
+                                            <section class="collapse" id="collapseForm<?= $publicacion['idEstado'] ?>">
+                                                <form method="post" onsubmit="return false;">
+                                                    <input type="text" id="comentarioNuevo" name="comentarioNuevo" class="form-control comentarioNuevo" placeholder="Escribe tu comentario..."></textarea>
+                                                    <input type="hidden" id="idEstado" value="<?= $publicacion['idEstado'] ?>">
+                                                    <input type="hidden" id="idUsuarioDirigido" value="<?= $publicacion['id'] ?>">
+                                                    <p id="btn-form-answer">
+                                                        <button type="button" style="background: #93ECFF; color:white;" id="botonComentar" class="btn btn-xs mt-2 form-control">Comentar <i class="far fa-comment"></i></button>
+                                                    </p>
+                                                </form>
+                                                <!-- Aqui va la respuesta -->
+                                                <?php
+                                                    $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
+                                                    $idEspacio = $publicacion['idEstado'];
+                                                    $listaComentarios = $m->findComentarioByIdEspacio($idEspacio);
+                                                ?>
+                                                <section style="max-height:150px !important;overflow: scroll;overflow-y: auto;overflow-x: hidden;">
+                                                    <?php foreach ($listaComentarios as $comentario) : ?>
+                                                        <div class="media mt-2">
+                                                            <div class="media-left">
+                                                                <img src="images/<?= $comentario['fotoPerfil'] ?>" width="60" height="60" alt="Foto perfil" class="media-object rounded-circle mr-2 mt-1">
+                                                            </div>
+                                                            <div class="media-body">
+                                                                <h4 class="media-heading"><?= $comentario['nombre'] . " " . $comentario['apellidos'] ?>
+                                                                    <small style="font-size: 0.8rem" class="text-muted">
+                                                                        <?= $c->formatearFecha($comentario['fecha_comentario']) ?>
+                                                                    </small></h4>
+                                                                <p><?= $comentario['textoComentario'] ?>.</p>
+                                                            </div>
+                                                        </div>
+                                                    <?php endforeach; ?>
+                                                    <div class="contenedorNuevosComentarios d-none"></div>
+                                                </section>
+                                            </section>
+                                        </div>
                                     </div>
-                                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                        <form class="" action="index.php" method="POST">
-                                            <input class="form-control" style="border-radius: 1em" type="text" name="comentarioamigo" placeholder="Comentar..." required /><input type="submit" value="Aceptar" style="border: 0px;border-radius: 1em;background-color: lightgrey;margin-top: 5px;width: 100%;display: none">
-                                            <hr>
-                                        </form>
-                                    </div>
-                                </div>
+                                </section>
                             <?php endforeach; ?>
                             <!--  -->
                             <!--  -->
@@ -252,51 +265,15 @@ if(bien == true){
                         <!-- Pestaña sitios -->
                         <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                             <!-- sitio -->
-                            <div class="row mt-3">
-                                <div class="col-12 col-sm-12 col-md-1 col-lg-1 col-xl-1"><img class="rounded border" width="40" height="40" src="../images/ejemploevento.jpg" /></div>
-                                <div class="col-12 col-sm-12 col-md-11 col-lg-11 col-xl-11">
-                                    <p style="color: #33cbad">Partido Real Madrid Club de Fútbol - Getafe Club de Fútbol</p>
-                                </div>
-                                <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 d-flex justify-content-start">
-                                    <p style="color: #77bf5c"><i class="fas fa-users"></i> 245 personas irán</p>
-                                </div>
-                                <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 d-flex justify-content-end">
-                                    <p class="text-muted">Día 23 de mayo de 2018</p>
-                                </div>
-                                <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                    <form class="" action="index.php" method="POST">
-                                        <input class="form-control" style="border-radius: 1em;background:#F0F0F0;color: #33cbad;cursor: pointer" type="submit" name="asistir" value="Asistiré" /><input type="hidden" value="1" style="display: none">
-                                        <hr>
-                                    </form>
-                                </div>
-                            </div>
+                            
                             <!-- Fin sitio -->
                             <!-- Segundo sitio -->
-                            <div class="row mt-3">
-                                <div class="col-12 col-sm-12 col-md-1 col-lg-1 col-xl-1"><img class="rounded border" width="40" height="40" src="../images/ejemploevento2.jpg" /></div>
-                                <div class="col-12 col-sm-12 col-md-11 col-lg-11 col-xl-11">
-                                    <p style="color: #33cbad">Festival of colors - Sevilla</p>
-                                </div>
-                                <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 d-flex justify-content-start">
-                                    <p style="color: #77bf5c"><i class="fas fa-users"></i> 1934 personas irán</p>
-                                </div>
-                                <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 d-flex justify-content-end">
-                                    <p class="text-muted">Día 17 de julio de 2018</p>
-                                </div>
-                                <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                                    <form class="" action="index.php" method="POST">
-                                        <input class="form-control" style="border-radius: 1em;background:#F0F0F0;color: #33cbad;cursor: pointer" type="submit" name="asistire" value="Asistiré" /><input type="hidden" value="1" style="display: none">
-                                        <hr>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Fin pestaña sitios -->
-                    </div>
+                        </div><!-- Fin pestaña sitios -->
+                    </div> <!-- Fin tab-content -->
                 </div>
-            </div>
-        </div>
-        <!-- Final parte centro -->
+            </div><!-- Final row centro -->
+        </div><!-- Final parte centro -->
+
         <!-- Comienzo parte derecha -->
         <div class="container col-12 col-sm-12 col-md-12 col-lg-3 col-xl-3 mt-2" style="border-left: 1px solid #33cbad; height: auto">
             <div class="row">
@@ -321,11 +298,11 @@ if(bien == true){
                         <div class="col-12 border rounded pb-2 ml-1">
                             <div class="row">
                                 <div class="col-12 pb- pt-1">
-                                    <h6>Usuarios conectados (<?php echo $params['countUsuariosConectados'] ?>) <i class="fas fa-circle" style="color:#77bf5c;"></i></h6>
+                                    <h6>Usuarios conectados (<?= $params['countUsuariosConectados'] ?>) <i class="fas fa-circle" style="color:#77bf5c;"></i></h6>
                                 </div>
                                 <?php foreach ($params['listaUsuariosConectados'] as $usuarioConectado) : ?>
                                     <div class="col-12">
-                                        <i class="fas fa-circle" style="color:#77bf5c;font-size: 11px;"></i> <?php echo $usuarioConectado['nombre']." ".$usuarioConectado['apellidos'] ?>
+                                        <i class="fas fa-circle" style="color:#77bf5c;font-size: 11px;"></i> <?= $usuarioConectado['nombre'] . " " . $usuarioConectado['apellidos'] ?>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
