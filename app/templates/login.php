@@ -161,6 +161,7 @@
                     data: parametros,
                     url: '../app/templates/includes/servletRegistrar.php',
                     type: 'get',
+                    async: true,
                     success: function(msg) {
                         if (msg == 'ok') {
                             $('#nombre').val('');
@@ -181,6 +182,8 @@
 
                             $('.statusMessage').html("<div class='alert alert-success' role='alert' >El usuario con correo: " + correo + " ha sido registrado satisfactoriamente a WhoMeet, ¡Disfruta!</div><p id='registroNuevo' style='cursor:pointer' onclick='registrarOtraVez()' class='text-primary text-center'>¿Quieres registrar otra cuenta?</p>");
                         } else {
+                            $('.statusMessage').removeClass('d-none');
+                            $('.statusMessage').addClass('d-block');
                             $('.statusMessage').html("<div class='alert alert-danger' role='alert' >Ha ocurrido algún problema, por favor inténtelo de nuevo.</div>");
                         }
 
@@ -218,7 +221,7 @@
                     </div>
 
                     <?php
-                    if (count($params['resultado']) > 0) {
+                    if (($params['resultado'])) {
                         header('Location:index.php?ctl=inicio');
                     } elseif (($params['mensaje'])) {
                         echo "<div class='alert alert-danger' role='alert' >" . $params['mensaje'] . "</div>";
@@ -364,7 +367,9 @@
                                 </div>
                             </div>
                             <!-- Fin del cuerpo del modal -->
-                            <div class="statusMessage justify-content-center align-items-center d-none"></div>
+                            <div class="container">
+                                <div class="statusMessage justify-content-center align-items-center d-none"></div>
+                            </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                             </div>

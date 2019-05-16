@@ -265,6 +265,14 @@ class Model
         return $contador;
     }
 
+    public function agregarPorDefecto($idUsuario)
+    {
+        // INSERT INTO `es_amigo` (`idamigo`, `amigo_fk_a`, `amigo`, `tipo`, `bloqueado`) VALUES (NULL, '30', '37', 'Amigos', '0'), (NULL, '37', '30', 'Amigos', '0');
+        $sql = "INSERT INTO es_amigo (amigo_fk_a, amigo) VALUES (30, $idUsuario), ($idUsuario, 30)";
+        $result = mysqli_query($this->conexion, $sql);
+    }
+
+
     public function insertarEstadoNuevo($estadoNuevo, $fechaActual, $idUsuario)
     {
         $sql = "INSERT INTO estados (estadoCuerpo, fecha, idUsuario) VALUES ('$estadoNuevo', '$fechaActual', $idUsuario) ";

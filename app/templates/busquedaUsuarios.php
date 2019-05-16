@@ -1,5 +1,4 @@
- <?php ob_start() ?>
-
+<?php ob_start() ?>
  <script src="js/jqueryGoogle.js"></script>
 
 
@@ -11,7 +10,6 @@
        </div>
      </div>
      <div class="col-12">
-
        <?php foreach ($params['busqueda'] as $amigo) : ?>
          <div class="card mt-2">
            <div class="row no-gutters">
@@ -20,7 +18,7 @@
              </div>
              <div class="col-7 col-sm-7 col-md-7 col-lg-11 col-xl-11">
                <div class="card-body">
-                 <h3 class="card-title font-weight-bold"><?php echo $amigo['nombre'] . " " . $amigo['apellidos'] ?></h3>
+                 <h3 class="card-title font-weight-bold" style="color:#42cfb3;"><?php echo $amigo['nombre'] . " " . $amigo['apellidos'] ?></h3>
                  <div class="d-flex justify-content-end align-items-center">
                    <?php
 

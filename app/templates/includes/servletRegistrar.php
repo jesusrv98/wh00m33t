@@ -91,6 +91,7 @@
                 $arrayUsuario = $m->buscarSoloUsuario($correo);
                 $idUsuario = implode(array_column($arrayUsuario, "id"));
                 $m->insertarEstado($idUsuario);
+                $m->agregarPorDefecto($idUsuario);
                 $msg = "ok";
             }
         } else {

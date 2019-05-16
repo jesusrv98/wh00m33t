@@ -116,7 +116,10 @@ class Controller
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $nombre = $_POST['nombreBusqueda'];
+        }else{
+            $nombre = "";
         }
+
 
         $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
         $arrayUsuario = $m->buscarSoloUsuario($correo);
@@ -149,6 +152,7 @@ class Controller
 
         $params = array(
             'countMensajesPV' => $countMensajesPV,
+            'nombre' => '',
             'nombreBusqueda' =>'',
             'busqueda' => $listaUsuarios,
             'palabraBuscada' => trim($nombre),
@@ -255,18 +259,16 @@ class Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $params['email'] = $_POST['email'];
             $params['password'] = $_POST['password'];
-            $params['resultado'] = $m->buscarSoloUsuario($params['email']);
-            $verificacion = $m->verificar($params['password'], $params['email']);
-            $idUsuario = $m->findIdUsuario($params['correo']);
+            $params['resultado'] = $m->verificar($params['password'], $params['email']);
 
-            if ($verificacion == 1) {
-                $_SESSION['usuarioconectado'] = $params['resultado'];
+            if ($params['resultado']) {
                 $correo = $params['email'];
                 $arrayUsuario = $m->buscarSoloUsuario($correo);
+                $_SESSION['usuarioconectado'] = $arrayUsuario;
                 $idUsuario = implode(array_column($arrayUsuario, "id"));
                 $m->setConectado($idUsuario);
             } else {
-                $params['mensaje'] = "No existe ese usuario-password en la base de datos";
+                $params['mensaje'] = "Usuario o contraseña incorrecta.";
             }
         }
         require __DIR__ . '/templates/login.php';
