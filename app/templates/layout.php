@@ -91,7 +91,7 @@ if (!isset($_SESSION['usuarioconectado'])) {
                 </li>
             </ul>
             <form action="index.php?ctl=busqueda" method="post" class="form-inline my-2 my-md-0">
-                <input class="form-control form-control-sm" size="25" type="text" name="nombreBusqueda" value="<?php $params['nombreBusqueda'] ?>" placeholder="Buscar usuarios..." />
+                <input class="form-control form-control-sm" autocomplete="off" size="25" type="text" name="nombreBusqueda" value="<?php $params['nombreBusqueda'] ?>" placeholder="Buscar usuarios..." />
             </form>
         </div>
     </nav>

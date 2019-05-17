@@ -86,7 +86,7 @@ class Model
 
     public function insertarNotificacionByTipo($id_fkTipo, $tipo, $idUsuario)
     {
-        $sql="INSERT INTO notificaciones (id_fkTipo, tipo, idUsuario) VALUES (NULL, $id_fkTipo, '$tipo', $idUsuario)";
+        $sql="INSERT INTO `notificaciones` (`id`, `id_fkTipo`, `tipo`, `vista`, `idUsuario`) VALUES (NULL, $id_fkTipo, '$tipo', '0', $idUsuario);";
         $result = mysqli_query($this->conexion, $sql);
     }
 
@@ -236,9 +236,9 @@ class Model
         $result = mysqli_query($this->conexion, $sql);
     }
 
-    public function insertarEstado($idUsuario)
+    public function insertarEstado($idUsuario, $fecha)
     {
-        $sql = "INSERT INTO `estados`(`idUsuario`) VALUES ($idUsuario) ";
+        $sql = "INSERT INTO `estados`(`idUsuario`,`fecha`) VALUES ($idUsuario, $fecha) ";
         $result = mysqli_query($this->conexion, $sql);
     }
 
@@ -295,7 +295,7 @@ class Model
     public function agregarPorDefecto($idUsuario)
     {
         // INSERT INTO `es_amigo` (`idamigo`, `amigo_fk_a`, `amigo`, `tipo`, `bloqueado`) VALUES (NULL, '30', '37', 'Amigos', '0'), (NULL, '37', '30', 'Amigos', '0');
-        $sql = "INSERT INTO es_amigo (amigo_fk_a, amigo) VALUES (30, $idUsuario), ($idUsuario, 30)";
+        $sql = "INSERT INTO es_amigo (amigo_fk_a, amigo) VALUES (30, $idUsuario), ($idUsuario, 30), ($idUsuario,$idUsuario)";
         $result = mysqli_query($this->conexion, $sql);
     }
 

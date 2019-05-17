@@ -261,7 +261,7 @@
                                                             <i class="fa fa-envelope"></i>
                                                         </span>
                                                     </div>
-                                                    <input name="correoR" id="correo" class="form-control" placeholder="Correo electrónico..." value="<?php echo $params['correoR'] ?>" type="email">
+                                                    <input name="correoR" id="correo" class="form-control" autocomplete="off" placeholder="Correo electrónico..." value="<?php echo $params['correoR'] ?>" type="email">
                                                 </div>
                                                 <div class="form-group input-group col-md-6">
                                                     <div class="input-group-prepend">
@@ -269,7 +269,7 @@
                                                             <i class="fa fa-lock"></i>
                                                         </span>
                                                     </div>
-                                                    <input class="form-control" id="contrasena" name="contrasenaR" value="<?php echo $params['contrasenaR'] ?>" placeholder="Contraseña..." type="password">
+                                                    <input class="form-control" id="contrasena" name="contrasenaR" autocomplete="off" value="<?php echo $params['contrasenaR'] ?>" placeholder="Contraseña..." type="password">
                                                 </div>
                                                 <div class="form-group input-group col-md-6">
                                                     <div class="input-group-prepend">
@@ -277,7 +277,7 @@
                                                             <i class="fa fa-lock"></i>
                                                         </span>
                                                     </div>
-                                                    <input class="form-control" name="contrasenaR2" id="contrasena2" value="<?php echo $params['contrasenaR2'] ?>" placeholder="Repetir contraseña..." type="password">
+                                                    <input class="form-control" name="contrasenaR2" id="contrasena2" autocomplete="off" value="<?php echo $params['contrasenaR2'] ?>" placeholder="Repetir contraseña..." type="password">
                                                 </div>
                                                 <div class="form-group input-group col-md-12">
                                                     <div class="input-group-prepend">
@@ -301,7 +301,7 @@
                                                             <i class="fas fa-map-marker-alt"></i>
                                                         </span>
                                                     </div>
-                                                    <select id="selectProvincias" name="selectProvinciasR" class="custom-select">
+                                                    <select id="selectProvincias" name="selectProvinciasR" class="custom-select" required>
                                                         <option selected="" value=""> -- Seleccionar Provincia -- </option>
                                                         <?php foreach ($params['provincias'] as $provincia) : ?>
                                                             <option value="<?= $provincia['idprovincia'] ?>"><?= $provincia['provincia'] ?></option>

@@ -90,7 +90,8 @@
                 $correo = trim($params['correo']);
                 $arrayUsuario = $m->buscarSoloUsuario($correo);
                 $idUsuario = implode(array_column($arrayUsuario, "id"));
-                $m->insertarEstado($idUsuario);
+                $fecha = new DateTime("now");
+                $m->insertarEstado($idUsuario, $fecha->format('Y-m-d H:i:s'));
                 $m->agregarPorDefecto($idUsuario);
                 $msg = "ok";
             }

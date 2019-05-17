@@ -36,6 +36,9 @@ $c = new Controller();
                             $('.statusMessage').removeClass('d-none');
                             $('.statusMessage').addClass('d-block');
                             $('.statusMessage').html("<div class='alert alert-success' role='alert' >Estado actualizado</div>");
+
+                            $('.contenedorNuevosEstados').removeClass('d-none');
+                            $('.contenedorNuevosEstados').prepend("<div class='container border rounded bg-light'>"+estadoNuevo+"</div>");
                             
                         } else {
                             $('.statusMessage').removeClass('d-none');
@@ -53,11 +56,11 @@ $c = new Controller();
                 });
             }
         });
-        $('#botonComentar').click( function() {
-            debugger;
-            var comentarioNuevo = $("#comentarioNuevo").val();
-            var idEstado = $('#idEstado').val();
-            var idUsuarioDirigido = $('#idUsuarioDirigido').val();
+        $('.botonComentar').click( function() {
+            var formulario = $(this).parent().parent();
+            var comentarioNuevo = $(formulario.find(".comentarioNuevo")).val();
+            var idEstado = $(formulario.find('.idEstado')).val();
+            var idUsuarioDirigido = $(formulario.find('.idUsuarioDirigido')).val();
             var fotoPerfil = "<?php echo implode(array_column($_SESSION['usuarioconectado'], 'fotoPerfil')) ?>";
             var nombre = "<?php echo implode(array_column($_SESSION['usuarioconectado'], 'nombre')) ?>";
             var apellido = "<?php echo implode(array_column($_SESSION['usuarioconectado'], 'apellidos')) ?>";
@@ -82,15 +85,16 @@ $c = new Controller();
                     async: true,
                     success: function(msg) {
                         if (msg == 'ok') {
-                            alert("BIEN");
-                            $('.contenedorNuevosComentarios').removeClass('d-none');
-                            $('.contenedorNuevosComentarios').append("<div class='media mt-2'><div class='media-left'><img src='images/"+fotoPerfil+"' width='60' height='60' alt='Foto perfil' class='media-object rounded-circle mr-2 mt-1'></div><div class='media-body'><h4 class='media-heading'>"+nombreUsuario+"<small style='font-size: 0.8rem' class='text-muted'> Hace un momento</small></h4><p>"+comentarioNuevo+".</p></div></div>");
+                            $(formulario.parent().find('.contenedorNuevosComentarios')).removeClass('d-none');
+                            $(formulario.parent().find('.contenedorNuevosComentarios')).append("<div class='media mt-2'><div class='media-left'><img src='images/"+fotoPerfil+"' width='60' height='60' alt='Foto perfil' class='media-object rounded-circle mr-2 mt-1'></div><div class='media-body'><h4 class='media-heading'>"+nombreUsuario+"<small style='font-size: 0.8rem' class='text-muted'> Hace un momento</small></h4><p>"+comentarioNuevo+".</p></div></div>");
+                            $(formulario.find(".comentarioNuevo")).val('');
                         } else {
                            alert("mal comentado: "+msg);
                         }
                     },
                     error: function() {
-                        alert("muy mal comentado: "+ +msg);
+                        alert("Ha ocurrido un error y no se puede comentar.");
+
                     }
 
                 });
@@ -200,6 +204,7 @@ $c = new Controller();
                         <!-- Pestaña amigos -->
                         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                             <!-- AQUÍ FOREACH PARA CADA PUBLIC -->
+                            <div class="contenedorNuevosEstados d-none"></div>   
                             <?php foreach ($params['publicacionesAmigos'] as $publicacion) : ?>
                                 <section style="border-bottom: 1px solid #33cbad;" class="container p-2 mt-2">
                                     <div class="media">
@@ -221,11 +226,11 @@ $c = new Controller();
                                             <!-- Este es el cajón de respuesta -->
                                             <section class="collapse" id="collapseForm<?= $publicacion['idEstado'] ?>">
                                                 <form method="post" onsubmit="return false;">
-                                                    <input type="text" id="comentarioNuevo" name="comentarioNuevo" class="form-control comentarioNuevo" placeholder="Escribe tu comentario..."></textarea>
-                                                    <input type="hidden" id="idEstado" value="<?= $publicacion['idEstado'] ?>">
-                                                    <input type="hidden" id="idUsuarioDirigido" value="<?= $publicacion['id'] ?>">
+                                                    <input type="text" name="comentarioNuevo" class="form-control comentarioNuevo" placeholder="Escribe tu comentario..."></textarea>
+                                                    <input type="hidden" class="idEstado" value="<?= $publicacion['idEstado'] ?>">
+                                                    <input type="hidden" class="idUsuarioDirigido" value="<?= $publicacion['id'] ?>">
                                                     <p id="btn-form-answer">
-                                                        <button type="button" style="background: #93ECFF; color:white;" id="botonComentar" class="btn btn-xs mt-2 form-control">Comentar <i class="far fa-comment"></i></button>
+                                                        <button type="button" style="background: #93ECFF; color:white;" class="btn btn-xs mt-2 form-control botonComentar">Comentar <i class="far fa-comment"></i></button>
                                                     </p>
                                                 </form>
                                                 <!-- Aqui va la respuesta -->
