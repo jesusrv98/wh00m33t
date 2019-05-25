@@ -3,6 +3,9 @@
 <script>
     $(document).ready(function() {
         $(".botonAceptar").click(function() {
+            var boton = $(this);
+            var formularioCancelar = boton.parent().parent().find(".form-cancelar");
+            var formularioBloquear = boton.parent().parent().find(".form-bloquear");
             var idNuevoAmigo = $(this).val();
             var idSolicitud = $(this).attr("id");
             var parametros = {
@@ -18,14 +21,15 @@
                 async: true,
                 success: function(msg) {
                     if (msg == 'ok') {
-                        alert("HEY BIEN");
-                        
+                        boton.attr("disabled","true");
+                        boton.find("i").removeClass("fa-user-plus");
+                        boton.find("i").addClass("fa-user-check");
+                        boton.find("span").text("¡Ya sois amigos!");
+                        formularioBloquear.css("display","none");
+                        formularioCancelar.css("display","none");
                     } else {
                         alert(msg);
                     }
-                },
-                error: function() {
-                    alert("HOLA");
                 }
             });
         });
@@ -59,17 +63,17 @@
                     <div class="card-body">
                         <h3 class="card-title font-weight-bold" style="color:#42cfb3;"><?php echo $solicitud['nombre'] . " " . $solicitud['apellidos'] ?></h3>
                         <div class="d-flex justify-content-end align-items-center">
-                            <form method='post' class='form-inline my-2 my-md-0 mr-1'>
+                            <form method='post' class='form-inline my-2 my-md-0 mr-1 form-aceptar'>
                                 <button type='button' value='<?= $solicitud['id']?>' id="<?= $solicitud['idSolicitud'] ?> '" class='btn btn-sm btn-success botonAceptar'>
                                     <i  class='fas fa-user-plus'></i> <span class="textoCambiarAceptar">Aceptar</span>
                                 </button>
                             </form>
-                            <form method='post' class='form-inline my-2 my-md-0 mr-1'>
+                            <form method='post' class='form-inline my-2 my-md-0 mr-1 form-cancelar'>
                                 <button type='button' value='<?= $solicitud['id'] ?>' class='btn btn-sm btn-danger botonCancelar'>
                                     <i  class='fas fa-user-times'></i> <span class="textoCambiarCancelar">Cancelar</span>
                                 </button>
                             </form>
-                            <form method="post" class="form-inline my-2 my-md-0">
+                            <form method="post" class="form-inline my-2 my-md-0 form-bloquear">
                                 <button type="button" class="btn btn-sm botonBloquear" value='<?= $solicitud['id'] ?>' style="background: lightgrey" title="Bloquear usuario">
                                     <i class="fas fa-ban text-white"></i> <span class="text-white textoCambiarBloquear">Bloquear</span>
                                 </button>

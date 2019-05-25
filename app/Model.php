@@ -42,7 +42,7 @@ class Model
     public function findNotificaciones($idUsuario)
     {
 
-        $sql = "select count(*) from notificaciones WHERE idUsuario =" . $idUsuario . " AND  vista = 0";
+        $sql = "select count(*) from notificaciones WHERE idUsuario =" . $idUsuario . " AND vista = 0 AND id_fkTipo NOT IN (SELECT idUsuario FROM comentarios WHERE id_usuario = $idUsuario )";
 
         $result = mysqli_query($this->conexion, $sql);
 
@@ -293,7 +293,7 @@ class Model
     //Buscar comentarios de publicacion
     public function findComentarioByIdEspacio($idEspacio)
     {
-        $sql = "SELECT c.*, u.* FROM (comentarios c JOIN estados e ON c.id_espacioComentado = e.idEstado) JOIN usuarios u on c.id_usuario = u.id WHERE e.idEstado = $idEspacio";
+        $sql = "SELECT c.*, u.* FROM (comentarios c JOIN estados e ON c.id_espacioComentado = e.idEstado) JOIN usuarios u on c.id_usuario = u.id WHERE e.idEstado = $idEspacio ORDER BY c.fecha_comentario ASC";
         $result = mysqli_query($this->conexion, $sql);
 
         $comentarios = array();
