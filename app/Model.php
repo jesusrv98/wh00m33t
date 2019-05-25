@@ -41,7 +41,8 @@ class Model
 
     public function findNotificaciones($idUsuario)
     {
-        $sql = "select count(*) from notificaciones WHERE idUsuario =" . $idUsuario . "";
+
+        $sql = "select count(*) from notificaciones WHERE idUsuario =" . $idUsuario . " AND  vista = 0";
 
         $result = mysqli_query($this->conexion, $sql);
 
@@ -69,23 +70,22 @@ class Model
         return $mensajesPV;
     }
 
-    public function findCountPeticionesById($idUsuario)
-    {
-        $sql = "select count(*) from notificaciones WHERE idUsuario =" . $idUsuario . " and tipo ='peticionAmistad' and vista = 0 ";
-
+    public function actualizarSolicitudAmistad($idSolicitud) {
+        $idSolicitud = (int)$idSolicitud;
+        $sql = "UPDATE `solicitudes` SET `estadoSolicitud`= 1 WHERE `idSolicitud` = $idSolicitud";
         $result = mysqli_query($this->conexion, $sql);
-
-        $peticiones = array();
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $peticiones[] = $row;
-        }
-
-        return $peticiones;
     }
 
+    public function actualizarNotificaciones($idEspacio, $tipo, $usuario) {
+        $tipo = htmlspecialchars($tipo);
+        $sql = "UPDATE notificaciones SET `vista` = 1 WHERE `idUsuario`= $usuario AND `tipo` = '$tipo' AND `id_fkTipo`=$idEspacio ";
+        $result = mysqli_query($this->conexion, $sql);
+    }
+
+
     public function insertarNotificacionByTipo($id_fkTipo, $tipo, $idUsuario)
-    {
+    {   
+        $tipo = htmlspecialchars($tipo);
         $sql="INSERT INTO `notificaciones` (`id`, `id_fkTipo`, `tipo`, `vista`, `idUsuario`) VALUES (NULL, $id_fkTipo, '$tipo', '0', $idUsuario);";
         $result = mysqli_query($this->conexion, $sql);
     }
@@ -165,24 +165,116 @@ class Model
         $result = mysqli_query($this->conexion, $sql);
     }
 
+    public function insertarSolicitudAmistad($idSolicitante, $idSolicitado, $tipo)
+    {
+        $sql = "INSERT INTO `solicitudes`(`idSolicitud`, `idSolicitante`, `idSolicitado`, `estadoSolicitud`) VALUES (null, $idSolicitante, $idSolicitado , '$tipo')";
+        $result = mysqli_query($this->conexion, $sql);
+    }
+
+    public function findSolicitudesAmistad($idUsuario)
+    {
+        $sql = "SELECT u.*, po.*, pr.*, s.* FROM ((usuarios u JOIN solicitudes s ON s.idSolicitante = u.id) JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia WHERE s.idSolicitado = $idUsuario AND s.estadoSolicitud = 0";
+        $result = mysqli_query($this->conexion, $sql);
+
+        $solicitudes = array();
+
+        while ($row =mysqli_fetch_assoc($result)) {
+            $solicitudes[] = $row;
+        }
+
+        return $solicitudes;
+    }
+
+    public function findCountPeticionesById($idUsuario)
+    {
+        $sql = "select count(*) from notificaciones WHERE idUsuario =" . $idUsuario . " and tipo ='peticionAmistad' and vista = 0 ";
+
+        $result = mysqli_query($this->conexion, $sql);
+
+        $peticiones = array();
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $peticiones[] = $row;
+        }
+
+        return $peticiones;
+    }
 
     public function findEstadosAmigos($idUsuario)
     {
         // $sql = "select e.*, u.* from estadose join usuarios u on e.idUsuario = u.id WHERE e.idUsuario IN (SELECT amigo FROM es_amigo WHERE amigo_fk_a IN (SELECT id FROM usuarios WHERE correo = 'admin@whomeet.es'))";
-        $sql = "SELECT e.*, u.* FROM estados e JOIN usuarios u ON e.idUsuario = u.id WHERE e.idUsuario in ( SELECT amigo FROM es_amigo WHERE amigo_fk_a IN (SELECT id FROM usuarios WHERE correo = \"$idUsuario\")) ORDER BY e.fecha DESC";
+        $sql = "SELECT e.*, u.* FROM estados e JOIN usuarios u ON e.idUsuario = u.id WHERE e.idUsuario in ( SELECT amigo_fk_a FROM es_amigo WHERE amigo_fk_a IN (SELECT id FROM usuarios WHERE correo = '$idUsuario' ))";
         $result = mysqli_query($this->conexion, $sql);
 
-        $estados = array();
+        return $result;
+    }
 
-        while ($row = mysqli_fetch_assoc($result)) {
-            $estados[] = $row;
+    public function agregarAmigo($idSolicitante, $idSolicitado) {
+        $sql = "INSERT INTO `es_amigo` (`idamigo`, `amigo_fk_a`, `amigo`, `tipo`, `bloqueado`) VALUES (NULL, $idSolicitante, $idSolicitado, 'Amigos', '0')";
+        $result = mysqli_query($this->conexion, $sql);
+    }
+
+    public function findAllEstados()
+    {
+        $sql = "SELECT * FROM estados";
+        $result = mysqli_query($this->conexion, $sql);
+
+        return $result;
+    }
+
+    public function tieneSolicitud($idSolicitante, $idSolicitado)
+    {
+        $sql = "SELECT * FROM `solicitudes` WHERE idSolicitante = $idSolicitante AND idSolicitado = $idSolicitado and estadoSolicitud = 0";
+        $result = mysqli_query($this->conexion, $sql);
+
+        $tieneSolicitud = false;
+
+        if($result) {
+            $numeroFilas = mysqli_num_rows($result);
+            if($numeroFilas == 1) {
+                $tieneSolicitud = true;
+            }
         }
+        return $tieneSolicitud;
+    }
 
-        return $estados;
+    public function tieneSolicitudPorAceptar($idSolicitante, $idSolicitado)
+    {
+        $sql = "SELECT * FROM `solicitudes` WHERE idSolicitante = $idSolicitante AND idSolicitado = $idSolicitado and estadoSolicitud = 0";
+        $result = mysqli_query($this->conexion, $sql);
+
+        $tieneSolicitud = false;
+
+        if($result) {
+            $numeroFilas = mysqli_num_rows($result);
+            if($numeroFilas == 1) {
+                $tieneSolicitud = true;
+            }
+        }
+        return $tieneSolicitud;
+    }
+
+    public function borrarAmigo($idUsuario1, $idUsuario2) {
+        $sql = "DELETE FROM es_amigo WHERE (`amigo` = $idUsuario1 AND `amigo_fk_a` = $idUsuario2) OR (`amigo` = $idUsuario2 AND `amigo_fk_a` = $idUsuario1)";
+
+        $result = mysqli_query($this->conexion, $sql);
+
+        return $result;
+    }
+
+    public function findEstadosAmigosPaginacion($idUsuario, $empezar_desde, $cantidad_resultados_por_pagina)
+    {
+        // $sql = "select e.*, u.* from estadose join usuarios u on e.idUsuario = u.id WHERE e.idUsuario IN (SELECT amigo FROM es_amigo WHERE amigo_fk_a IN (SELECT id FROM usuarios WHERE correo = 'admin@whomeet.es'))";
+        $sql = "SELECT e.*, u.* FROM estados e JOIN usuarios u ON e.idUsuario = u.id WHERE e.idUsuario in ( SELECT amigo FROM es_amigo WHERE amigo_fk_a IN (SELECT id FROM usuarios WHERE id = '$idUsuario' ))  ORDER BY e.fecha DESC LIMIT $empezar_desde, $cantidad_resultados_por_pagina";
+        $result = mysqli_query($this->conexion, $sql);
+        
+        return $result;
     }
 
     public function findIdUsuario($correo)
     {
+
+        $correo = htmlspecialchars($correo);
 
         $sql = "select id from usuarios WHERE correo =" . $correo;
 
@@ -215,6 +307,7 @@ class Model
 
     public function insertarComentarioByIdEspacio($idUsuario, $idEspacio, $textoComentario, $fechaActual)
     {   
+        $textoComentario = htmlspecialchars($textoComentario);
         $sql = "INSERT INTO comentarios (idComentario, id_espacioComentado, id_usuario, textoComentario, fecha_comentario) VALUES (NULL, $idEspacio, $idUsuario, '$textoComentario', '$fechaActual')";
         $result = mysqli_query($this->conexion, $sql);
     }
@@ -237,14 +330,15 @@ class Model
     }
 
     public function insertarEstado($idUsuario, $fecha)
-    {
-        $sql = "INSERT INTO `estados`(`idUsuario`,`fecha`) VALUES ($idUsuario, $fecha) ";
+    {   
+        $sql = "INSERT INTO `estados`(`idEstado`, `estadoCuerpo`, `fecha`, `idUsuario`) VALUES (NULL,'¡Hola, estoy usando WhoMeet por primera vez!', '$fecha', $idUsuario)";
         $result = mysqli_query($this->conexion, $sql);
     }
 
     public function findUsuariosByNombre($nombre)
-    {           
-        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.idprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%".$nombre."%' AND u.id != ".implode(array_column($_SESSION['usuarioconectado'], "id"))." order by u.nombre ASC";
+    {   
+        $nombre = htmlspecialchars($nombre);
+        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%".$nombre."%' AND u.id != ".implode(array_column($_SESSION['usuarioconectado'], "id"))." order by u.nombre ASC";
 
         $result = mysqli_query($this->conexion, $sql);
 
@@ -258,7 +352,8 @@ class Model
 
     public function countfindUsuariosByNombre($nombre)
     {           
-        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.idprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%".$nombre."%' AND u.id != ".implode(array_column($_SESSION['usuarioconectado'], "id"))." order by u.nombre ASC";
+        $nombre = htmlspecialchars($nombre);
+        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%".$nombre."%' AND u.id != ".implode(array_column($_SESSION['usuarioconectado'], "id"))." order by u.nombre ASC";
 
         $result = mysqli_query($this->conexion, $sql);
 
@@ -269,7 +364,7 @@ class Model
 
     public function findUsuariosConectado()
     {           
-        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.idprovincia = pr.idprovincia WHERE u.id != ".implode(array_column($_SESSION['usuarioconectado'], "id"))." AND u.estado = 'Online' order by u.nombre ASC";
+        $sql = "SELECT DISTINCT(u.id),u.*  FROM usuarios u JOIN es_amigo am ON u.id = am.amigo_fk_a WHERE u.id != ".implode(array_column($_SESSION['usuarioconectado'], "id"))." AND u.estado = 'Online' AND u.id IN(SELECT amigo FROM es_amigo WHERE amigo_fk_a = ".implode(array_column($_SESSION['usuarioconectado'], "id")).") order by u.nombre ASC";
 
         $result = mysqli_query($this->conexion, $sql);
 
@@ -283,7 +378,7 @@ class Model
 
     public function countfindUsuariosConectado()
     {           
-        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.idprovincia = pr.idprovincia WHERE u.id != ".implode(array_column($_SESSION['usuarioconectado'], "id"))." AND u.estado = 'Online' order by u.nombre ASC";
+        $sql = "SELECT DISTINCT(u.id),u.*  FROM usuarios u JOIN es_amigo am ON u.id = am.amigo_fk_a WHERE u.id != ".implode(array_column($_SESSION['usuarioconectado'], "id"))." AND u.estado = 'Online' AND u.id IN(SELECT amigo FROM es_amigo WHERE amigo_fk_a = ".implode(array_column($_SESSION['usuarioconectado'], "id")).") ORDER BY u.nombre ASC";
 
         $result = mysqli_query($this->conexion, $sql);
 
@@ -302,6 +397,7 @@ class Model
 
     public function insertarEstadoNuevo($estadoNuevo, $fechaActual, $idUsuario)
     {
+        $estadoNuevo = htmlspecialchars($estadoNuevo);
         $sql = "INSERT INTO estados (estadoCuerpo, fecha, idUsuario) VALUES ('$estadoNuevo', '$fechaActual', $idUsuario) ";
         $result = mysqli_query($this->conexion, $sql);
     }
@@ -322,7 +418,7 @@ class Model
 
     public function listaPueblos($idprovincia)
     {
-        $sql = "select * from poblacion where idprovincia =" . $idprovincia . " order by poblacion ASC";
+        $sql = "select * from poblacion where codprovincia =" . $idprovincia . " order by poblacion ASC";
 
         $result = mysqli_query($this->conexion, $sql);
 
@@ -336,6 +432,8 @@ class Model
 
     public function verificar($variable, $variable2)
     {
+        $variable = htmlspecialchars($variable);
+        $variable2 = htmlspecialchars($variable2);
         $sql = "select pass from usuarios where correo LIKE '$variable2'";
         $result = mysqli_query($this->conexion, $sql);
         $passwordbd = mysqli_fetch_row($result);
@@ -344,6 +442,7 @@ class Model
 
     public function encriptar($variable)
     {
+        $variable = htmlspecialchars($variable);
         $hashed_password = password_hash($variable, PASSWORD_DEFAULT);
         return $hashed_password;
     }
@@ -356,128 +455,8 @@ class Model
         return $pueblo;
     }
 
-
-
-    public function eliminarAlimento($id)
-    {
-        $sql = "DELETE FROM alimentos WHERE `id` = '$id'";
-
-        $result = mysqli_query($this->conexion, $sql);
-
-        return $result;
-    }
-    public function editarAlimento($id, $alimento, $energia, $proteina, $hidratocarbono, $fibra, $grasa)
-    {
-        $sql = "UPDATE alimentos SET `nombre` = '$alimento', `energia` = '$energia', `proteina` = '$proteina', `hidratocarbono` = '$hidratocarbono', `fibra` = '$fibra', `grasatotal` = '$grasa' WHERE `id` = '$id'";
-
-        $result = mysqli_query($this->conexion, $sql);
-
-        return $result;
-    }
-
-    public function buscarAlimentosPorNombre($nombre)
-    {
-        $nombre = htmlspecialchars($nombre);
-
-        $sql = "select * from alimentos where nombre like '" . $nombre . "' order by energia desc";
-
-        $result = mysqli_query($this->conexion, $sql);
-
-        $alimentos = array();
-        while ($row = mysqli_fetch_assoc($result)) {
-            $alimentos[] = $row;
-        }
-
-        return $alimentos;
-    }
-
-    public function buscarAlimentosPorEnergia($energia)
-    {
-        $energia = htmlspecialchars($energia);
-
-        $sql = "select * from alimentos where energia=" . $energia . " order by energia desc";
-
-        $result = mysqli_query($this->conexion, $sql);
-
-        $alimentos = array();
-        while ($row = mysqli_fetch_assoc($result)) {
-            $alimentos[] = $row;
-        }
-
-        return $alimentos;
-    }
-    public function buscarAlimentosCombinada($energia, $nombre)
-    {
-        $energia = htmlspecialchars($energia);
-        $nombre = htmlspecialchars($nombre);
-        $sql = "select * from alimentos where energia=" . $energia . " and nombre like '" . $nombre . "' order by nombre desc";
-
-        $result = mysqli_query($this->conexion, $sql);
-
-        $alimentos = array();
-        while ($row = mysqli_fetch_assoc($result)) {
-            $alimentos[] = $row;
-        }
-
-        return $alimentos;
-    }
-
-
-
-    // LOGIN
-    public function buscarUsuario($email, $password)
-    {
-        $correo = htmlspecialchars($email);
-        $pass = htmlspecialchars($password);
-        $sql = "SELECT * FROM usuarios WHERE correo='" . $correo . "' AND pass ='" . $pass . "'";
-        $result = mysqli_query($this->conexion, $sql);
-        $usuario = array();
-        while ($row = mysqli_fetch_assoc($result)) {
-            $usuario[] = $row;
-        }
-        return $usuario;
-    }
-    // FIN LOGIN
-
-
-
-    public function dameAlimento($id)
-    {
-        $id = htmlspecialchars($id);
-
-        $sql = "select * from alimentos where id=" . $id;
-
-        $result = mysqli_query($this->conexion, $sql);
-
-        $alimentos = array();
-        $row = mysqli_fetch_assoc($result);
-
-        return $row;
-    }
-
-    public function insertarAlimento($n, $e, $p, $hc, $f, $g)
-    {
-        $n = htmlspecialchars($n);
-        $e = htmlspecialchars($e);
-        $p = htmlspecialchars($p);
-        $hc = htmlspecialchars($hc);
-        $f = htmlspecialchars($f);
-        $g = htmlspecialchars($g);
-
-        $sql = "insert into alimentos (nombre, energia, proteina, hidratocarbono, fibra, grasatotal) values ('$n','$e','$p','$hc','$f','$g')";
-
-        $result = mysqli_query($this->conexion, $sql);
-
-        return $result;
-    }
-
     public function validarDatos($n, $e, $p, $hc, $f, $g)
     {
-        return (is_string($n) &
-            is_numeric($e) &
-            is_numeric($p) &
-            is_numeric($hc) &
-            is_numeric($f) &
-            is_numeric($g));
+        return (is_string($n) & is_numeric($e) & is_numeric($p) & is_numeric($hc) & is_numeric($f) & is_numeric($g));
     }
 }

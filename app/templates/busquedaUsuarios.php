@@ -1,6 +1,73 @@
 <?php ob_start() ?>
  <script src="js/jqueryGoogle.js"></script>
+ <script>
+   $(document).ready( function() {
+           $('.botonSolicitud').click( function() {
+            var idSolicitante = "<?php echo implode(array_column($_SESSION['usuarioconectado'], 'id')) ?>";
+            var idSolicitado = $(this).val();
+            var botonPulsado = $(this);
+            var textoBoton= botonPulsado.find('span');
+            var iconoBoton = botonPulsado.find('i')
 
+            var parametros = {
+                'idSolicitante': idSolicitante,
+                'idSolicitado': idSolicitado,
+                'tipo': "peticionAmistad"
+            };
+            $.ajax({
+                data: parametros,
+                url: '../app/templates/includes/servletSolicitudAmistad.php',
+                type: 'post',
+                async: true,
+                success: function(msg) {
+                    if (msg == 'ok') {
+                        alert("Solicitud de amistad enviada");
+                        iconoBoton.removeClass('fa-user-plus');
+                        iconoBoton.addClass('fa-user-check');
+                        textoBoton.text('Solicitud de amistad enviada');
+                        botonPulsado.attr('disabled','true');
+
+                    } else {
+                        alert("No se pudo enviar la solicitud de amistad a la siguiente persona: "+msg);
+                    }
+                },
+                error: function() {
+                    alert("Ha ocurrido un error y no se puede agregar.");
+                }
+            });
+        });
+
+        $('.botonEliminar').click( function() {
+          if(confirm("¿Estás seguro de que quieres borrar tu amistad con el usuario seleccionado?")){
+            var idUsuario1 = "<?php echo implode(array_column($_SESSION['usuarioconectado'], 'id')) ?>";
+            var idUsuario2 = $(this).val();
+            var botonPulsado = $(this);
+
+            var parametros = {
+                'idUsuario1': idUsuario1,
+                'idUsuario2': idUsuario2,
+            };
+            $.ajax({
+                data: parametros,
+                url: '../app/templates/includes/servletEliminarAmigo.php',
+                type: 'post',
+                async: true,
+                success: function(msg) {
+                    if (msg == 'ok') {
+                        window.location.replace("http://localhost/proyectoGIT/wh00m33t/web/index.php?ctl=busqueda");
+
+                    } else {
+                        alert("No se pudo enviar la solicitud de amistad a la siguiente persona: "+msg);
+                    }
+                },
+                error: function() {
+                    alert("Ha ocurrido un error y no se puede agregar.");
+                }
+            });
+          }
+        });
+      });
+ </script>
 
  <div class="container-fluid">
    <div class="row">
@@ -14,7 +81,7 @@
          <div class="card mt-2">
            <div class="row no-gutters">
              <div class="col-5 col-sm-5 col-md-5 col-lg-1 col-xl-1 d-flex justify-content-center align-items-center">
-               <img src="images/<?php echo $amigo['fotoPerfil'] ?>" class="card-img p-2" style="width: 5rem;height:6rem" alt="Foto de perfil de <?php echo $amigo['correo'] ?>">
+               <img src="images/<?php echo $amigo['fotoPerfil'] ?>" class="card-img p-2" style="width: 6rem;height:6rem" alt="Foto de perfil de <?php echo $amigo['correo'] ?>">
              </div>
              <div class="col-7 col-sm-7 col-md-7 col-lg-11 col-xl-11">
                <div class="card-body">
@@ -27,11 +94,23 @@
 
                     $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
                     $esAmigo = $m->isAmigo($idUsuarioConectado, $idUsuarioBuscado);
-                    if ($esAmigo == false) {
+                    $tieneSolicitud = $m->tieneSolicitud($idUsuarioConectado, $idUsuarioBuscado);
+                    if ($esAmigo == false && $tieneSolicitud == false) {
                       echo "<form method='post' class='form-inline my-2 my-md-0 mr-1'>
-                              <button type='button' class='btn btn-sm btn-success'>
-                                <i class='fas fa-user-plus'></i>
-                                Enviar solicitud de amistad 
+                              <button type='button' value='".$amigo['id']."' class='btn btn-sm btn-success botonSolicitud'>
+                                <i  class='fas fa-user-plus'></i> <span>Enviar solicitud de amistad</span>
+                              </button>
+                            </form>";
+                    } elseif($tieneSolicitud == true) {
+                      echo "<form method='post' class='form-inline my-2 my-md-0 mr-1'>
+                              <button type='button' value='".$amigo['id']."' class='btn btn-sm btn-success' disabled='true'>
+                                <i class='fas fa-user-check'></i> <span>Solicitud de amistad enviada</span>
+                              </button>
+                            </form>";
+                    } else{
+                      echo "<form method='post' class='form-inline my-2 my-md-0 mr-1'>
+                              <button type='button' value='".$amigo['id']."' class='btn btn-sm btn-danger botonEliminar'>
+                                <i  class='fas fa-user-times'></i>
                               </button>
                             </form>";
                     }

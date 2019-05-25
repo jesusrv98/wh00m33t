@@ -16,7 +16,8 @@ $map = array(
     'signin' => array('controller' => 'Controller', 'action' => 'signin'),
     'logout' => array('controller' => 'Controller', 'action' => 'logout'),
     'login' => array('controller' => 'Controller', 'action' => 'login'),
-    'busqueda' => array('controller' => 'Controller', 'action' => 'busqueda')
+    'busqueda' => array('controller' => 'Controller', 'action' => 'busqueda'),
+    'solicitudes' => array('controller' => 'Controller', 'action' => 'solicitudesAmistad')
 );
 
 // Parseo de la ruta
