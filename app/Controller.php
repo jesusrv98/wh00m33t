@@ -282,6 +282,7 @@ class Controller
         $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
         $arrayUsuario = $m->buscarSoloUsuario($correo);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
+        $fotoPerfil = implode(array_column($arrayUsuario, "fotoPerfil"));
 
         $arrayCountComentariosEstados = $m->findCountComentariosEstadosById($idUsuario);
         $arrayComentariosEstados = $m->findPublicacionesConComentarioByCorreo($correo);
@@ -298,7 +299,8 @@ class Controller
             'nombre' => '',
             'nombreBusqueda' => '',
             'idUsuarioConectado' => $idUsuario,
-            'publicaciones' => $arrayComentariosEstados
+            'publicaciones' => $arrayComentariosEstados,
+            'fotoPerfil' => $fotoPerfil
         );
 
 
