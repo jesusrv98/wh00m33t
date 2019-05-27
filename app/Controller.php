@@ -283,9 +283,10 @@ class Controller
         $arrayUsuario = $m->buscarSoloUsuario($correo);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
 
-        $arrayPeticionesAmistad = $m->findCountPeticionesById($idUsuario);
-        $listaSolicitudes = $m->findSolicitudesAmistad($idUsuario);
-        $countPeticiones = implode(array_column($arrayPeticionesAmistad, "count(*)"));
+        $arrayCountComentariosEstados = $m->findCountComentariosEstadosById($idUsuario);
+        $arrayComentariosEstados = $m->findPublicacionesConComentarioByCorreo($correo);
+        $countComentariosEstados = implode(array_column($arrayCountComentariosEstados, "count(*)"));
+
 
         $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
         $countMensajesPV = implode(array_column($arrayMensajesPrivados, "count(*)"));
@@ -293,11 +294,11 @@ class Controller
 
         $params = array(
             'countMensajesPV' => $countMensajesPV,
-            'solicitudes' => $listaSolicitudes,
-            'countPeticiones' => $countPeticiones,
+            'countComentariosEstados' => $countComentariosEstados,
             'nombre' => '',
             'nombreBusqueda' => '',
-            'idUsuarioConectado' => $idUsuario
+            'idUsuarioConectado' => $idUsuario,
+            'publicaciones' => $arrayComentariosEstados
         );
 
 

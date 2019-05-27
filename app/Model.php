@@ -120,10 +120,6 @@ class Model
         return $comentarios;
     }
 
-    public function borrarSolicitud($idUsuario1, $idUsuario2) {
-
-    }
-
     public function actualizarFotoPerfil($idUsuario,$nombreFoto)
     {
         $sql = "UPDATE usuarios SET fotoPerfil='$nombreFoto' WHERE id=$idUsuario";
@@ -208,6 +204,20 @@ class Model
         }
 
         return $solicitudes;
+    }
+
+    public function findPublicacionesConComentarioByCorreo($correo)
+    {
+        $sql = "SELECT e.*, u.* FROM estados e JOIN usuarios u ON e.idUsuario = u.id WHERE e.idUsuario in ( SELECT amigo_fk_a FROM es_amigo WHERE amigo_fk_a IN (SELECT id FROM usuarios WHERE correo = '$correo' )) AND e.idEstado IN (SELECT id_fkTipo FROM notificaciones WHERE vista = 0)";
+        $result = mysqli_query($this->conexion, $sql);
+
+        $comentarios = array();
+
+        while ($row =mysqli_fetch_assoc($result)) {
+            $comentarios[] = $row;
+        }
+
+        return $comentarios;
     }
 
     public function findCountPeticionesById($idUsuario)
