@@ -12,16 +12,19 @@ class Controller
         $visitas = implode(array_column($arrayUsuario, "visitas"));
         $idUsuario = implode(array_column($arrayUsuario, "id"));
         $correoUsuario = implode(array_column($arrayUsuario, "correo"));
+        $fotoPerfil = implode(array_column($arrayUsuario, "fotoPerfil"));
 
         $arrayNotificaciones = $m->findNotificaciones($idUsuario);
         $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
         $arrayPeticionesAmistad = $m->findCountPeticionesById($idUsuario);
         $arrayComentarios = $m->findCountComentariosById($idUsuario);
+        $arrayComentariosEstados = $m->findCountComentariosEstadosById($idUsuario);
         $arrayComentariosFotos = $m->findCountComentariosFotosById($idUsuario);
         $countNotificaciones = implode(array_column($arrayNotificaciones, "count(*)"));
         $countMensajesPV = implode(array_column($arrayMensajesPrivados, "count(*)"));
         $countPeticiones = implode(array_column($arrayPeticionesAmistad, "count(*)"));
         $countComentarios = implode(array_column($arrayComentarios, "count(*)"));
+        $countComentariosEstados = implode(array_column($arrayComentariosEstados, "count(*)"));
         $countComentariosFotos = implode(array_column($arrayComentariosFotos, "count(*)"));
 
         $arrayEstado = $m->findEstadoById($idUsuario);
@@ -87,6 +90,38 @@ class Controller
         } else {
             $estadoActualFecha = null;
         }
+        $mensaje = null;
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+            $carpetaDestino = "images/";
+
+            # si hay algun archivo que subir
+            if (isset($_FILES["fotoSubir"]) && $_FILES["fotoSubir"]["name"][0]) {
+
+                # si es un formato de imagen
+                if ($_FILES["fotoSubir"]["type"][0] == "image/jpeg" || $_FILES["fotoSubir"]["type"][0] == "image/pjpeg" || $_FILES["fotoSubir"]["type"][0] == "image/gif" || $_FILES["fotoSubir"]["type"][0] == "image/png") {
+                    # si exsite la carpeta o se ha creado
+                    if (file_exists($carpetaDestino) || @mkdir($carpetaDestino)) {
+                        $origen = $_FILES["fotoSubir"]["tmp_name"][0];
+                        $destino = $carpetaDestino . $idUsuario . time() . $_FILES["fotoSubir"]["name"][0];
+                        if (@move_uploaded_file($origen, $destino)) {
+                            $imgh = $this->icreate($destino);
+                            $imgr = $this->simpleresize($imgh, 400, 400);
+                            $m->actualizarFotoPerfil($idUsuario, $idUsuario . time() . $_FILES["fotoSubir"]["name"][0]);
+                            $mensaje = "Foto cambiada correctamente";
+                        } else {
+                            $mensaje = "<br>No se ha podido mover el archivo: " . $_FILES["fotoSubir"]["name"][0];
+                        }
+                    } else {
+                        $mensaje = "<br>No se ha podido crear la carpeta: " . $carpetaDestino;
+                    }
+                } else {
+                    $mensaje = "<br>" . $_FILES["fotoSubir"]["name"][0] . " - NO es imagen jpg, png o gif";
+                }
+            } else {
+                $mensaje = "<br>No se ha subido ninguna imagen";
+            }
+        }
 
 
         $params = array(
@@ -95,6 +130,7 @@ class Controller
             'countMensajesPV' => $countMensajesPV,
             'countPeticiones' => $countPeticiones,
             'countComentarios' => $countComentarios,
+            'countComentariosEstados' => $countComentariosEstados,
             'countComentariosFotos' => $countComentariosFotos,
             'estadoActual' => $estadoActualTexto,
             'estadoActualFecha' => $estadoActualFecha,
@@ -103,13 +139,42 @@ class Controller
             'nuevoEstado' => '',
             'nombreBusqueda' => '',
             'countUsuariosConectados' => $countUsuariosConectado,
-            'listaUsuariosConectados' => $arrayUsuariosConectados
-
+            'listaUsuariosConectados' => $arrayUsuariosConectados,
+            'fotoPerfil' =>  $fotoPerfil,
+            'mensajeSubida' => $mensaje
         );
 
         require __DIR__ . '/templates/inicio.php';
     }
 
+    function icreate($filename)
+    {
+        $isize = getimagesize($filename);
+        if ($isize['mime'] == 'image/jpeg') {
+            return imagecreatefromjpeg($filename);
+        } elseif ($isize['mime'] == 'image/png') {
+            return imagecreatefrompng($filename);
+        } elseif ($isize['mime'] == 'image/gif') {
+            return imagecreatefromgif($filename);
+        } else {
+            return null;
+        }
+        /* Add as many formats as you can */
+    }
+
+    /**
+     * Simple image resample into new image
+     *
+     * @param $image Image resource
+     * @param $width
+     * @param $height
+     */
+    function simpleresize($image, $width, $height)
+    {
+        $new = imageCreateTrueColor($width, $height);
+        imagecopyresampled($new, $image, 0, 0, 0, 0, $width, $height, imagesx($image), imagesy($image));
+        return $new;
+    }
 
     public function busqueda()
     {
@@ -201,6 +266,43 @@ class Controller
 
 
         require __DIR__ . '/templates/solicitudesAmistad.php';
+    }
+
+    public function comentariosEstados()
+    {
+        $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $nombre = $_POST['nombreBusqueda'];
+        } else {
+            $nombre = "";
+        }
+
+
+        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
+        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $idUsuario = implode(array_column($arrayUsuario, "id"));
+
+        $arrayPeticionesAmistad = $m->findCountPeticionesById($idUsuario);
+        $listaSolicitudes = $m->findSolicitudesAmistad($idUsuario);
+        $countPeticiones = implode(array_column($arrayPeticionesAmistad, "count(*)"));
+
+        $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
+        $countMensajesPV = implode(array_column($arrayMensajesPrivados, "count(*)"));
+
+
+        $params = array(
+            'countMensajesPV' => $countMensajesPV,
+            'solicitudes' => $listaSolicitudes,
+            'countPeticiones' => $countPeticiones,
+            'nombre' => '',
+            'nombreBusqueda' => '',
+            'idUsuarioConectado' => $idUsuario
+        );
+
+
+
+        require __DIR__ . '/templates/comentariosEstados.php';
     }
 
     function formatearFecha($fechaEntrada)

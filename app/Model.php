@@ -70,9 +70,9 @@ class Model
         return $mensajesPV;
     }
 
-    public function actualizarSolicitudAmistad($idSolicitud) {
+    public function actualizarSolicitudAmistad($idSolicitud, $estado) {
         $idSolicitud = (int)$idSolicitud;
-        $sql = "UPDATE `solicitudes` SET `estadoSolicitud`= 1 WHERE `idSolicitud` = $idSolicitud";
+        $sql = "UPDATE `solicitudes` SET `estadoSolicitud`= $estado WHERE `idSolicitud` = $idSolicitud";
         $result = mysqli_query($this->conexion, $sql);
     }
 
@@ -103,6 +103,31 @@ class Model
         }
 
         return $comentarios;
+    }
+
+    public function findCountComentariosEstadosById($idUsuario)
+    {
+        $sql = "select count(*) from notificaciones WHERE idUsuario =" . $idUsuario . " and tipo ='comentarioEstado' and vista = 0 ";
+
+        $result = mysqli_query($this->conexion, $sql);
+
+        $comentarios = array();
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $comentarios[] = $row;
+        }
+
+        return $comentarios;
+    }
+
+    public function borrarSolicitud($idUsuario1, $idUsuario2) {
+
+    }
+
+    public function actualizarFotoPerfil($idUsuario,$nombreFoto)
+    {
+        $sql = "UPDATE usuarios SET fotoPerfil='$nombreFoto' WHERE id=$idUsuario";
+        $result = mysqli_query($this->conexion, $sql);
     }
 
     public function findCountComentariosFotosById($idUsuario)

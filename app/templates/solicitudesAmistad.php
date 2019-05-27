@@ -33,6 +33,37 @@
                 }
             });
         });
+        $(".botonCancelar").click(function() {
+            var boton = $(this);
+            var formularioAceptar = boton.parent().parent().find(".form-aceptar");
+            var formularioBloquear = boton.parent().parent().find(".form-bloquear");
+            var idNuevoAmigo = $(this).val();
+            var idSolicitud = $(this).attr("id");
+            var parametros = {
+                'tipo': "cancelar",
+                'idUsuario': <?php echo $params['idUsuarioConectado'] ?>,
+                'idNuevoAmigo': idNuevoAmigo,
+                'idSolicitud': idSolicitud
+            };
+            $.ajax({
+                data: parametros,
+                url: '../app/templates/includes/servletGestionSolicitudesAmistad.php',
+                type: 'post',
+                async: true,
+                success: function(msg) {
+                    if (msg == 'ok') {
+                        boton.attr("disabled","true");
+                        boton.find("i").removeClass("fa-user-plus");
+                        boton.find("i").addClass("fa-user-check");
+                        boton.find("span").text("Solicitud de amistad rechazada");
+                        formularioBloquear.css("display","none");
+                        formularioAceptar.css("display","none");
+                    } else {
+                        alert(msg);
+                    }
+                }
+            });
+        });
     });
 </script>
 
@@ -69,7 +100,7 @@
                                 </button>
                             </form>
                             <form method='post' class='form-inline my-2 my-md-0 mr-1 form-cancelar'>
-                                <button type='button' value='<?= $solicitud['id'] ?>' class='btn btn-sm btn-danger botonCancelar'>
+                                <button type='button' value='<?= $solicitud['id'] ?>' id="<?= $solicitud['idSolicitud'] ?>"  class='btn btn-sm btn-danger botonCancelar'>
                                     <i  class='fas fa-user-times'></i> <span class="textoCambiarCancelar">Cancelar</span>
                                 </button>
                             </form>

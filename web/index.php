@@ -1,5 +1,5 @@
 <?php
- // web/index.php
+// web/index.php
 
 // carga del modelo y los controladores
 require_once __DIR__ . '/../app/Config.php';
@@ -10,14 +10,14 @@ require_once __DIR__ . '/../app/Controller.php';
 $map = array(
     'inicio' => array('controller' => 'Controller', 'action' => 'inicio'),
     'perfil' => array('controller' => 'Controller', 'action' => 'perfil'),
-    'insertar' => array('controller' => 'Controller', 'action' => 'mensajes'),
+    'mensajes' => array('controller' => 'Controller', 'action' => 'mensajes'),
     'buscar' => array('controller' => 'Controller', 'action' => 'configuracion'),
     'contacto' => array('controller' => 'Controller', 'action' => 'contacto'),
-    'signin' => array('controller' => 'Controller', 'action' => 'signin'),
     'logout' => array('controller' => 'Controller', 'action' => 'logout'),
     'login' => array('controller' => 'Controller', 'action' => 'login'),
     'busqueda' => array('controller' => 'Controller', 'action' => 'busqueda'),
-    'solicitudes' => array('controller' => 'Controller', 'action' => 'solicitudesAmistad')
+    'solicitudes' => array('controller' => 'Controller', 'action' => 'solicitudesAmistad'),
+    'comentariosEstados' => array('controller' => 'Controller', 'action' => 'comentariosEstados')
 );
 
 // Parseo de la ruta
@@ -49,6 +49,5 @@ if (method_exists($controlador['controller'], $controlador['action'])) {
     echo "<nav class='navbar navbar-expand-md sticky-top' style='background: linear-gradient(#93ECFF,white); color: #027F6D'>
             <a class='navbar-brand' style='color:#027F6D' href='index.php?ctl=inicio'><img src='images/logo.png' width='100' height='100' class='d-inline-block align-top' alt='Logo' /></a>
         </nav>";
-    echo "<html><body><h1 class='display-4 text-center' style='color: #027F6D'>Error 404: El controlador <i> ". $controlador['controller'] . "->"  . $controlador['action'] . "</i> no existe</h1></body></html>";
+    echo "<html><body><h1 class='display-4 text-center' style='color: #027F6D'>Error 404: El controlador <i> " . $controlador['controller'] . "->"  . $controlador['action'] . "</i> no existe</h1></body></html>";
 }
- 
