@@ -79,19 +79,38 @@ if (!isset($_SESSION['usuarioconectado'])) {
                     </a>
                 </li>
                 <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="fondodelmenu" style="color:#33cbad" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="far fa-bell"></i>
+                        Gestión del perfil
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="dropdown05">
+                        <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=solicitudes'><i class="fas fa-user"></i> Solicitudes</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="fondodelmenu" style="color:#33cbad" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cog"></i>
-                        <!-- MOSTRAR DATOS DEL ARRAY DE SESIÓN -->
                         Configuración
-                        <!-- ** mostré los valores con implode mas la función array_column que trae la columna del array que le pases ** -->
                     </a>
                     <div class="dropdown-menu" aria-labelledby="dropdown05">
                         <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=configuracion'><i class="fas fa-wrench"></i> Configuración</a>
-                        <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=configuracion'><i class="fas fa-user"></i> Gestión perfil</a>
                         <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=contacto'><i class="fas fa-phone"></i> Contacto</a>
                         <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=logout'><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
                     </div>
                 </li>
             </ul>
+            <?php if(implode(array_column($_SESSION['usuarioconectado'], "id")) == 30) : ?>
+                <ul class="navbar-nav d-flex justify-content-end">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="fondodelmenu" style="color:#33cbad" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-key"></i>
+                            Administración
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdown05">
+                            <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=solicitudes'><i class="fas fa-users-cog"></i> Gestión de usuarios</a>
+                            <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=solicitudes'><i class="fas fa-trash-alt"></i> Gestión de contenido</a>
+                            <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=solicitudes'><i class="fas fa-chart-bar"></i> Estadísticas</a>
+                        </div>
+                    </li>
+                </ul>
+                <?php endif; ?>
             <form action="index.php?ctl=busqueda" method="post" class="form-inline my-2 my-md-0">
                 <input class="form-control form-control-sm" autocomplete="off" size="25" type="text" name="nombreBusqueda" value="<?php $params['nombreBusqueda'] ?>" placeholder="Buscar usuarios..." />
             </form>

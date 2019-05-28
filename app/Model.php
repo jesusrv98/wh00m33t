@@ -238,7 +238,7 @@ class Model
     public function findEstadosAmigos($idUsuario)
     {
         // $sql = "select e.*, u.* from estadose join usuarios u on e.idUsuario = u.id WHERE e.idUsuario IN (SELECT amigo FROM es_amigo WHERE amigo_fk_a IN (SELECT id FROM usuarios WHERE correo = 'admin@whomeet.es'))";
-        $sql = "SELECT e.*, u.* FROM estados e JOIN usuarios u ON e.idUsuario = u.id WHERE e.idUsuario in ( SELECT amigo_fk_a FROM es_amigo WHERE amigo_fk_a IN (SELECT id FROM usuarios WHERE correo = '$idUsuario' ))";
+        $sql = "SELECT e.*, u.* FROM estados e JOIN usuarios u ON e.idUsuario = u.id WHERE e.idUsuario in ( SELECT amigo FROM es_amigo WHERE amigo_fk_a IN (SELECT id FROM usuarios WHERE correo = '$idUsuario' ) AND bloqueado = 0)";
         $result = mysqli_query($this->conexion, $sql);
 
         return $result;
@@ -300,7 +300,7 @@ class Model
     public function findEstadosAmigosPaginacion($idUsuario, $empezar_desde, $cantidad_resultados_por_pagina)
     {
         // $sql = "select e.*, u.* from estadose join usuarios u on e.idUsuario = u.id WHERE e.idUsuario IN (SELECT amigo FROM es_amigo WHERE amigo_fk_a IN (SELECT id FROM usuarios WHERE correo = 'admin@whomeet.es'))";
-        $sql = "SELECT e.*, u.* FROM estados e JOIN usuarios u ON e.idUsuario = u.id WHERE e.idUsuario in ( SELECT amigo FROM es_amigo WHERE amigo_fk_a IN (SELECT id FROM usuarios WHERE id = '$idUsuario' ))  ORDER BY e.fecha DESC LIMIT $empezar_desde, $cantidad_resultados_por_pagina";
+        $sql = "SELECT e.*, u.* FROM estados e JOIN usuarios u ON e.idUsuario = u.id WHERE e.idUsuario in ( SELECT amigo FROM es_amigo WHERE amigo_fk_a IN (SELECT id FROM usuarios WHERE id = '$idUsuario' ) AND bloqueado = 0) ORDER BY e.fecha DESC LIMIT $empezar_desde, $cantidad_resultados_por_pagina";
         $result = mysqli_query($this->conexion, $sql);
         
         return $result;
