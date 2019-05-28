@@ -21,7 +21,6 @@
                 async: true,
                 success: function(msg) {
                     if (msg == 'ok') {
-                        alert("Solicitud de amistad enviada");
                         iconoBoton.removeClass('fa-user-plus');
                         iconoBoton.addClass('fa-user-check');
                         textoBoton.text('Solicitud de amistad enviada');

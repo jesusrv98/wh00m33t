@@ -97,6 +97,28 @@
                 }
             }
         });
+        $(".botonVerComentario").click( function() {
+            var boton = $(this);
+            var idEspacio = $(this).attr("id");
+            var idUsuarioConectado = <?= $params['idUsuarioConectado'] ?>;
+            
+            var parametros = {
+                'idEspacio': idEspacio,
+                'idUsuario': idUsuarioConectado,
+                'tipo': "comentarioEstado"
+            };
+            $.ajax({
+                data: parametros,
+                url: '../app/templates/includes/servletActualizarNotificaciones.php',
+                type: 'post',
+                async: true,
+                error: function() {
+                    alert("Ha ocurrido un error y no se puede actualizar.");
+
+                }
+
+            });
+        });
     });
 </script>
 <div class="container-fluid">
@@ -131,7 +153,7 @@
                             <p><?= $publicacion['estadoCuerpo'] ?></p>
                             <!-- Botón de responder -->
                             <p class="d-flex justify-content-between align-items-center">
-                                <button class="btn btn-xs mr-3" style="background: #33cbad; color:white;" type="button" data-toggle="collapse" data-target="#collapseForm<?= $publicacion['idEstado'] ?>" aria-expanded="false" aria-controls="collapseForm">Ver comentarios</button>
+                                <button class="btn btn-xs mr-3 botonVerComentario" style="background: #33cbad; color:white;" type="button" data-toggle="collapse" data-target="#collapseForm<?= $publicacion['idEstado'] ?>" id="<?= $publicacion['idEstado'] ?>" aria-expanded="false" aria-controls="collapseForm">Ver comentarios</button>
                                 <small class="text-muted">
                                     <?= $c->formatearFecha($publicacion['fecha']);
                                     ?>

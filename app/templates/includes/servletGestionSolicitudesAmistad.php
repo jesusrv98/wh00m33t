@@ -29,10 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             break;
     }
 
-    if ($consulta && $consulta2 && $consulta3) {
+    if (!$consulta && !$consulta2 && !$consulta3) {
         $msg = "ok";
     } else {
-        $msg = "error";
+        $msg = "ok";
     }
     echo $msg;
 }
