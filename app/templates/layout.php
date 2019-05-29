@@ -84,6 +84,7 @@ if (!isset($_SESSION['usuarioconectado'])) {
                     </a>
                     <div class="dropdown-menu" aria-labelledby="dropdown05">
                         <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=solicitudes'><i class="fas fa-user"></i> Solicitudes</a>
+                        <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=gestionAmigos'><i class="fas fa-users"></i> Amigos</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">

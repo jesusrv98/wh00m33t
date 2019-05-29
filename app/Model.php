@@ -235,6 +235,42 @@ class Model
         return $peticiones;
     }
 
+    
+    public function findAmigosByIdUsuarioPaginacion($idUsuario, $empezar_desde, $cantidad_resultados_por_pagina)
+    {
+        $sql = "SELECT * FROM (usuarios u JOIN poblacion p ON u.codpueblo = p.idpoblacion) JOIN provincia pr ON pr.idprovincia = p.codprovincia  WHERE id IN (SELECT amigo FROM es_amigo WHERE amigo_fk_a = $idUsuario AND amigo != $idUsuario) LIMIT $empezar_desde, $cantidad_resultados_por_pagina";
+        $result = mysqli_query($this->conexion, $sql);
+
+        $amigo = array();
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $amigo[] = $row;
+        }
+
+        return $amigo;
+    }
+    public function findAmigosByIdUsuario($idUsuario)
+    {
+        $sql = "SELECT * FROM (usuarios u JOIN poblacion p ON u.codpueblo = p.idpoblacion) JOIN provincia pr ON pr.idprovincia = p.codprovincia  WHERE id IN (SELECT amigo FROM es_amigo WHERE amigo_fk_a = $idUsuario AND amigo != $idUsuario)";
+        $result = mysqli_query($this->conexion, $sql);
+
+        return $result;
+    }
+
+    public function countAmigosByIdUsuario($idUsuario)
+    {
+        $sql = "SELECT count(*) FROM usuarios WHERE id IN (SELECT amigo FROM es_amigo WHERE amigo_fk_a = $idUsuario AND amigo != $idUsuario)";
+        $result = mysqli_query($this->conexion, $sql);
+
+        $amigo = array();
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $amigo[] = $row;
+        }
+
+        return $amigo;
+    }
+
     public function findEstadosAmigos($idUsuario)
     {
         // $sql = "select e.*, u.* from estadose join usuarios u on e.idUsuario = u.id WHERE e.idUsuario IN (SELECT amigo FROM es_amigo WHERE amigo_fk_a IN (SELECT id FROM usuarios WHERE correo = 'admin@whomeet.es'))";
