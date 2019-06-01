@@ -1,5 +1,11 @@
 <?php ob_start() ?>
  <script src="js/jqueryGoogle.js"></script>
+<style>
+  .page-item.active .page-link{
+    background: #33cbad;
+    border-color: inherit;
+  }
+</style>
  <script>
    $(document).ready( function() {
            $('.botonSolicitud').click( function() {
@@ -130,8 +136,24 @@
            </div>
          </div>
        <?php endforeach; ?>
-
      </div>
+     <div class="col-12 d-flex justify-content-center">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center mt-2">
+                    <?php
+                    for ($i = 1; $i <= $params['totalPaginas']; $i++) :
+                        if($i<=10){
+                          if($params['page'] == $i){
+                            echo "<li class='page-item active'><a class='page-link' href='index.php?ctl=busqueda&pagina=" . $i . "'>" . $i . "</a></li>";
+                          }else{
+                            echo "<li class='page-item'><a class='page-link' style='color: #33cbad;' href='index.php?ctl=busqueda&pagina=" . $i . "'>" . $i . "</a></li>";
+                          }
+                        }
+                    endfor;
+                    ?>
+                </ul>
+            </nav>
+        </div>
    </div>
  </div>
  <?php $contenido = ob_get_clean() ?>

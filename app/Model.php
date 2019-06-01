@@ -406,10 +406,10 @@ class Model
         $result = mysqli_query($this->conexion, $sql);
     }
 
-    public function findUsuariosByNombre($nombre)
+    public function findUsuariosByNombre($nombre,$empezar_desde, $cantidad_resultados_por_pagina)
     {   
         $nombre = htmlspecialchars($nombre);
-        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%".$nombre."%' AND u.id != ".implode(array_column($_SESSION['usuarioconectado'], "id"))." order by u.nombre ASC";
+        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%".$nombre."%' AND u.id != ".implode(array_column($_SESSION['usuarioconectado'], "id"))." order by u.nombre ASC  LIMIT $empezar_desde, $cantidad_resultados_por_pagina";
 
         $result = mysqli_query($this->conexion, $sql);
 
@@ -419,6 +419,14 @@ class Model
         }
 
         return $usuarios;
+    }
+    public function findUsuariosNombre($nombre)
+    {   
+        $nombre = htmlspecialchars($nombre);
+        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%".$nombre."%' AND u.id != ".implode(array_column($_SESSION['usuarioconectado'], "id"))." order by u.nombre ASC";
+
+        $result = mysqli_query($this->conexion, $sql);
+        return $result;
     }
 
     public function countfindUsuariosByNombre($nombre)
