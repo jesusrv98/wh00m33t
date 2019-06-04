@@ -2,38 +2,15 @@
 ob_start();
 $c = new Controller();
 $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
-error_reporting(E_ALL ^ E_NOTICE);
-//Cantidad de resultados por página (debe ser INT, no string/varchar)
-$cantidad_resultados_por_pagina = 10;
-
-//Comprueba si está seteado el GET de HTTP
-if (isset($_GET["pagina"])) {
-    //Si el GET de HTTP SÍ es una string / cadena, procede
-    if (is_string($_GET["pagina"])) {
-        //Si la string es numérica, define la variable 'pagina'
-        if (is_numeric($_GET["pagina"])) {
-            //Si la petición desde la paginación es la página uno
-            //en lugar de ir a 'index.php?pagina=1' se iría directamente a 'index.php'
-            if ($_GET["pagina"] == 1) {
-                header("Location: index.php?ctl=inicio");
-                die();
-            } else { //Si la petición desde la paginación no es para ir a la pagina 1, va a la que sea
-                $pagina = $_GET["pagina"];
-            };
-        } else { //Si la string no es numérica, redirige al index (por ejemplo: index.php?pagina=AAA)
-            header("Location: index.php?ctl=inicio");
-            die();
-        };
-    };
-} else { //Si el GET de HTTP no está seteado, lleva a la primera página (puede ser cambiado al index.php o lo que sea)
-    $pagina = 1;
-};
-
-//Define el número 0 para empezar a paginar multiplicado por la cantidad de resultados por página
-$empezar_desde = ($pagina - 1) * $cantidad_resultados_por_pagina;
 ?>
 <!--Parte izquierda -->
 <script src="js/jqueryGoogle.js"></script>
+<style>
+  .page-item.active .page-link{
+    background: #33cbad;
+    border-color: inherit;
+  }
+</style>
 <script>
     window.resize = function() {
         $(".contenedorChat").css("max-height", window.innerHeight / 1.7 + "px");
@@ -370,18 +347,11 @@ $empezar_desde = ($pagina - 1) * $cantidad_resultados_por_pagina;
                             <!-- AQUÍ FOREACH PARA CADA PUBLIC -->
                             <div class="contenedorNuevosEstados d-none"></div>
                             <?php
-                            $consulta_todo = $m->findEstadosAmigos(implode(array_column($_SESSION['usuarioconectado'], 'correo')));
-                            //Cuenta el número total de registros
-                            $total_registros = mysqli_num_rows($consulta_todo);
-                            //Obtiene el total de páginas existentes
-                            $total_paginas = ceil($total_registros / $cantidad_resultados_por_pagina);
-                            //Realiza la consulta en el orden de ID ascendente (cambiar "id" por, por ejemplo, "nombre" o "edad", alfabéticamente, etc.)
-                            //Limitada por la cantidad de cantidad por página
-                            $consulta_resultados = $m->findEstadosAmigosPaginacion(implode(array_column($_SESSION['usuarioconectado'], 'id')), $empezar_desde, $cantidad_resultados_por_pagina);
+                            
                             ?>
-                            <?php foreach ($consulta_resultados as $publicacion) : ?>
+                            <?php foreach ($params['publicacionesAmigos'] as $publicacion) : ?>
                                 <?php
-                                $tieneSolicitud = $m->tieneSolicitud($publicacion['id'], implode(array_column($_SESSION['usuarioconectado'], 'id')));
+                                    $tieneSolicitud = $m->tieneSolicitud($publicacion['id'], implode(array_column($_SESSION['usuarioconectado'], 'id')));
                                 ?>
                                 <?php if (!$tieneSolicitud) { ?>
                                     <section style="border-bottom: 1px solid #33cbad;" class="container p-2 mt-2">
@@ -451,8 +421,7 @@ $empezar_desde = ($pagina - 1) * $cantidad_resultados_por_pagina;
                                                 <p class="d-flex justify-content-between align-items-center">
                                                     <span class="text-success"><i class="fas fa-user-plus"></i> Tiene 1 solicitud de amistad de esta persona </span>
                                                     <small class="text-muted">
-                                                        <?= $c->formatearFecha($publicacion['fecha']);
-                                                        ?>
+                                                        <?= $c->formatearFecha($publicacion['fecha']); ?>
                                                     </small>
                                                 </p>
                                             </div>
@@ -465,8 +434,12 @@ $empezar_desde = ($pagina - 1) * $cantidad_resultados_por_pagina;
                             <nav aria-label="Page navigation example">
                                 <ul class="pagination justify-content-center mt-2">
                                     <?php
-                                    for ($i = 1; $i <= $total_paginas; $i++) :
-                                        echo "<li class='page-item'><a class='page-link' style='color: #33cbad;' href='?pagina=" . $i . "'>" . $i . "</a></li>";
+                                    for ($i = 1; $i <= $params['totalPaginas']; $i++) :
+                                        if($params['pagina'] == $i){
+                                            echo "<li class='page-item active'><a class='page-link' href='index.php?ctl=inicio&pagina=" . $i . "'>" . $i . "</a></li>";
+                                        }else{
+                                            echo "<li class='page-item'><a class='page-link' style='color: #33cbad;' href='index.php?ctl=inicio&pagina=" . $i . "'>" . $i . "</a></li>";
+                                        }
                                     endfor;
                                     ?>
                                 </ul>
@@ -490,18 +463,16 @@ $empezar_desde = ($pagina - 1) * $cantidad_resultados_por_pagina;
         <div class="container col-12 col-sm-12 col-md-12 col-lg-3 col-xl-3 mt-2" style="border-left: 1px solid #33cbad; height: auto">
             <div class="row">
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                    <span>Invita a tus amigos</span>
+                    <span>Invita a tus amigos a través de tus redes sociales</span>
                     <hr>
                 </div>
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
                     <div class="row">
-                        <div class="col-8">
-                            <form action="index.php" method="POST">
-                                <input class="form-control" type="text" name="invitausuario" placeholder="E-mail..." required />
+                        <div class="col-6">
+                            <a class="btn btn-sm text-light btn-block" target="_blank" style="background:#1da1f2;text-decoration: none" href="http://twitter.com/home?status=<?php echo urlencode("¡Hola, estoy usando WhoMeet! ¿A qué esperas para unirte e interactuar conmigo? @WhooMeetES http://localhost/proyectoGIT/wh00m33t/web/paginaInicio/ ");?>">Twittear <i class="fab fa-twitter text-light"></i></a>
                         </div>
-                        <div class="col-4">
-                            <input type="button" value="Invitar" class="btn btn-warning text-light">
-                            </form>
+                        <div class="col-6">
+                            <a class="btn btn-sm text-light btn-block" target="_blank" style="background:#2467B1;text-decoration: none"  href="http://www.facebook.com/sharer.php?u=<?php echo urlencode('https://whomeet.ddns.net/proyectoGIT/wh00m33t/web/paginaInicio')?>">Facebook <i class="fab fa-facebook text-light"></i></a>
                         </div>
                         <div class="col-12">
                             <p class="text-muted small">¡Invita a tus amigos a nuestra red social y empieza a interactuar con ellos desde ya!</p>

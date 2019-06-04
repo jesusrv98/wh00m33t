@@ -70,13 +70,15 @@ class Model
         return $mensajesPV;
     }
 
-    public function actualizarSolicitudAmistad($idSolicitud, $estado) {
+    public function actualizarSolicitudAmistad($idSolicitud, $estado)
+    {
         $idSolicitud = (int)$idSolicitud;
         $sql = "UPDATE `solicitudes` SET `estadoSolicitud`= $estado WHERE `idSolicitud` = $idSolicitud";
         $result = mysqli_query($this->conexion, $sql);
     }
 
-    public function actualizarNotificaciones($idEspacio, $tipo, $usuario) {
+    public function actualizarNotificaciones($idEspacio, $tipo, $usuario)
+    {
         $tipo = htmlspecialchars($tipo);
         $sql = "UPDATE notificaciones SET `vista` = 1 WHERE `idUsuario`= $usuario AND `tipo` = '$tipo' AND `id_fkTipo`=$idEspacio ";
         $result = mysqli_query($this->conexion, $sql);
@@ -84,9 +86,9 @@ class Model
 
 
     public function insertarNotificacionByTipo($id_fkTipo, $tipo, $idUsuario)
-    {   
+    {
         $tipo = htmlspecialchars($tipo);
-        $sql="INSERT INTO `notificaciones` (`id`, `id_fkTipo`, `tipo`, `vista`, `idUsuario`) VALUES (NULL, $id_fkTipo, '$tipo', '0', $idUsuario);";
+        $sql = "INSERT INTO `notificaciones` (`id`, `id_fkTipo`, `tipo`, `vista`, `idUsuario`) VALUES (NULL, $id_fkTipo, '$tipo', '0', $idUsuario);";
         $result = mysqli_query($this->conexion, $sql);
     }
 
@@ -120,7 +122,7 @@ class Model
         return $comentarios;
     }
 
-    public function actualizarFotoPerfil($idUsuario,$nombreFoto)
+    public function actualizarFotoPerfil($idUsuario, $nombreFoto)
     {
         $sql = "UPDATE usuarios SET fotoPerfil='$nombreFoto' WHERE id=$idUsuario";
         $result = mysqli_query($this->conexion, $sql);
@@ -156,14 +158,15 @@ class Model
         return $estados;
     }
 
-    public function isAmigo($idUno, $idDos) {
-        $sql = "SELECT * FROM es_amigo WHERE (amigo =" . $idUno." AND amigo_fk_a = ".$idDos." ) OR (amigo=".$idDos." AND amigo_fk_a =".$idUno.") ";
+    public function isAmigo($idUno, $idDos)
+    {
+        $sql = "SELECT * FROM es_amigo WHERE (amigo =" . $idUno . " AND amigo_fk_a = " . $idDos . " ) OR (amigo=" . $idDos . " AND amigo_fk_a =" . $idUno . ") ";
         $result = mysqli_query($this->conexion, $sql);
         $isAmigo = false;
 
-        if($result) {
+        if ($result) {
             $numeroFilas = mysqli_num_rows($result);
-            if($numeroFilas == 2) {
+            if ($numeroFilas == 2) {
                 $isAmigo = true;
             }
         }
@@ -180,7 +183,7 @@ class Model
     }
 
     public function setDesconectado($idUsuario)
-    { 
+    {
         $sql = "UPDATE usuarios SET estado = 'offline' WHERE `id` = '$idUsuario'";
 
         $result = mysqli_query($this->conexion, $sql);
@@ -199,7 +202,7 @@ class Model
 
         $solicitudes = array();
 
-        while ($row =mysqli_fetch_assoc($result)) {
+        while ($row = mysqli_fetch_assoc($result)) {
             $solicitudes[] = $row;
         }
 
@@ -213,7 +216,7 @@ class Model
 
         $comentarios = array();
 
-        while ($row =mysqli_fetch_assoc($result)) {
+        while ($row = mysqli_fetch_assoc($result)) {
             $comentarios[] = $row;
         }
 
@@ -235,7 +238,7 @@ class Model
         return $peticiones;
     }
 
-    
+
     public function findAmigosByIdUsuarioPaginacion($idUsuario, $empezar_desde, $cantidad_resultados_por_pagina)
     {
         $sql = "SELECT * FROM (usuarios u JOIN poblacion p ON u.codpueblo = p.idpoblacion) JOIN provincia pr ON pr.idprovincia = p.codprovincia  WHERE id IN (SELECT amigo FROM es_amigo WHERE amigo_fk_a = $idUsuario AND amigo != $idUsuario) LIMIT $empezar_desde, $cantidad_resultados_por_pagina";
@@ -280,7 +283,8 @@ class Model
         return $result;
     }
 
-    public function agregarAmigo($idSolicitante, $idSolicitado) {
+    public function agregarAmigo($idSolicitante, $idSolicitado)
+    {
         $sql = "INSERT INTO `es_amigo` (`idamigo`, `amigo_fk_a`, `amigo`, `tipo`, `bloqueado`) VALUES (NULL, $idSolicitante, $idSolicitado, 'Amigos', '0')";
         $result = mysqli_query($this->conexion, $sql);
     }
@@ -300,9 +304,9 @@ class Model
 
         $tieneSolicitud = false;
 
-        if($result) {
+        if ($result) {
             $numeroFilas = mysqli_num_rows($result);
-            if($numeroFilas == 1) {
+            if ($numeroFilas == 1) {
                 $tieneSolicitud = true;
             }
         }
@@ -316,16 +320,17 @@ class Model
 
         $tieneSolicitud = false;
 
-        if($result) {
+        if ($result) {
             $numeroFilas = mysqli_num_rows($result);
-            if($numeroFilas == 1) {
+            if ($numeroFilas == 1) {
                 $tieneSolicitud = true;
             }
         }
         return $tieneSolicitud;
     }
 
-    public function borrarAmigo($idUsuario1, $idUsuario2) {
+    public function borrarAmigo($idUsuario1, $idUsuario2)
+    {
         $sql = "DELETE FROM es_amigo WHERE (`amigo` = $idUsuario1 AND `amigo_fk_a` = $idUsuario2) OR (`amigo` = $idUsuario2 AND `amigo_fk_a` = $idUsuario1)";
 
         $result = mysqli_query($this->conexion, $sql);
@@ -338,7 +343,7 @@ class Model
         // $sql = "select e.*, u.* from estadose join usuarios u on e.idUsuario = u.id WHERE e.idUsuario IN (SELECT amigo FROM es_amigo WHERE amigo_fk_a IN (SELECT id FROM usuarios WHERE correo = 'admin@whomeet.es'))";
         $sql = "SELECT e.*, u.* FROM estados e JOIN usuarios u ON e.idUsuario = u.id WHERE e.idUsuario in ( SELECT amigo FROM es_amigo WHERE amigo_fk_a IN (SELECT id FROM usuarios WHERE id = '$idUsuario' ) AND bloqueado = 0) ORDER BY e.fecha DESC LIMIT $empezar_desde, $cantidad_resultados_por_pagina";
         $result = mysqli_query($this->conexion, $sql);
-        
+
         return $result;
     }
 
@@ -377,7 +382,7 @@ class Model
     }
 
     public function insertarComentarioByIdEspacio($idUsuario, $idEspacio, $textoComentario, $fechaActual)
-    {   
+    {
         $textoComentario = htmlspecialchars($textoComentario);
         $sql = "INSERT INTO comentarios (idComentario, id_espacioComentado, id_usuario, textoComentario, fecha_comentario) VALUES (NULL, $idEspacio, $idUsuario, '$textoComentario', '$fechaActual')";
         $result = mysqli_query($this->conexion, $sql);
@@ -401,15 +406,15 @@ class Model
     }
 
     public function insertarEstado($idUsuario, $fecha)
-    {   
+    {
         $sql = "INSERT INTO `estados`(`idEstado`, `estadoCuerpo`, `fecha`, `idUsuario`) VALUES (NULL,'¡Hola, estoy usando WhoMeet por primera vez!', '$fecha', $idUsuario)";
         $result = mysqli_query($this->conexion, $sql);
     }
 
-    public function findUsuariosByNombre($nombre,$empezar_desde, $cantidad_resultados_por_pagina)
-    {   
+    public function findUsuariosByNombre($nombre, $empezar_desde, $cantidad_resultados_por_pagina)
+    {
         $nombre = htmlspecialchars($nombre);
-        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%".$nombre."%' AND u.id != ".implode(array_column($_SESSION['usuarioconectado'], "id"))." order by u.nombre ASC  LIMIT $empezar_desde, $cantidad_resultados_por_pagina";
+        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%" . $nombre . "%' AND u.id != " . implode(array_column($_SESSION['usuarioconectado'], "id")) . " order by u.nombre ASC  LIMIT $empezar_desde, $cantidad_resultados_por_pagina";
 
         $result = mysqli_query($this->conexion, $sql);
 
@@ -420,19 +425,35 @@ class Model
 
         return $usuarios;
     }
-    public function findUsuariosNombre($nombre)
-    {   
+
+    public function findAllUsuariosByNombre($nombre)
+    {
         $nombre = htmlspecialchars($nombre);
-        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%".$nombre."%' AND u.id != ".implode(array_column($_SESSION['usuarioconectado'], "id"))." order by u.nombre ASC";
+        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%" . $nombre . "%' AND u.id != " . implode(array_column($_SESSION['usuarioconectado'], "id")) . " order by u.nombre ASC";
+
+        $result = mysqli_query($this->conexion, $sql);
+
+        $usuarios = array();
+        while ($row = mysqli_fetch_assoc($result)) {
+            $usuarios[] = $row;
+        }
+
+        return $usuarios;
+    }
+
+    public function findUsuariosNombre($nombre)
+    {
+        $nombre = htmlspecialchars($nombre);
+        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%" . $nombre . "%' AND u.id != " . implode(array_column($_SESSION['usuarioconectado'], "id")) . " order by u.nombre ASC";
 
         $result = mysqli_query($this->conexion, $sql);
         return $result;
     }
 
     public function countfindUsuariosByNombre($nombre)
-    {           
+    {
         $nombre = htmlspecialchars($nombre);
-        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%".$nombre."%' AND u.id != ".implode(array_column($_SESSION['usuarioconectado'], "id"))." order by u.nombre ASC";
+        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%" . $nombre . "%' AND u.id != " . implode(array_column($_SESSION['usuarioconectado'], "id")) . " order by u.nombre ASC";
 
         $result = mysqli_query($this->conexion, $sql);
 
@@ -442,8 +463,8 @@ class Model
     }
 
     public function findUsuariosConectado()
-    {           
-        $sql = "SELECT DISTINCT(u.id),u.*  FROM usuarios u JOIN es_amigo am ON u.id = am.amigo_fk_a WHERE u.id != ".implode(array_column($_SESSION['usuarioconectado'], "id"))." AND u.estado = 'Online' AND u.id IN(SELECT amigo FROM es_amigo WHERE amigo_fk_a = ".implode(array_column($_SESSION['usuarioconectado'], "id")).") order by u.nombre ASC";
+    {
+        $sql = "SELECT DISTINCT(u.id),u.*  FROM usuarios u JOIN es_amigo am ON u.id = am.amigo_fk_a WHERE u.id != " . implode(array_column($_SESSION['usuarioconectado'], "id")) . " AND u.estado = 'Online' AND u.id IN(SELECT amigo FROM es_amigo WHERE amigo_fk_a = " . implode(array_column($_SESSION['usuarioconectado'], "id")) . ") order by u.nombre ASC";
 
         $result = mysqli_query($this->conexion, $sql);
 
@@ -456,8 +477,8 @@ class Model
     }
 
     public function countfindUsuariosConectado()
-    {           
-        $sql = "SELECT DISTINCT(u.id),u.*  FROM usuarios u JOIN es_amigo am ON u.id = am.amigo_fk_a WHERE u.id != ".implode(array_column($_SESSION['usuarioconectado'], "id"))." AND u.estado = 'Online' AND u.id IN(SELECT amigo FROM es_amigo WHERE amigo_fk_a = ".implode(array_column($_SESSION['usuarioconectado'], "id")).") ORDER BY u.nombre ASC";
+    {
+        $sql = "SELECT DISTINCT(u.id),u.*  FROM usuarios u JOIN es_amigo am ON u.id = am.amigo_fk_a WHERE u.id != " . implode(array_column($_SESSION['usuarioconectado'], "id")) . " AND u.estado = 'Online' AND u.id IN(SELECT amigo FROM es_amigo WHERE amigo_fk_a = " . implode(array_column($_SESSION['usuarioconectado'], "id")) . ") ORDER BY u.nombre ASC";
 
         $result = mysqli_query($this->conexion, $sql);
 
@@ -513,7 +534,7 @@ class Model
     {
         $variable = htmlspecialchars($variable);
         $variable2 = htmlspecialchars($variable2);
-        $sql = "select pass from usuarios where correo LIKE '$variable2'";
+        $sql = "select pass from usuarios where correo LIKE '$variable2' AND baneado = 0";
         $result = mysqli_query($this->conexion, $sql);
         $passwordbd = mysqli_fetch_row($result);
         return password_verify($variable, $passwordbd[0]);
@@ -532,6 +553,40 @@ class Model
         $result = mysqli_query($this->conexion, $sql);
         $pueblo = mysqli_fetch_array($result);
         return $pueblo;
+    }
+
+    public function borrarUsuario($idUSuario) {
+        $sql = "DELETE FROM usuarios WHERE id = $idUSuario";
+        $result = mysqli_query($this->conexion, $sql);
+        if($result) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function isBaneado($idUsuario) {
+        $sql = "SELECT * FROM usuarios WHERE id = $idUsuario AND baneado = 1";
+        $result = mysqli_query($this->conexion, $sql);
+        if(mysqli_num_rows($result) == 0) {
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    public function banearUsuario($idUsuario, $fecha) {
+        $sql = "UPDATE usuarios SET baneado = 1, fecha_baneo = '$fecha' WHERE id = $idUsuario";
+        $result = mysqli_query($this->conexion, $sql);
+
+        return $result;
+    }
+
+    public function desbanearUsuario($idUsuario) {
+        $sql = "UPDATE usuarios SET baneado = 0 WHERE id = $idUsuario";
+        $result = mysqli_query($this->conexion, $sql);
+
+        return $result;
     }
 
     public function validarDatos($n, $e, $p, $hc, $f, $g)

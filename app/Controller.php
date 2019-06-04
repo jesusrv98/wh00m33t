@@ -14,6 +14,8 @@ class Controller
         $correoUsuario = implode(array_column($arrayUsuario, "correo"));
         $fotoPerfil = implode(array_column($arrayUsuario, "fotoPerfil"));
 
+        $baneado = $m->isBaneado($idUsuario);
+
         $arrayNotificaciones = $m->findNotificaciones($idUsuario);
         $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
         $arrayPeticionesAmistad = $m->findCountPeticionesById($idUsuario);
@@ -123,6 +125,44 @@ class Controller
             }
         }
 
+        error_reporting(E_ALL ^ E_NOTICE);
+        //Cantidad de resultados por página (debe ser INT, no string/varchar)
+        $cantidad_resultados_por_pagina = 10;
+
+        //Comprueba si está seteado el GET de HTTP
+        if (isset($_GET["pagina"])) {
+            //Si el GET de HTTP SÍ es una string / cadena, procede
+            if (is_string($_GET["pagina"])) {
+                //Si la string es numérica, define la variable 'pagina'
+                if (is_numeric($_GET["pagina"])) {
+                    //Si la petición desde la paginación es la página uno
+                    //en lugar de ir a 'index.php?pagina=1' se iría directamente a 'index.php'
+                    if ($_GET["pagina"] == 1) {
+                        header("Location: index.php?ctl=inicio");
+                        die();
+                    } else { //Si la petición desde la paginación no es para ir a la pagina 1, va a la que sea
+                        $pagina = $_GET["pagina"];
+                    };
+                } else { //Si la string no es numérica, redirige al index (por ejemplo: index.php?pagina=AAA)
+                    header("Location: index.php?ctl=inicio");
+                    die();
+                };
+            };
+        } else { //Si el GET de HTTP no está seteado, lleva a la primera página (puede ser cambiado al index.php o lo que sea)
+            $pagina = 1;
+        };
+
+        //Define el número 0 para empezar a paginar multiplicado por la cantidad de resultados por página
+        $empezar_desde = ($pagina - 1) * $cantidad_resultados_por_pagina;
+
+        $consulta_todo = $m->findEstadosAmigos($correo);
+                        //Cuenta el número total de registros
+                        $total_registros = mysqli_num_rows($consulta_todo);
+                        //Obtiene el total de páginas existentes
+                        $total_paginas = ceil($total_registros / $cantidad_resultados_por_pagina);
+                        //Realiza la consulta en el orden de ID ascendente (cambiar "id" por, por ejemplo, "nombre" o "edad", alfabéticamente, etc.)
+                        //Limitada por la cantidad de cantidad por página
+                        $consulta_resultados = $m->findEstadosAmigosPaginacion($idUsuario, $empezar_desde, $cantidad_resultados_por_pagina);
 
         $params = array(
             'visitas' => $visitas,
@@ -134,14 +174,17 @@ class Controller
             'countComentariosFotos' => $countComentariosFotos,
             'estadoActual' => $estadoActualTexto,
             'estadoActualFecha' => $estadoActualFecha,
-            'publicacionesAmigos' => $arrayPublicaciones,
+            'publicacionesAmigos' => $consulta_resultados,
+            'totalPaginas' => $total_paginas,
             'idUsuario' => $idUsuario,
             'nuevoEstado' => '',
+            'pagina' => $pagina,
             'nombreBusqueda' => '',
             'countUsuariosConectados' => $countUsuariosConectado,
             'listaUsuariosConectados' => $arrayUsuariosConectados,
             'fotoPerfil' =>  $fotoPerfil,
-            'mensajeSubida' => $mensaje
+            'mensajeSubida' => $mensaje,
+            'baneado' => $baneado
         );
 
         require __DIR__ . '/templates/inicio.php';
@@ -190,6 +233,7 @@ class Controller
         $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
         $arrayUsuario = $m->buscarSoloUsuario($correo);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
+        $baneado = $m->isBaneado($idUsuario);
 
 
         $countBusqueda = $m->countfindUsuariosByNombre(trim($nombre));
@@ -263,7 +307,8 @@ class Controller
             'palabraBuscada' => trim($nombre),
             'mensajeBusqueda' => $mensaje,
             'idUsuarioConectado' => $idUsuario,
-            'page' => $pagina
+            'page' => $pagina,
+            'baneado' => $baneado
         );
 
 
@@ -286,6 +331,8 @@ class Controller
         $arrayUsuario = $m->buscarSoloUsuario($correo);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
 
+        $baneado = $m->isBaneado($idUsuario);
+
         $arrayPeticionesAmistad = $m->findCountPeticionesById($idUsuario);
         $listaSolicitudes = $m->findSolicitudesAmistad($idUsuario);
         $countPeticiones = implode(array_column($arrayPeticionesAmistad, "count(*)"));
@@ -300,7 +347,8 @@ class Controller
             'countPeticiones' => $countPeticiones,
             'nombre' => '',
             'nombreBusqueda' => '',
-            'idUsuarioConectado' => $idUsuario
+            'idUsuarioConectado' => $idUsuario,
+            'baneado' => $baneado
         );
 
 
@@ -323,6 +371,10 @@ class Controller
         $arrayUsuario = $m->buscarSoloUsuario($correo);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
         $fotoPerfil = implode(array_column($arrayUsuario, "fotoPerfil"));
+        $nombre = implode(array_column($arrayUsuario, "nombre"));
+        $apellidos = implode(array_column($arrayUsuario, "apellidos"));
+        $nombreCompleto = $nombre+" "+$apellidos;
+        $baneado = $m->isBaneado($idUsuario);
 
         $arrayCountComentariosEstados = $m->findCountComentariosEstadosById($idUsuario);
         $arrayComentariosEstados = $m->findPublicacionesConComentarioByCorreo($correo);
@@ -340,7 +392,9 @@ class Controller
             'nombreBusqueda' => '',
             'idUsuarioConectado' => $idUsuario,
             'publicaciones' => $arrayComentariosEstados,
-            'fotoPerfil' => $fotoPerfil
+            'fotoPerfil' => $fotoPerfil,
+            'nombreCompleto' => $nombreCompleto,
+            'baneado' => $baneado
         );
 
 
@@ -362,6 +416,8 @@ class Controller
         $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
         $arrayUsuario = $m->buscarSoloUsuario($correo);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
+
+        $baneado = $m->isBaneado($idUsuario);
 
         $arrayAmigos = $m->findAmigosByIdUsuario($idUsuario);
         
@@ -417,12 +473,49 @@ class Controller
             'countAmigos' => $countAmigos,
             'nombre' => '',
             'nombreBusqueda' => '',
-            'idUsuarioConectado' => $idUsuario
+            'idUsuarioConectado' => $idUsuario,
+            'pagina' => $pagina,
+            'baneado' => $baneado
         );
 
-
-
         require __DIR__ . '/templates/gestionAmigos.php';
+    }
+
+    public function gestionUsuarios() {
+        $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
+
+        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
+        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $idUsuario = implode(array_column($arrayUsuario, "id"));
+        $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
+        $countMensajesPV = implode(array_column($arrayMensajesPrivados, "count(*)"));
+        $baneado = $m->isBaneado($idUsuario);
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['nombreBusqueda']) && !empty($_POST['nombreBusqueda'])) {
+            $nombre = $_POST['nombreBusqueda'];
+        } else {
+            $nombre = "";
+        }
+
+        if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['usuarioBuscado']) && !empty($_POST['usuarioBuscado'])) {
+            $usuarioBuscado = $_POST['usuarioBuscado'];
+        }else{
+            $usuarioBuscado = "";
+        }
+
+        $listaUsuarios = $m->findAllUsuariosByNombre($usuarioBuscado);
+
+        $params = array(
+            'countMensajesPV' => $countMensajesPV,
+            'listaUsuarios' => $listaUsuarios,
+            'nombre' => '',
+            'nombreBusqueda' => '',
+            'idUsuarioConectado' => $idUsuario,
+            'usuarioBuscado' => $usuarioBuscado,
+            'baneado' => $baneado
+        );
+
+        require __DIR__ . '/templates/gestionUsuarios.php';
     }
 
     function formatearFecha($fechaEntrada)
@@ -484,6 +577,15 @@ class Controller
         return $textoFecha;
     }
 
+    function aniosHastaHoy($fecha)
+    {
+        date_default_timezone_set('Asia/Kolkata');
+        $date1 = new DateTime($fecha);
+        $date2 = new DateTime("now");
+        $diff = $date1->diff($date2);
+        echo $diff->y . ' años.';
+
+    }
     public function login()
     {
         $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);

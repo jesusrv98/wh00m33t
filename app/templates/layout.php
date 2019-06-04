@@ -3,7 +3,10 @@
 ob_start();
 
 if (!isset($_SESSION['usuarioconectado'])) {
-    header('Location:index.php?ctl=login');
+    header('Location:index.php?ctl=logout');
+}
+if($params['baneado']) {
+    header("Location: index.php?ctl=logout");
 }
 
 ?>
@@ -22,7 +25,6 @@ if (!isset($_SESSION['usuarioconectado'])) {
             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
             <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <!-- FIN DE ETIQUETAS DE IMPORTACIÓN -->
-
     <!-- Estilos y favicon -->
     <link rel="icon" href="images/logo.png">
     <style type="text/css">
@@ -105,7 +107,7 @@ if (!isset($_SESSION['usuarioconectado'])) {
                             Administración
                         </a>
                         <div class="dropdown-menu" aria-labelledby="dropdown05">
-                            <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=solicitudes'><i class="fas fa-users-cog"></i> Gestión de usuarios</a>
+                            <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=gestionUsuarios'><i class="fas fa-users-cog"></i> Gestión de usuarios</a>
                             <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=solicitudes'><i class="fas fa-trash-alt"></i> Gestión de contenido</a>
                             <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=solicitudes'><i class="fas fa-chart-bar"></i> Estadísticas</a>
                         </div>

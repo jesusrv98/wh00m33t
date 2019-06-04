@@ -35,7 +35,12 @@
         });
     });
 </script>
-
+<style>
+  .page-item.active .page-link{
+    background: #33cbad;
+    border-color: inherit;
+  }
+</style>
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
@@ -87,7 +92,11 @@
                 <ul class="pagination justify-content-center mt-2">
                     <?php
                     for ($i = 1; $i <= $params['totalPaginas']; $i++) :
-                        echo "<li class='page-item'><a class='page-link' style='color: #33cbad;' href='index.php?ctl=gestionAmigos&pagina=" . $i . "'>" . $i . "</a></li>";
+                        if($params['pagina'] == $i){
+                            echo "<li class='page-item active'><a class='page-link' href='index.php?ctl=gestionAmigos&pagina=" . $i . "'>" . $i . "</a></li>";
+                        }else{
+                            echo "<li class='page-item'><a class='page-link' style='color: #33cbad;' href='index.php?ctl=gestionAmigos&pagina=" . $i . "'>" . $i . "</a></li>";
+                        }
                     endfor;
                     ?>
                 </ul>
