@@ -6,10 +6,10 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
 <!--Parte izquierda -->
 <script src="js/jqueryGoogle.js"></script>
 <style>
-  .page-item.active .page-link{
-    background: #33cbad;
-    border-color: inherit;
-  }
+    .page-item.active .page-link {
+        background: #33cbad;
+        border-color: inherit;
+    }
 </style>
 <script>
     window.resize = function() {
@@ -217,6 +217,58 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
         $("#fotoSubir").change(function() {
             $(this).parent().submit();
         });
+        $(".borrarPublicacion").click(function() {
+            if (confirm("¿Desea borrar su publicación?")) {
+                var boton = $(this);
+                var idEstado = boton.attr("id");
+
+                var parametros = {
+                        'idUsuario': <?php echo $params['idUsuario'] ?>,
+                        'idEstado': idEstado,
+                        'tipo': 'estado'
+                    };
+                $.ajax({
+                    data: parametros,
+                    url: '../app/templates/includes/servletGestionEstadosYComentarios.php',
+                    type: 'post',
+                    async: true,
+                    success: function(msg) {
+                        if (msg == 'ok') {
+                            boton.parent().parent().parent().parent().css("display","none");
+                        } else {
+                            alert(msg);
+                        }
+                    }
+                });
+            }
+        });
+        $(".borrarComentario").click(function() {
+            if (confirm("¿Desea borrar su comentario?")) {
+                var boton = $(this);
+                var idComentario = boton.attr("id");
+                var idEstado = boton.parent().attr("id");
+
+                var parametros = {
+                        'idUsuario': <?php echo $params['idUsuario'] ?>,
+                        'idComentario': idComentario,
+                        'idEstado': idEstado,
+                        'tipo': 'comentario'
+                    };
+                $.ajax({
+                    data: parametros,
+                    url: '../app/templates/includes/servletGestionEstadosYComentarios.php',
+                    type: 'post',
+                    async: true,
+                    success: function(msg) {
+                        if (msg == 'ok') {
+                            boton.parent().parent().parent().parent().css("display","none");
+                        } else {
+                            alert(msg);
+                        }
+                    }
+                });
+            }
+        });
     });
 </script>
 <div class="container-fluid">
@@ -347,11 +399,12 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                             <!-- AQUÍ FOREACH PARA CADA PUBLIC -->
                             <div class="contenedorNuevosEstados d-none"></div>
                             <?php
-                            
+
                             ?>
                             <?php foreach ($params['publicacionesAmigos'] as $publicacion) : ?>
                                 <?php
                                     $tieneSolicitud = $m->tieneSolicitud($publicacion['id'], implode(array_column($_SESSION['usuarioconectado'], 'id')));
+                                    $esSuEstado = $m->isSuEstado(implode(array_column($_SESSION['usuarioconectado'], 'id')), $publicacion['idEstado']);
                                 ?>
                                 <?php if (!$tieneSolicitud) { ?>
                                     <section style="border-bottom: 1px solid #33cbad;" class="container p-2 mt-2">
@@ -360,8 +413,12 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                                 <img src="images/<?= $publicacion['fotoPerfil'] ?>" width="69" height="64" alt="Foto perfil" class="media-object rounded-circle mr-2 mt-1 border">
                                             </div>
                                             <div class="media-body">
-                                                <h4 class="media-heading" style="color: #33cbad;"><?= $publicacion['nombre'] . " " . $publicacion['apellidos'] ?></h4>
-
+                                                <div class="d-flex justify-content-between">
+                                                    <h4 class="media-heading" style="color: #33cbad;"><?= $publicacion['nombre'] . " " . $publicacion['apellidos'] ?></h4>
+                                                    <?php if ($esSuEstado) : ?>
+                                                        <i class="fas fa-times text-danger borrarPublicacion" style="cursor:pointer" id="<?= $publicacion['idEstado'] ?>" title="Borrar publicación"></i>
+                                                    <?php endif; ?>
+                                                </div>
                                                 <p><?= $publicacion['estadoCuerpo'] ?></p>
                                                 <!-- Botón de responder -->
                                                 <p class="d-flex justify-content-between align-items-center">
@@ -383,11 +440,12 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                                     </form>
                                                     <!-- Aqui va la respuesta -->
                                                     <?php
-                                                    $idEspacio = $publicacion['idEstado'];
-                                                    $listaComentarios = $m->findComentarioByIdEspacio($idEspacio);
+                                                        $idEspacio = $publicacion['idEstado'];
+                                                        $listaComentarios = $m->findComentarioByIdEspacio($idEspacio);
                                                     ?>
                                                     <section style="max-height:150px !important;overflow: scroll;overflow-y: auto;overflow-x: hidden;">
                                                         <?php foreach ($listaComentarios as $comentario) : ?>
+                                                            <?php $esSuComentario = $m->isSuComentario($comentario['idComentario'], $params['idUsuario']); ?>
                                                             <div class="media mt-2">
                                                                 <div class="media-left">
                                                                     <img src="images/<?= $comentario['fotoPerfil'] ?>" width="60" height="60" alt="Foto perfil" class="media-object rounded-circle mr-2 mt-1 border">
@@ -397,7 +455,12 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                                                         <small style="font-size: 0.8rem" class="text-muted">
                                                                             <?= $c->formatearFecha($comentario['fecha_comentario']) ?>
                                                                         </small></h4>
-                                                                    <p><?= $comentario['textoComentario'] ?>.</p>
+                                                                    <div class="d-flex justify-content-between">
+                                                                        <p><?= $comentario['textoComentario'] ?>.</p>
+                                                                        <?php if($esSuComentario):?>
+                                                                            <small id="<?= $publicacion['idEstado'] ?>"><i class="fas fa-times text-secondary borrarComentario" style="cursor:pointer" id="<?= $comentario['idComentario'] ?>" title="Borrar comentario"></i></small>
+                                                                        <?php endif; ?>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         <?php endforeach; ?>
@@ -435,9 +498,9 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                 <ul class="pagination justify-content-center mt-2">
                                     <?php
                                     for ($i = 1; $i <= $params['totalPaginas']; $i++) :
-                                        if($params['pagina'] == $i){
+                                        if ($params['pagina'] == $i) {
                                             echo "<li class='page-item active'><a class='page-link' href='index.php?ctl=inicio&pagina=" . $i . "'>" . $i . "</a></li>";
-                                        }else{
+                                        } else {
                                             echo "<li class='page-item'><a class='page-link' style='color: #33cbad;' href='index.php?ctl=inicio&pagina=" . $i . "'>" . $i . "</a></li>";
                                         }
                                     endfor;
@@ -469,10 +532,10 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
                     <div class="row">
                         <div class="col-6">
-                            <a class="btn btn-sm text-light btn-block" target="_blank" style="background:#1da1f2;text-decoration: none" href="http://twitter.com/home?status=<?php echo urlencode("¡Hola, estoy usando WhoMeet! ¿A qué esperas para unirte e interactuar conmigo? @WhooMeetES http://localhost/proyectoGIT/wh00m33t/web/paginaInicio/ ");?>">Twittear <i class="fab fa-twitter text-light"></i></a>
+                            <a class="btn btn-sm text-light btn-block" target="_blank" style="background:#1da1f2;text-decoration: none" href="http://twitter.com/home?status=<?php echo urlencode("¡Hola, estoy usando WhoMeet! ¿A qué esperas para unirte e interactuar conmigo? @WhooMeetES http://localhost/proyectoGIT/wh00m33t/web/paginaInicio/ "); ?>">Twittear <i class="fab fa-twitter text-light"></i></a>
                         </div>
                         <div class="col-6">
-                            <a class="btn btn-sm text-light btn-block" target="_blank" style="background:#2467B1;text-decoration: none"  href="http://www.facebook.com/sharer.php?u=<?php echo urlencode('https://whomeet.ddns.net/proyectoGIT/wh00m33t/web/paginaInicio')?>">Facebook <i class="fab fa-facebook text-light"></i></a>
+                            <a class="btn btn-sm text-light btn-block" target="_blank" style="background:#2467B1;text-decoration: none" href="http://www.facebook.com/sharer.php?u=<?php echo urlencode('https://whomeet.ddns.net/proyectoGIT/wh00m33t/web/paginaInicio') ?>">Facebook <i class="fab fa-facebook text-light"></i></a>
                         </div>
                         <div class="col-12">
                             <p class="text-muted small">¡Invita a tus amigos a nuestra red social y empieza a interactuar con ellos desde ya!</p>

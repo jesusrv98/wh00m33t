@@ -555,37 +555,102 @@ class Model
         return $pueblo;
     }
 
-    public function borrarUsuario($idUSuario) {
+    public function borrarUsuario($idUSuario)
+    {
         $sql = "DELETE FROM usuarios WHERE id = $idUSuario";
         $result = mysqli_query($this->conexion, $sql);
-        if($result) {
+        if ($result) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
-    public function isBaneado($idUsuario) {
+    public function isBaneado($idUsuario)
+    {
         $sql = "SELECT * FROM usuarios WHERE id = $idUsuario AND baneado = 1";
         $result = mysqli_query($this->conexion, $sql);
-        if(mysqli_num_rows($result) == 0) {
+        if (mysqli_num_rows($result) == 0) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
-    public function banearUsuario($idUsuario, $fecha) {
+    public function banearUsuario($idUsuario, $fecha)
+    {
         $sql = "UPDATE usuarios SET baneado = 1, fecha_baneo = '$fecha' WHERE id = $idUsuario";
         $result = mysqli_query($this->conexion, $sql);
 
         return $result;
     }
 
-    public function desbanearUsuario($idUsuario) {
+    public function desbanearUsuario($idUsuario)
+    {
         $sql = "UPDATE usuarios SET baneado = 0 WHERE id = $idUsuario";
         $result = mysqli_query($this->conexion, $sql);
 
+        return $result;
+    }
+
+    public function isSuEstado($idUsuario, $idEstado)
+    {
+        $sql = "SELECT * FROM estados WHERE idUsuario = $idUsuario AND idEstado = $idEstado";
+        $result = mysqli_query($this->conexion, $sql);
+
+        if (mysqli_num_rows($result) == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function isSuComentario($idComentario, $idUsuario)
+    {
+        $sql = "SELECT * FROM comentarios WHERE id_usuario = $idUsuario AND idComentario = $idComentario";
+        $result = mysqli_query($this->conexion, $sql);
+
+        if (mysqli_num_rows($result) == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function borrarEstado($idEstado, $idUsuario)
+    { 
+        $sql = "DELETE FROM estados WHERE idEstado = $idEstado AND idUsuario = $idUsuario";
+        $result = mysqli_query($this->conexion, $sql);
+
+    }
+
+    public function borrarComentario($idComentario, $idUsuario)
+    { 
+        $sql = "DELETE FROM comentarios WHERE idComentario = $idComentario AND id_usuario = $idUsuario";
+        $result = mysqli_query($this->conexion, $sql);
+
+    }
+
+    public function findUsuariosPorComunidad()
+    {
+        $sql = "SELECT co.comunidad ,COUNT(*) FROM ((usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia) JOIN comunidad co ON pr.codComunidad = co.idComunidad GROUP BY co.comunidad";
+
+        $result = mysqli_query($this->conexion, $sql);
+
+        return $result;
+    }
+
+    public function findUsuariosPorProvincia()
+    {
+        $sql = "SELECT pr.provincia ,COUNT(*) FROM ((usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia) JOIN comunidad co ON pr.codComunidad = co.idComunidad GROUP BY pr.provincia";
+
+        $result = mysqli_query($this->conexion, $sql);
+
+        return $result;
+    }
+    public function findCantidadEstadosPorUsuario() {
+        $sql = "SELECT CONCAT(u.nombre,' ',u.apellidos) AS nombre, COUNT(*) FROM usuarios u JOIN estados e ON u.id = e.idUsuario GROUP BY u.nombre";
+        $result = mysqli_query($this->conexion, $sql);
         return $result;
     }
 

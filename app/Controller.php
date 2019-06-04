@@ -7,6 +7,9 @@ class Controller
     {
         $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, config::$mvc_bd_hostname);
 
+        if(!isset($_SESSION['usuarioconectado'])){
+            header("Location: index.php?ctl=login");
+        }
         $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
         $arrayUsuario = $m->buscarSoloUsuario($correo);
         $visitas = implode(array_column($arrayUsuario, "visitas"));
@@ -373,7 +376,6 @@ class Controller
         $fotoPerfil = implode(array_column($arrayUsuario, "fotoPerfil"));
         $nombre = implode(array_column($arrayUsuario, "nombre"));
         $apellidos = implode(array_column($arrayUsuario, "apellidos"));
-        $nombreCompleto = $nombre+" "+$apellidos;
         $baneado = $m->isBaneado($idUsuario);
 
         $arrayCountComentariosEstados = $m->findCountComentariosEstadosById($idUsuario);
@@ -393,7 +395,6 @@ class Controller
             'idUsuarioConectado' => $idUsuario,
             'publicaciones' => $arrayComentariosEstados,
             'fotoPerfil' => $fotoPerfil,
-            'nombreCompleto' => $nombreCompleto,
             'baneado' => $baneado
         );
 
@@ -517,6 +518,40 @@ class Controller
 
         require __DIR__ . '/templates/gestionUsuarios.php';
     }
+    public function estadisticas()
+    {
+        $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
+
+        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
+        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $idUsuario = implode(array_column($arrayUsuario, "id"));
+        $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
+        $countMensajesPV = implode(array_column($arrayMensajesPrivados, "count(*)"));
+        $baneado = $m->isBaneado($idUsuario);
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['nombreBusqueda']) && !empty($_POST['nombreBusqueda'])) {
+            $nombre = $_POST['nombreBusqueda'];
+        } else {
+            $nombre = "";
+        }
+
+        $resultadoPorComunidad = $m->findUsuariosPorComunidad();
+        $resultadoPorProvincia = $m->findUsuariosPorProvincia();
+        $cantidadEstadosPorUsuario = $m->findCantidadEstadosPorUsuario();
+
+        $params = array(
+            'countMensajesPV' => $countMensajesPV,
+            'resultadoPorComunidad' => $resultadoPorComunidad,
+            'resultadoPorProvincia' => $resultadoPorProvincia,
+            'cantidadEstadosPorUsuario' => $cantidadEstadosPorUsuario,
+            'nombre' => '',
+            'nombreBusqueda' => '',
+            'idUsuarioConectado' => $idUsuario,
+            'baneado' => $baneado
+        );
+
+        require __DIR__ . '/templates/estadisticas.php';
+    }
 
     function formatearFecha($fechaEntrada)
     {
@@ -586,6 +621,7 @@ class Controller
         echo $diff->y . ' años.';
 
     }
+
     public function login()
     {
         $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
@@ -628,7 +664,6 @@ class Controller
         }
         require __DIR__ . '/templates/login.php';
     }
-
     public function logout()
     {
         $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);

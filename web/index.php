@@ -19,8 +19,9 @@ $map = array(
     'solicitudes' => array('controller' => 'Controller', 'action' => 'solicitudesAmistad'),
     'comentariosEstados' => array('controller' => 'Controller', 'action' => 'comentariosEstados'),
     'gestionAmigos' => array('controller' => 'Controller', 'action' => 'gestionAmigos'),
-    'gestionUsuarios' => array('controller' => 'Controller', 'action' => 'gestionUsuarios')
-    
+    'gestionUsuarios' => array('controller' => 'Controller', 'action' => 'gestionUsuarios'),
+    'estadisticas' => array('controller' => 'Controller', 'action' => 'estadisticas')
+
 );
 
 // Parseo de la ruta
@@ -29,7 +30,7 @@ if (isset($_GET['ctl'])) {
         $ruta = $_GET['ctl'];
     } else {
         header('Status: 404 Not Found');
-        echo "<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous>";
+        echo "<link rel='stylesheet' href='css/bootstrap/bootstrap.min.css'>";
         echo "<nav class='navbar navbar-expand-md sticky-top' style='background: linear-gradient(#93ECFF,white); color: #027F6D'>
                 <a class='navbar-brand' style='color:#027F6D' href='index.php?ctl=inicio'><img src='images/logo.png' width='100' height='100' class='d-inline-block align-top' alt='Logo' /></a>
                 </nav>";
@@ -48,7 +49,7 @@ if (method_exists($controlador['controller'], $controlador['action'])) {
 } else {
 
     header('Status: 404 Not Found');
-    echo "<link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous>";
+    echo "<link rel='stylesheet' href='css/bootstrap/bootstrap.min.css'>";
     echo "<nav class='navbar navbar-expand-md sticky-top' style='background: linear-gradient(#93ECFF,white); color: #027F6D'>
             <a class='navbar-brand' style='color:#027F6D' href='index.php?ctl=inicio'><img src='images/logo.png' width='100' height='100' class='d-inline-block align-top' alt='Logo' /></a>
         </nav>";

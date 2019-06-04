@@ -78,7 +78,8 @@ if ($params['idUsuarioConectado'] != 30) {
 
                 var parametros = {
                     'idUsuario': idUsuario,
-                    'fotoPerfil': 'avatar.jpg'
+                    'fotoPerfil': 'avatar.jpg',
+                    'opcion': 'cambiarFoto'
                 };
                 $.ajax({
                     data: parametros,
