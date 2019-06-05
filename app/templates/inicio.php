@@ -398,9 +398,6 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                             <!-- AQUÍ FOREACH PARA CADA PUBLIC -->
                             <div class="contenedorNuevosEstados d-none"></div>
-                            <?php
-
-                            ?>
                             <?php foreach ($params['publicacionesAmigos'] as $publicacion) : ?>
                                 <?php
                                     $tieneSolicitud = $m->tieneSolicitud($publicacion['id'], implode(array_column($_SESSION['usuarioconectado'], 'id')));

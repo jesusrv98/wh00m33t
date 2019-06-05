@@ -111,7 +111,7 @@ if($params['baneado']) {
                         </a>
                         <div class="dropdown-menu" aria-labelledby="dropdown05">
                             <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=gestionUsuarios'><i class="fas fa-users-cog"></i> Gestión de usuarios</a>
-                            <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=solicitudes'><i class="fas fa-trash-alt"></i> Gestión de contenido</a>
+                            <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=gestionContenido'><i class="fas fa-trash-alt"></i> Gestión de contenido</a>
                             <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=estadisticas'><i class="fas fa-chart-bar"></i> Estadísticas</a>
                         </div>
                     </li>

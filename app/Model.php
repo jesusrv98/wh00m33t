@@ -648,9 +648,27 @@ class Model
 
         return $result;
     }
+
     public function findCantidadEstadosPorUsuario() {
         $sql = "SELECT CONCAT(u.nombre,' ',u.apellidos) AS nombre, COUNT(*) FROM usuarios u JOIN estados e ON u.id = e.idUsuario GROUP BY u.nombre";
         $result = mysqli_query($this->conexion, $sql);
+        return $result;
+    }
+
+    public function findPublicacionesPaginacion($publicacionBuscada, $empezar_desde, $cantidad_resultados_por_pagina)
+    {
+        // $sql = "select e.*, u.* from estadose join usuarios u on e.idUsuario = u.id WHERE e.idUsuario IN (SELECT amigo FROM es_amigo WHERE amigo_fk_a IN (SELECT id FROM usuarios WHERE correo = 'admin@whomeet.es'))";
+        $sql = "SELECT e.*, u.* FROM estados e JOIN usuarios u ON e.idUsuario = u.id AND u.baneado = 0 AND CONCAT(u.nombre, ' ', u.apellidos) LIKE '%".$publicacionBuscada."%' ORDER BY e.fecha DESC LIMIT $empezar_desde, $cantidad_resultados_por_pagina";
+        $result = mysqli_query($this->conexion, $sql);
+
+        return $result;
+    }
+
+    public function findPublicaciones($publicacionBuscada)
+    {
+        $sql = "SELECT e.*, u.* FROM estados e JOIN usuarios u ON e.idUsuario = u.id AND u.baneado = 0 AND CONCAT(u.nombre, ' ', u.apellidos) LIKE '%".$publicacionBuscada."%' ORDER BY e.fecha DESC";
+        $result = mysqli_query($this->conexion, $sql);
+
         return $result;
     }
 

@@ -20,7 +20,8 @@ $map = array(
     'comentariosEstados' => array('controller' => 'Controller', 'action' => 'comentariosEstados'),
     'gestionAmigos' => array('controller' => 'Controller', 'action' => 'gestionAmigos'),
     'gestionUsuarios' => array('controller' => 'Controller', 'action' => 'gestionUsuarios'),
-    'estadisticas' => array('controller' => 'Controller', 'action' => 'estadisticas')
+    'estadisticas' => array('controller' => 'Controller', 'action' => 'estadisticas'),
+    'gestionContenido' => array('controller' => 'Controller', 'action' => 'gestionContenido')
 
 );
 
