@@ -223,10 +223,10 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                 var idEstado = boton.attr("id");
 
                 var parametros = {
-                        'idUsuario': <?php echo $params['idUsuario'] ?>,
-                        'idEstado': idEstado,
-                        'tipo': 'estado'
-                    };
+                    'idUsuario': <?php echo $params['idUsuario'] ?>,
+                    'idEstado': idEstado,
+                    'tipo': 'estado'
+                };
                 $.ajax({
                     data: parametros,
                     url: '../app/templates/includes/servletGestionEstadosYComentarios.php',
@@ -234,7 +234,7 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                     async: true,
                     success: function(msg) {
                         if (msg == 'ok') {
-                            boton.parent().parent().parent().parent().css("display","none");
+                            boton.parent().parent().parent().parent().css("display", "none");
                         } else {
                             alert(msg);
                         }
@@ -249,11 +249,11 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                 var idEstado = boton.parent().attr("id");
 
                 var parametros = {
-                        'idUsuario': <?php echo $params['idUsuario'] ?>,
-                        'idComentario': idComentario,
-                        'idEstado': idEstado,
-                        'tipo': 'comentario'
-                    };
+                    'idUsuario': <?php echo $params['idUsuario'] ?>,
+                    'idComentario': idComentario,
+                    'idEstado': idEstado,
+                    'tipo': 'comentario'
+                };
                 $.ajax({
                     data: parametros,
                     url: '../app/templates/includes/servletGestionEstadosYComentarios.php',
@@ -261,7 +261,7 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                     async: true,
                     success: function(msg) {
                         if (msg == 'ok') {
-                            boton.parent().parent().parent().parent().css("display","none");
+                            boton.parent().parent().parent().parent().css("display", "none");
                         } else {
                             alert(msg);
                         }
@@ -286,7 +286,10 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                         <div class="col-6 col-sm-6 col-md-6 col-lg-8 col-xl-8">
                             <div class="row">
                                 <div class="col-12">
-                                    <p style="color: #33cbad"><?= implode(array_column($_SESSION['usuarioconectado'], 'nombre')) . " " . implode(array_column($_SESSION['usuarioconectado'], 'apellidos')); ?></p>
+                                    <form method="post" action="index.php?ctl=perfil">
+                                        <input type="hidden" value="<?= implode(array_column($_SESSION['usuarioconectado'], 'id')) ?>" name="perfilUsuario">
+                                        <p style="color: #33cbad;cursor:pointer;" onclick="$(this).parent().submit()"><?= implode(array_column($_SESSION['usuarioconectado'], 'nombre')) . " " . implode(array_column($_SESSION['usuarioconectado'], 'apellidos')); ?></p>
+                                    </form>
                                 </div>
                                 <div class="col-12">
                                     <p class="text-muted"><i class="fas fa-chart-bar"></i> <?= $params['visitas'] ?> visitas a tu perfil.</p>
@@ -400,8 +403,8 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                             <div class="contenedorNuevosEstados d-none"></div>
                             <?php foreach ($params['publicacionesAmigos'] as $publicacion) : ?>
                                 <?php
-                                    $tieneSolicitud = $m->tieneSolicitud($publicacion['id'], implode(array_column($_SESSION['usuarioconectado'], 'id')));
-                                    $esSuEstado = $m->isSuEstado(implode(array_column($_SESSION['usuarioconectado'], 'id')), $publicacion['idEstado']);
+                                $tieneSolicitud = $m->tieneSolicitud($publicacion['id'], implode(array_column($_SESSION['usuarioconectado'], 'id')));
+                                $esSuEstado = $m->isSuEstado(implode(array_column($_SESSION['usuarioconectado'], 'id')), $publicacion['idEstado']);
                                 ?>
                                 <?php if (!$tieneSolicitud) { ?>
                                     <section style="border-bottom: 1px solid #33cbad;" class="container p-2 mt-2">
@@ -411,10 +414,10 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                             </div>
                                             <div class="media-body">
                                                 <div class="d-flex justify-content-between">
-                                                <form method="post" action="index.php?ctl=perfil">
-                                                    <input type="hidden" value="<?= $publicacion['id'] ?>" name="perfilUsuario">
-                                                    <h4 class="media-heading" onclick="$(this).parent().submit()" style="color: #33cbad;cursor:pointer;"><?= $publicacion['nombre'] . " " . $publicacion['apellidos'] ?></h4>
-                                                </form>
+                                                    <form method="post" action="index.php?ctl=perfil">
+                                                        <input type="hidden" value="<?= $publicacion['id'] ?>" name="perfilUsuario">
+                                                        <h4 class="media-heading" onclick="$(this).parent().submit()" style="color: #33cbad;cursor:pointer;"><?= $publicacion['nombre'] . " " . $publicacion['apellidos'] ?></h4>
+                                                    </form>
                                                     <?php if ($esSuEstado) : ?>
                                                         <i class="fas fa-times text-danger borrarPublicacion" style="cursor:pointer" id="<?= $publicacion['idEstado'] ?>" title="Borrar publicación"></i>
                                                     <?php endif; ?>
@@ -424,8 +427,7 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                                 <p class="d-flex justify-content-between align-items-center">
                                                     <button class="btn btn-xs mr-3" style="background: #33cbad; color:white;" type="button" data-toggle="collapse" data-target="#collapseForm<?= $publicacion['idEstado'] ?>" aria-expanded="false" aria-controls="collapseForm">Ver comentarios</button>
                                                     <small class="text-muted">
-                                                        <?= $c->formatearFecha($publicacion['fecha']);
-                                                        ?>
+                                                        <?= $c->formatearFecha($publicacion['fecha']); ?>
                                                     </small>
                                                 </p>
                                                 <!-- Este es el cajón de respuesta -->
@@ -440,8 +442,8 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                                     </form>
                                                     <!-- Aqui va la respuesta -->
                                                     <?php
-                                                        $idEspacio = $publicacion['idEstado'];
-                                                        $listaComentarios = $m->findComentarioByIdEspacio($idEspacio);
+                                                    $idEspacio = $publicacion['idEstado'];
+                                                    $listaComentarios = $m->findComentarioByIdEspacio($idEspacio);
                                                     ?>
                                                     <section style="max-height:150px !important;overflow: scroll;overflow-y: auto;overflow-x: hidden;">
                                                         <?php foreach ($listaComentarios as $comentario) : ?>
@@ -451,13 +453,16 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                                                     <img src="images/<?= $comentario['fotoPerfil'] ?>" width="60" height="60" alt="Foto perfil" class="media-object rounded-circle mr-2 mt-1 border">
                                                                 </div>
                                                                 <div class="media-body">
-                                                                    <h4 class="media-heading"><?= $comentario['nombre'] . " " . $comentario['apellidos'] ?>
-                                                                        <small style="font-size: 0.8rem" class="text-muted">
-                                                                            <?= $c->formatearFecha($comentario['fecha_comentario']) ?>
-                                                                        </small></h4>
+                                                                    <form method="post" action="index.php?ctl=perfil">
+                                                                        <input type="hidden" value="<?= $comentario['id'] ?>" name="perfilUsuario">
+                                                                        <h4 class="media-heading" onclick="$(this).parent().submit()" style="cursor:pointer;"><?= $comentario['nombre'] . " " . $comentario['apellidos'] ?>
+                                                                    </form>
+                                                                    <small style="font-size: 0.8rem" class="text-muted">
+                                                                        <?= $c->formatearFecha($comentario['fecha_comentario']) ?>
+                                                                    </small></h4>
                                                                     <div class="d-flex justify-content-between">
                                                                         <p><?= $comentario['textoComentario'] ?>.</p>
-                                                                        <?php if($esSuComentario):?>
+                                                                        <?php if ($esSuComentario) : ?>
                                                                             <small id="<?= $publicacion['idEstado'] ?>"><i class="fas fa-times text-secondary borrarComentario" style="cursor:pointer" id="<?= $comentario['idComentario'] ?>" title="Borrar comentario"></i></small>
                                                                         <?php endif; ?>
                                                                     </div>
@@ -548,7 +553,11 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                 </div>
                                 <?php foreach ($params['listaUsuariosConectados'] as $usuarioConectado) : ?>
                                     <div class="col-12">
-                                        <i class="fas fa-circle" style="color:#77bf5c;font-size: 11px;"></i> <?= $usuarioConectado['nombre'] . " " . $usuarioConectado['apellidos'] ?>
+                                        <form method="post" action="index.php?ctl=perfil">
+                                            <input type="hidden" value="<?= $usuarioConectado['id'] ?>" name="perfilUsuario">
+                                            <label style="cursor:pointer;" onclick="$(this).parent().submit()"><i class="fas fa-circle" style="color:#77bf5c;font-size: 11px;"></i> <?= $usuarioConectado['nombre'] . " " . $usuarioConectado['apellidos'] ?></label>
+
+                                        </form>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
@@ -558,19 +567,6 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                 </div>
             </div>
         </div>
-        <!-- Pie de chat -->
-        <!-- <div class="container-fluid fixed-bottom">
-            <div class="row">
-                <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-2">
-                    <button class="btn btn-primary" type="button">
-                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                        Conectando con el chat
-                    </button>
-                </div>
-            </div>
-        </div> -->
-        <!-- Final de pie de chat -->
-        <!-- Final parte derecha -->
     </div>
 </div>
 

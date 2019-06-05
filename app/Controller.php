@@ -639,6 +639,7 @@ class Controller
         $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
         $arrayUsuario = $m->buscarSoloUsuario($correo);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
+        $fotoPerfil = implode(array_column($arrayUsuario, "fotoPerfil"));
         $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
         $countMensajesPV = implode(array_column($arrayMensajesPrivados, "count(*)"));
         $baneado = $m->isBaneado($idUsuario);
@@ -656,15 +657,28 @@ class Controller
         }
 
 
-        $arrayPerfilUsuario = $m->findPerfilUsuario($perfilUsuario);
+        $arrayPerfilUsuarioDatos = $m->findPerfilUsuarioDatos($perfilUsuario);
+        $arrayPerfilUsuarioEstado = $m->findPerfilUsuarioEstado($perfilUsuario);
+        $arrayPerfilUsuarioPublicaciones = $m->findPerfilUsuarioPublicacionesById($perfilUsuario);
+        $visitas = implode(array_column($arrayPerfilUsuarioDatos, "visitas"));
+        $idUSuarioPerfil = implode(array_column($arrayPerfilUsuarioDatos, "id"));
+        $visitasNuevo = $visitas;
+        if($idUsuario != $idUSuarioPerfil) {
+            $visitasNuevo = $visitas+1;
+            $m->updateVisitasUsuarios($perfilUsuario, $visitasNuevo);
+        }
+        
 
         $params = array(
             'countMensajesPV' => $countMensajesPV,
-            'perfilUsuario' => $arrayPerfilUsuario,
+            'perfilUsuarioDatos' => $arrayPerfilUsuarioDatos,
+            'perfilUsuarioEstado' => $arrayPerfilUsuarioEstado,
+            'perfilUsuarioPublicaciones' => $arrayPerfilUsuarioPublicaciones,
+            'visitas' => $visitasNuevo,
             'nombre' => '',
             'nombreBusqueda' => '',
-            'idUsuarioConectado' => $idUsuario,
-
+            'idUsuario' => $idUsuario,
+            'fotoPerfil' => $fotoPerfil,
             'baneado' => $baneado
         );
 

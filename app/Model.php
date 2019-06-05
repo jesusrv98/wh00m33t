@@ -618,17 +618,15 @@ class Model
     }
 
     public function borrarEstado($idEstado, $idUsuario)
-    { 
+    {
         $sql = "DELETE FROM estados WHERE idEstado = $idEstado AND idUsuario = $idUsuario";
         $result = mysqli_query($this->conexion, $sql);
-
     }
 
     public function borrarComentario($idComentario, $idUsuario)
-    { 
+    {
         $sql = "DELETE FROM comentarios WHERE idComentario = $idComentario AND id_usuario = $idUsuario";
         $result = mysqli_query($this->conexion, $sql);
-
     }
 
     public function findUsuariosPorComunidad()
@@ -649,7 +647,8 @@ class Model
         return $result;
     }
 
-    public function findCantidadEstadosPorUsuario() {
+    public function findCantidadEstadosPorUsuario()
+    {
         $sql = "SELECT CONCAT(u.nombre,' ',u.apellidos) AS nombre, COUNT(*) FROM usuarios u JOIN estados e ON u.id = e.idUsuario GROUP BY u.nombre";
         $result = mysqli_query($this->conexion, $sql);
         return $result;
@@ -658,7 +657,7 @@ class Model
     public function findPublicacionesPaginacion($publicacionBuscada, $empezar_desde, $cantidad_resultados_por_pagina)
     {
         // $sql = "select e.*, u.* from estadose join usuarios u on e.idUsuario = u.id WHERE e.idUsuario IN (SELECT amigo FROM es_amigo WHERE amigo_fk_a IN (SELECT id FROM usuarios WHERE correo = 'admin@whomeet.es'))";
-        $sql = "SELECT e.*, u.* FROM estados e JOIN usuarios u ON e.idUsuario = u.id WHERE u.baneado = 0 AND CONCAT(u.nombre, ' ', u.apellidos) LIKE '%".$publicacionBuscada."%' ORDER BY e.fecha DESC LIMIT $empezar_desde, $cantidad_resultados_por_pagina";
+        $sql = "SELECT e.*, u.* FROM estados e JOIN usuarios u ON e.idUsuario = u.id WHERE u.baneado = 0 AND CONCAT(u.nombre, ' ', u.apellidos) LIKE '%" . $publicacionBuscada . "%' ORDER BY e.fecha DESC LIMIT $empezar_desde, $cantidad_resultados_por_pagina";
         $result = mysqli_query($this->conexion, $sql);
 
         return $result;
@@ -666,16 +665,17 @@ class Model
 
     public function findPublicaciones($publicacionBuscada)
     {
-        $sql = "SELECT e.*, u.* FROM estados e JOIN usuarios u ON e.idUsuario = u.id WHERE u.baneado = 0 AND CONCAT(u.nombre, ' ', u.apellidos) LIKE '%".$publicacionBuscada."%' ORDER BY e.fecha DESC";
+        $sql = "SELECT e.*, u.* FROM estados e JOIN usuarios u ON e.idUsuario = u.id WHERE u.baneado = 0 AND CONCAT(u.nombre, ' ', u.apellidos) LIKE '%" . $publicacionBuscada . "%' ORDER BY e.fecha DESC";
         $result = mysqli_query($this->conexion, $sql);
 
         return $result;
     }
 
-    public function findPerfilUsuario($idUsuario) {
+    public function findPerfilUsuarioDatos($idUsuario)
+    {
 
-        $sql="SELECT u.*, p.*, pr.*, c.* FROM ((usuarios u JOIN poblacion p ON u.codpueblo = p.idpoblacion) JOIN provincia pr ON p.codprovincia = pr.idprovincia) JOIN comunidad c ON c.idComunidad = pr.codComunidad WHERE u.id = $idUsuario";
-        
+        $sql = "SELECT u.*, p.*, pr.*, c.* FROM ((usuarios u JOIN poblacion p ON u.codpueblo = p.idpoblacion) JOIN provincia pr ON p.codprovincia = pr.idprovincia) JOIN comunidad c ON c.idComunidad = pr.codComunidad WHERE u.id = $idUsuario";
+
         $result = mysqli_query($this->conexion, $sql);
 
         $usuario = array();
@@ -684,6 +684,39 @@ class Model
         }
 
         return $usuario;
+    }
+
+    public function findPerfilUsuarioEstado($idUsuario)
+    {
+        $sql = "SELECT u.*, e.* FROM usuarios u JOIN estados e ON e.idUsuario = u.id WHERE u.id = $idUsuario ORDER BY e.fecha DESC LIMIT 1";
+
+        $result = mysqli_query($this->conexion, $sql);
+
+        $usuario = array();
+        while ($row = mysqli_fetch_assoc($result)) {
+            $usuario[] = $row;
+        }
+
+        return $usuario;
+    }
+
+    public function findPerfilUsuarioPublicacionesById($idUsuario)
+    {
+        $sql = "SELECT e.*, u.* FROM estados e JOIN usuarios u ON u.id = e.idUsuario WHERE u.id = $idUsuario ORDER BY e.fecha DESC";
+        $result = mysqli_query($this->conexion, $sql);
+
+        $publicacion = array();
+        while ($row = mysqli_fetch_assoc($result)) {
+            $publicacion[] = $row;
+        }
+
+        return $publicacion;
+    }
+
+    public function updateVisitasUsuarios($idUsuario, $visitas)
+    {
+        $sql = "UPDATE usuarios SET visitas = $visitas WHERE id = $idUsuario";
+        $result = mysqli_query($this->conexion, $sql);
     }
 
     public function validarDatos($n, $e, $p, $hc, $f, $g)
