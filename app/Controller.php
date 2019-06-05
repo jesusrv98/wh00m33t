@@ -853,6 +853,6 @@ class Controller
         $idUsuario = implode(array_column($arrayUsuario, "id"));
         $m->setDesconectado($idUsuario);
         session_destroy();
-        header('Location: ../web/index.php?ctl=login');
+        header('Location: ../web/paginaInicio');
     }
 }
