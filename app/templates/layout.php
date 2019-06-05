@@ -31,6 +31,9 @@ if($params['baneado']) {
     <!-- Estilos y favicon -->
     <link rel="icon" href="images/logo.png">
     <style type="text/css">
+        #fondodelmenu {
+            background:transparent;
+        }
         #fondodelmenu:hover {
             background-color: #539689;
             color: white;
@@ -72,7 +75,9 @@ if($params['baneado']) {
                     <a class="nav-link" style="color:#33cbad" id="fondodelmenu" href='index.php?ctl=inicio'><i class="fas fa-home"></i> Inicio</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" style="color:#33cbad" id="fondodelmenu" href='index.php?ctl=perfil'><i class="far fa-user"></i> Perfil</a>
+                    <form method="post" action="index.php?ctl=perfil">
+                        <button type="submit" name="perfilUsuario" value="<?= implode(array_column($_SESSION['usuarioconectado'], "id")) ?>" class="nav-link" style="color:#33cbad; border:none" id="fondodelmenu" ><i class="far fa-user"></i> Perfil</button>  
+                    </form>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" style="color:#33cbad" id="fondodelmenu" href='index.php?ctl=mensajes'><i class="fas fa-comment-alt"></i> Mensajes

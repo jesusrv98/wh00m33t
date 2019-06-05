@@ -7,7 +7,7 @@ class Controller
     {
         $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, config::$mvc_bd_hostname);
 
-        if(!isset($_SESSION['usuarioconectado'])){
+        if (!isset($_SESSION['usuarioconectado'])) {
             header("Location: index.php?ctl=login");
         }
         $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
@@ -159,13 +159,13 @@ class Controller
         $empezar_desde = ($pagina - 1) * $cantidad_resultados_por_pagina;
 
         $consulta_todo = $m->findEstadosAmigos($correo);
-                        //Cuenta el número total de registros
-                        $total_registros = mysqli_num_rows($consulta_todo);
-                        //Obtiene el total de páginas existentes
-                        $total_paginas = ceil($total_registros / $cantidad_resultados_por_pagina);
-                        //Realiza la consulta en el orden de ID ascendente (cambiar "id" por, por ejemplo, "nombre" o "edad", alfabéticamente, etc.)
-                        //Limitada por la cantidad de cantidad por página
-                        $consulta_resultados = $m->findEstadosAmigosPaginacion($idUsuario, $empezar_desde, $cantidad_resultados_por_pagina);
+        //Cuenta el número total de registros
+        $total_registros = mysqli_num_rows($consulta_todo);
+        //Obtiene el total de páginas existentes
+        $total_paginas = ceil($total_registros / $cantidad_resultados_por_pagina);
+        //Realiza la consulta en el orden de ID ascendente (cambiar "id" por, por ejemplo, "nombre" o "edad", alfabéticamente, etc.)
+        //Limitada por la cantidad de cantidad por página
+        $consulta_resultados = $m->findEstadosAmigosPaginacion($idUsuario, $empezar_desde, $cantidad_resultados_por_pagina);
 
         $params = array(
             'visitas' => $visitas,
@@ -269,9 +269,9 @@ class Controller
         } else { //Si el GET de HTTP no está seteado, lleva a la primera página (puede ser cambiado al index.php o lo que sea)
             $pagina = 1;
         }
-    
+
         //Define el número 0 para empezar a paginar multiplicado por la cantidad de resultados por página
-        $empezar_desde = ($pagina - 1) * $cantidad_resultados_por_pagina; 
+        $empezar_desde = ($pagina - 1) * $cantidad_resultados_por_pagina;
 
         $consulta_todo = $m->findUsuariosNombre(trim($nombre));
         //Cuenta el número total de registros
@@ -421,7 +421,7 @@ class Controller
         $baneado = $m->isBaneado($idUsuario);
 
         $arrayAmigos = $m->findAmigosByIdUsuario($idUsuario);
-        
+
         $arrayCountAmigos = $m->countAmigosByIdUsuario($idUsuario);
         $countAmigos = implode(array_column($arrayCountAmigos, "count(*)"));
 
@@ -453,9 +453,9 @@ class Controller
         } else { //Si el GET de HTTP no está seteado, lleva a la primera página (puede ser cambiado al index.php o lo que sea)
             $pagina = 1;
         }
-    
+
         //Define el número 0 para empezar a paginar multiplicado por la cantidad de resultados por página
-        $empezar_desde = ($pagina - 1) * $cantidad_resultados_por_pagina; 
+        $empezar_desde = ($pagina - 1) * $cantidad_resultados_por_pagina;
 
         $consulta_todo = $m->findAmigosByIdUsuario($idUsuario);
         //Cuenta el número total de registros
@@ -482,7 +482,8 @@ class Controller
         require __DIR__ . '/templates/gestionAmigos.php';
     }
 
-    public function gestionUsuarios() {
+    public function gestionUsuarios()
+    {
         $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
 
         $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
@@ -498,9 +499,9 @@ class Controller
             $nombre = "";
         }
 
-        if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['usuarioBuscado']) && !empty($_POST['usuarioBuscado'])) {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['usuarioBuscado']) && !empty($_POST['usuarioBuscado'])) {
             $usuarioBuscado = $_POST['usuarioBuscado'];
-        }else{
+        } else {
             $usuarioBuscado = "";
         }
 
@@ -553,7 +554,8 @@ class Controller
         require __DIR__ . '/templates/estadisticas.php';
     }
 
-    public function gestionContenido() {
+    public function gestionContenido()
+    {
 
         $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
 
@@ -570,9 +572,9 @@ class Controller
             $nombre = "";
         }
 
-        if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['publicacionBuscada']) && !empty($_POST['publicacionBuscada'])) {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['publicacionBuscada']) && !empty($_POST['publicacionBuscada'])) {
             $publicacionBuscada = $_POST['publicacionBuscada'];
-        }else{
+        } else {
             $publicacionBuscada = "";
         }
 
@@ -628,7 +630,45 @@ class Controller
         );
 
         require __DIR__ . '/templates/gestionContenido.php';
+    }
 
+    public function perfil()
+    {
+        $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
+
+        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
+        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $idUsuario = implode(array_column($arrayUsuario, "id"));
+        $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
+        $countMensajesPV = implode(array_column($arrayMensajesPrivados, "count(*)"));
+        $baneado = $m->isBaneado($idUsuario);
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['nombreBusqueda']) && !empty($_POST['nombreBusqueda'])) {
+            $nombre = $_POST['nombreBusqueda'];
+        } else {
+            $nombre = "";
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['perfilUsuario']) && !empty($_POST['perfilUsuario'])) {
+            $perfilUsuario = $_POST['perfilUsuario'];
+        } else {
+            $perfilUsuario = $_POST['perfilUsuario'];
+        }
+
+
+        $arrayPerfilUsuario = $m->findPerfilUsuario($perfilUsuario);
+
+        $params = array(
+            'countMensajesPV' => $countMensajesPV,
+            'perfilUsuario' => $arrayPerfilUsuario,
+            'nombre' => '',
+            'nombreBusqueda' => '',
+            'idUsuarioConectado' => $idUsuario,
+
+            'baneado' => $baneado
+        );
+
+        require __DIR__ . '/templates/perfil.php';
     }
 
     function formatearFecha($fechaEntrada)
@@ -692,12 +732,61 @@ class Controller
 
     function aniosHastaHoy($fecha)
     {
-        date_default_timezone_set('Asia/Kolkata');
+        date_default_timezone_set('Europe/Madrid');
         $date1 = new DateTime($fecha);
         $date2 = new DateTime("now");
         $diff = $date1->diff($date2);
         echo $diff->y . ' años.';
+    }
 
+    function fechaCumpleanios($fecha)
+    {
+        date_default_timezone_set('Europe/Madrid');
+        setlocale(LC_ALL, "es_ES");
+        $fechaNac = new DateTime($fecha);
+        $dia = $fechaNac->format("d");
+        $mes = $fechaNac->format("m");
+        $mesTexto = "";
+
+        switch ($mes) {
+            case '01':
+                $mesTexto = "enero";
+                break;
+            case '02':
+                $mesTexto = "febrero";
+                break;
+            case '03':
+                $mesTexto = "marzo";
+                break;
+            case '04':
+                $mesTexto = "abril";
+                break;
+            case '05':
+                $mesTexto = "mayo";
+                break;
+            case '06':
+                $mesTexto = "junio";
+                break;
+            case '07':
+                $mesTexto = "julio";
+                break;
+            case '08':
+                $mesTexto = "agosto";
+                break;
+            case '09':
+                $mesTexto = "septiembre";
+                break;
+            case '10':
+                $mesTexto = "octubre";
+                break;
+            case '11':
+                $mesTexto = "noviembre";
+                break;
+            case '12':
+                $mesTexto = "diciembre";
+                break;
+        }
+        echo $dia . " de " . $mesTexto;
     }
 
     public function login()

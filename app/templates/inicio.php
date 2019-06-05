@@ -411,7 +411,10 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                             </div>
                                             <div class="media-body">
                                                 <div class="d-flex justify-content-between">
-                                                    <h4 class="media-heading" style="color: #33cbad;"><?= $publicacion['nombre'] . " " . $publicacion['apellidos'] ?></h4>
+                                                <form method="post" action="index.php?ctl=perfil">
+                                                    <input type="hidden" value="<?= $publicacion['id'] ?>" name="perfilUsuario">
+                                                    <h4 class="media-heading" onclick="$(this).parent().submit()" style="color: #33cbad;cursor:pointer;"><?= $publicacion['nombre'] . " " . $publicacion['apellidos'] ?></h4>
+                                                </form>
                                                     <?php if ($esSuEstado) : ?>
                                                         <i class="fas fa-times text-danger borrarPublicacion" style="cursor:pointer" id="<?= $publicacion['idEstado'] ?>" title="Borrar publicación"></i>
                                                     <?php endif; ?>
