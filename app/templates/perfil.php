@@ -252,11 +252,20 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                         </a>
                                     <?php endif; ?>
                                     <?php if (!$m->tieneSolicitud($perfilUsuarioEstado['id'], $params['idUsuario'])) : ?>
-                                        <a href="index.php?ctl=mensajes" style="text-decoration: none;color:grey;">
-                                            <div class="form-group btn" style="background-color: #cecece">
-                                                <i class="fas fa-envelope"></i> Enviar mensaje privado
-                                            </div>
-                                        </a>
+                                        <?php if ($params['idUsuario'] != $params['idUsuarioPerfil']) : ?>
+                                            <a href="index.php?ctl=mensajes" style="text-decoration: none;color:grey;">
+                                                <div class="form-group btn" style="background-color: #cecece">
+                                                    <i class="fas fa-envelope"></i> Enviar mensaje privado
+                                                </div>
+                                            </a>
+                                        <?php endif; ?>
+                                        <?php if ($params['idUsuario'] == $params['idUsuarioPerfil']) : ?>
+                                            <a href="index.php?ctl=configuracion" style="text-decoration: none;color:grey;">
+                                                <div class="form-group btn" style="background-color: #cecece">
+                                                    <i class="fas fa-edit"></i> Editar perfil
+                                                </div>
+                                            </a>
+                                        <?php endif; ?>
                                     <?php endif; ?>
                                 <?php endif; ?>
                                 <?php if (!$m->isAmigoPerfil($params['idUsuario'], $perfilUsuarioEstado['id'])) : ?>

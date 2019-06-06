@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-05-2019 a las 20:01:10
+-- Tiempo de generación: 07-06-2019 a las 00:47:47
 -- Versión del servidor: 10.1.37-MariaDB
 -- Versión de PHP: 7.3.0
 
@@ -42,7 +42,52 @@ CREATE TABLE `comentarios` (
 
 INSERT INTO `comentarios` (`idComentario`, `id_espacioComentado`, `id_usuario`, `textoComentario`, `fecha_comentario`) VALUES
 (104, 135, 30, 'eeee', '2019-05-26 22:36:16'),
-(105, 137, 30, 'jajaja', '2019-05-26 22:43:01');
+(105, 137, 30, 'jajaja', '2019-05-26 22:43:01'),
+(107, 3, 30, 'Jjajajaja', '2019-05-27 23:37:36'),
+(108, 3, 30, 'jajaja', '2019-05-28 00:04:29'),
+(110, 139, 58, 'jajajaja', '2019-05-28 10:42:29'),
+(111, 139, 58, 'Me descojono', '2019-05-28 19:49:23'),
+(112, 138, 58, 'jajajaj', '2019-05-28 19:49:32'),
+(115, 146, 57, 'Jejejeje', '2019-05-28 21:15:48'),
+(119, 146, 30, 'Vaya xD', '2019-06-04 18:43:02'),
+(135, 137, 30, 'Jajaja', '2019-06-06 01:03:18'),
+(145, 165, 30, 'Hola', '2019-06-06 22:02:40');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `comunidad`
+--
+
+CREATE TABLE `comunidad` (
+  `idComunidad` int(10) NOT NULL,
+  `comunidad` varchar(50) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `comunidad`
+--
+
+INSERT INTO `comunidad` (`idComunidad`, `comunidad`) VALUES
+(1, 'Andalucía'),
+(2, 'Aragón'),
+(3, 'Canarias'),
+(4, 'Cantabria'),
+(5, 'Castilla - La Mancha'),
+(6, 'Castilla y León'),
+(7, 'Cataluña'),
+(8, 'Ceuta'),
+(9, 'Comunidad de Madrid'),
+(10, 'Comunidad Valenciana'),
+(11, 'Extremadura'),
+(12, 'Galicia'),
+(13, 'Islas Baleares'),
+(14, 'La Rioja'),
+(15, 'Melilla'),
+(16, 'Navarra'),
+(17, 'País Vasco/Euskadi'),
+(18, 'Principiado de Asturias'),
+(19, 'Región de Murcia');
 
 -- --------------------------------------------------------
 
@@ -70,7 +115,21 @@ INSERT INTO `estados` (`idEstado`, `estadoCuerpo`, `fecha`, `idUsuario`) VALUES
 (134, '¡Hola, estoy usando WhoMeet por primera vez!', '2019-05-25 15:55:09', 56),
 (135, 'Hola de nuevo a todos.', '2019-05-25 16:36:31', 30),
 (136, '¡Hola, estoy usando WhoMeet por primera vez!', '2019-05-26 12:45:08', 57),
-(137, 'Qué hay de nuevo viejo', '2019-05-26 22:41:11', 56);
+(137, 'Qué hay de nuevo viejo', '2019-05-26 22:41:11', 56),
+(138, '¡Hola, estoy usando WhoMeet por primera vez!', '2019-05-28 00:09:53', 58),
+(139, 'Hola a todos', '2019-05-28 00:10:56', 58),
+(140, 'Hola', '2019-05-28 20:13:53', 30),
+(146, 'Sí, a ratos sí', '2019-05-28 21:15:15', 57),
+(153, 'Anda que anda', '2019-06-04 18:54:51', 54),
+(157, 'Yo lo veo jajaja', '2019-06-05 00:06:16', 30),
+(158, 'Qué hay', '2019-06-06 17:51:41', 30),
+(159, 'Jajajaj', '2019-06-06 17:51:43', 30),
+(160, 'Pues nada', '2019-06-06 17:51:45', 30),
+(161, 'Jajajaja', '2019-06-06 17:51:46', 30),
+(162, 'Estoy', '2019-06-06 17:51:47', 30),
+(164, 'Estados', '2019-06-06 17:51:52', 30),
+(165, 'Jajajaja', '2019-06-06 17:51:53', 30),
+(166, '¡Hola, estoy usando WhoMeet por primera vez!', '2019-06-06 19:25:20', 211);
 
 -- --------------------------------------------------------
 
@@ -102,14 +161,54 @@ INSERT INTO `es_amigo` (`idamigo`, `amigo_fk_a`, `amigo`, `tipo`, `bloqueado`) V
 (90, 54, 56, 'Amigos', 0),
 (91, 56, 54, 'Amigos', 0),
 (92, 30, 54, 'Amigos', 0),
-(93, 30, 56, 'Amigos', 0),
 (94, 54, 30, 'Amigos', 0),
-(95, 56, 30, 'Amigos', 0),
 (96, 55, 56, 'Amigos', 0),
 (97, 56, 55, 'Amigos', 0),
-(98, 30, 57, 'Amigos', 0),
-(99, 57, 30, 'Amigos', 0),
-(100, 57, 57, 'Amigos', 0);
+(100, 57, 57, 'Amigos', 0),
+(103, 58, 58, 'Amigos', 0),
+(115, 54, 58, 'Amigos', 0),
+(121, 58, 30, 'Amigos', 0),
+(124, 30, 58, 'Amigos', 0),
+(127, 58, 54, 'Amigos', 0),
+(150, 30, 57, 'Amigos', 0),
+(151, 57, 30, 'Amigos', 0),
+(159, 56, 30, 'Amigos', 0),
+(160, 30, 56, 'Amigos', 0),
+(161, 30, 211, 'Amigos', 0),
+(162, 211, 30, 'Amigos', 0),
+(163, 211, 211, 'Amigos', 0),
+(164, 211, 56, 'Amigos', 0),
+(165, 56, 211, 'Amigos', 0),
+(166, 211, 54, 'Amigos', 0),
+(167, 54, 211, 'Amigos', 0),
+(168, 211, 55, 'Amigos', 0),
+(169, 55, 211, 'Amigos', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `fotosusuario`
+--
+
+CREATE TABLE `fotosusuario` (
+  `idFoto` int(11) NOT NULL,
+  `rutaFoto` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
+  `tituloFoto` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `fechaSubida` datetime NOT NULL,
+  `idUsuario` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `fotosusuario`
+--
+
+INSERT INTO `fotosusuario` (`idFoto`, `rutaFoto`, `tituloFoto`, `fechaSubida`, `idUsuario`) VALUES
+(7, '30 - 15598592382luz5i.jpg', '', '2019-06-07 00:13:58', 30),
+(8, '30 - 1559859242club-directors-LorenzoSerraFerrer.jpg', '', '2019-06-07 00:14:02', 30),
+(9, '30 - 1559859247IMG_20190121_092851_1.jpg', '', '2019-06-07 00:14:07', 30),
+(10, '30 - 1559859261class diagram.png', '', '2019-06-07 00:14:21', 30),
+(11, '30 - 1559859431images.jpg', 'Hola bebeeee', '2019-06-07 00:17:11', 30),
+(12, '54 - 15598594944228284.jpg', 'El campu del betish', '2019-06-07 00:18:14', 54);
 
 -- --------------------------------------------------------
 
@@ -130,8 +229,67 @@ CREATE TABLE `notificaciones` (
 --
 
 INSERT INTO `notificaciones` (`id`, `id_fkTipo`, `tipo`, `vista`, `idUsuario`) VALUES
-(114, 135, 'comentarioEstado', 0, 30),
-(115, 137, 'comentarioEstado', 0, 56);
+(114, 135, 'comentarioEstado', 1, 30),
+(115, 137, 'comentarioEstado', 1, 56),
+(116, 135, 'comentarioEstado', 1, 30),
+(117, 3, 'comentarioEstado', 1, 30),
+(118, 3, 'comentarioEstado', 1, 30),
+(119, 58, 'peticionAmistad', 1, 56),
+(120, 137, 'comentarioEstado', 1, 56),
+(121, 56, 'peticionAmistad', 1, 58),
+(122, 30, 'peticionAmistad', 1, 58),
+(123, 58, 'peticionAmistad', 1, 30),
+(124, 30, 'peticionAmistad', 1, 58),
+(125, 58, 'peticionAmistad', 1, 30),
+(126, 58, 'peticionAmistad', 1, 30),
+(127, 58, 'peticionAmistad', 1, 54),
+(128, 139, 'comentarioEstado', 1, 58),
+(129, 139, 'comentarioEstado', 1, 58),
+(130, 138, 'comentarioEstado', 1, 58),
+(133, 59, 'peticionAmistad', 1, 58),
+(134, 146, 'comentarioEstado', 1, 57),
+(135, 146, 'comentarioEstado', 1, 57),
+(136, 30, 'peticionAmistad', 1, 58),
+(137, 30, 'peticionAmistad', 1, 57),
+(139, 148, 'comentarioEstado', 1, 30),
+(140, 61, 'peticionAmistad', 1, 30),
+(142, 152, 'comentarioEstado', 1, 30),
+(143, 146, 'comentarioEstado', 1, 57),
+(144, 152, 'comentarioEstado', 1, 30),
+(145, 152, 'comentarioEstado', 1, 30),
+(146, 152, 'comentarioEstado', 1, 30),
+(147, 155, 'comentarioEstado', 1, 54),
+(148, 155, 'comentarioEstado', 1, 54),
+(149, 155, 'comentarioEstado', 1, 54),
+(150, 155, 'comentarioEstado', 1, 54),
+(151, 154, 'comentarioEstado', 1, 54),
+(152, 154, 'comentarioEstado', 1, 54),
+(153, 154, 'comentarioEstado', 1, 54),
+(154, 154, 'comentarioEstado', 1, 54),
+(155, 154, 'comentarioEstado', 1, 54),
+(156, 152, 'comentarioEstado', 1, 30),
+(157, 154, 'comentarioEstado', 1, 54),
+(179, 140, 'comentarioEstado', 1, 30),
+(180, 137, 'comentarioEstado', 1, 56),
+(181, 157, 'comentarioEstado', 1, 30),
+(182, 157, 'comentarioEstado', 1, 30),
+(183, 165, 'comentarioEstado', 1, 30),
+(184, 165, 'comentarioEstado', 1, 30),
+(185, 165, 'comentarioEstado', 1, 30),
+(186, 165, 'comentarioEstado', 1, 30),
+(187, 165, 'comentarioEstado', 1, 30),
+(188, 165, 'comentarioEstado', 1, 30),
+(189, 57, 'peticionAmistad', 1, 30),
+(190, 56, 'peticionAmistad', 1, 30),
+(191, 56, 'peticionAmistad', 1, 30),
+(192, 56, 'peticionAmistad', 1, 30),
+(193, 30, 'peticionAmistad', 1, 56),
+(194, 30, 'peticionAmistad', 1, 56),
+(195, 56, 'peticionAmistad', 1, 211),
+(196, 54, 'peticionAmistad', 1, 211),
+(197, 55, 'peticionAmistad', 1, 211),
+(198, 163, 'comentarioEstado', 1, 30),
+(199, 165, 'comentarioEstado', 1, 30);
 
 -- --------------------------------------------------------
 
@@ -8252,6 +8410,7 @@ INSERT INTO `poblacion` (`idpoblacion`, `codprovincia`, `poblacion`, `postal`) V
 
 CREATE TABLE `provincia` (
   `idprovincia` int(10) UNSIGNED NOT NULL,
+  `codComunidad` int(10) NOT NULL,
   `provincia` varchar(50) COLLATE utf8_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
@@ -8259,59 +8418,59 @@ CREATE TABLE `provincia` (
 -- Volcado de datos para la tabla `provincia`
 --
 
-INSERT INTO `provincia` (`idprovincia`, `provincia`) VALUES
-(1, 'Álava'),
-(2, 'Castellón'),
-(3, 'León'),
-(4, 'Salamanca'),
-(5, 'Albacete'),
-(6, 'Ceuta'),
-(7, 'Lleida'),
-(8, 'Segovia'),
-(9, 'Alicante'),
-(10, 'Ciudad Real'),
-(11, 'Lugo'),
-(12, 'Sevilla'),
-(13, 'Almería'),
-(14, 'Córdoba'),
-(15, 'Madrid'),
-(16, 'Soria'),
-(17, 'Asturias'),
-(18, 'A Coruña'),
-(19, 'Málaga'),
-(20, 'Tarragona'),
-(21, 'Ávila'),
-(22, 'Cuenca'),
-(23, 'Melilla'),
-(24, 'S.C. Tenerife'),
-(25, 'Badajoz'),
-(26, 'Girona'),
-(27, 'Murcia'),
-(28, 'Teruel'),
-(29, 'Baleares'),
-(30, 'Granada'),
-(31, 'Navarra'),
-(32, 'Toledo'),
-(33, 'Barcelona'),
-(34, 'Guadalajara'),
-(35, 'Ourense'),
-(36, 'Valencia'),
-(37, 'Burgos'),
-(38, 'Guipúzcoa'),
-(39, 'Palencia'),
-(40, 'Valladolid'),
-(41, 'Cáceres'),
-(42, 'Huelva'),
-(43, 'Las Palmas'),
-(44, 'Vizcaya'),
-(45, 'Cádiz'),
-(46, 'Huesca'),
-(47, 'Pontevedra'),
-(48, 'Zamora'),
-(49, 'Cantabria'),
-(50, 'Jaén'),
-(51, 'La Rioja'),
-(52, 'Zaragoza');
+INSERT INTO `provincia` (`idprovincia`, `codComunidad`, `provincia`) VALUES
+(1, 17, 'Álava'),
+(2, 10, 'Castellón'),
+(3, 6, 'León'),
+(4, 6, 'Salamanca'),
+(5, 5, 'Albacete'),
+(6, 8, 'Ceuta'),
+(7, 7, 'Lleida'),
+(8, 6, 'Segovia'),
+(9, 10, 'Alicante'),
+(10, 5, 'Ciudad Real'),
+(11, 12, 'Lugo'),
+(12, 1, 'Sevilla'),
+(13, 1, 'Almería'),
+(14, 1, 'Córdoba'),
+(15, 9, 'Madrid'),
+(16, 6, 'Soria'),
+(17, 18, 'Asturias'),
+(18, 12, 'A Coruña'),
+(19, 1, 'Málaga'),
+(20, 7, 'Tarragona'),
+(21, 6, 'Ávila'),
+(22, 5, 'Cuenca'),
+(23, 15, 'Melilla'),
+(24, 3, 'S.C. Tenerife'),
+(25, 11, 'Badajoz'),
+(26, 7, 'Girona'),
+(27, 19, 'Murcia'),
+(28, 2, 'Teruel'),
+(29, 13, 'Baleares'),
+(30, 1, 'Granada'),
+(31, 16, 'Navarra'),
+(32, 5, 'Toledo'),
+(33, 7, 'Barcelona'),
+(34, 5, 'Guadalajara'),
+(35, 12, 'Ourense'),
+(36, 10, 'Valencia'),
+(37, 6, 'Burgos'),
+(38, 17, 'Guipúzcoa'),
+(39, 6, 'Palencia'),
+(40, 6, 'Valladolid'),
+(41, 11, 'Cáceres'),
+(42, 1, 'Huelva'),
+(43, 3, 'Las Palmas'),
+(44, 17, 'Vizcaya'),
+(45, 1, 'Cádiz'),
+(46, 2, 'Huesca'),
+(47, 12, 'Pontevedra'),
+(48, 6, 'Zamora'),
+(49, 4, 'Cantabria'),
+(50, 1, 'Jaén'),
+(51, 14, 'La Rioja'),
+(52, 2, 'Zaragoza');
 
 -- --------------------------------------------------------
 
@@ -8337,7 +8496,25 @@ INSERT INTO `solicitudes` (`idSolicitud`, `idSolicitante`, `idSolicitado`, `esta
 (42, 56, 30, 1),
 (43, 56, 55, 1),
 (45, 57, 54, 1),
-(46, 57, 54, 1);
+(46, 57, 54, 1),
+(47, 58, 56, 1),
+(48, 56, 58, 1),
+(50, 58, 30, 1),
+(51, 30, 58, 1),
+(52, 58, 30, 1),
+(53, 58, 30, 1),
+(54, 58, 54, 1),
+(56, 30, 58, 1),
+(57, 30, 57, 1),
+(81, 57, 30, 1),
+(82, 56, 30, 1),
+(83, 56, 30, 1),
+(84, 56, 30, 1),
+(85, 30, 56, 1),
+(86, 30, 56, 1),
+(87, 56, 211, 1),
+(88, 54, 211, 1),
+(89, 55, 211, 1);
 
 -- --------------------------------------------------------
 
@@ -8358,6 +8535,8 @@ CREATE TABLE `usuarios` (
   `estado` varchar(12) COLLATE utf8_spanish_ci DEFAULT 'offline',
   `estadocivil` varchar(40) COLLATE utf8_spanish_ci DEFAULT 'Sin determinar',
   `fotoPerfil` varchar(120) COLLATE utf8_spanish_ci NOT NULL DEFAULT 'avatar.jpg',
+  `baneado` tinyint(1) NOT NULL DEFAULT '0',
+  `fecha_baneo` datetime DEFAULT NULL,
   `visitas` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
@@ -8365,12 +8544,14 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `correo`, `pass`, `nombre`, `apellidos`, `fechanac`, `sexo`, `telefono`, `codpueblo`, `estado`, `estadocivil`, `fotoPerfil`, `visitas`) VALUES
-(30, 'admin@whomeet.es', '$2y$10$pb3YiUVzxOEaCgAmLDlOOOk8TucyyiTr6.T/XG3Y/6XYutPdQc5Ie', 'Administrador', 'WhoMeet', '1998-07-17', 'Masculino', '653012862', 6118, 'online', 'Con pareja', '301558893604logo.png', 10),
-(54, 'qsetien@gmail.com', '$2y$10$etHLMNC1EKXzrPaCcIw0huYCO2jhB6qrxsqydrqZJ3dnTdRND2SWm', 'Enrique', 'Setién Solar', '1952-02-04', 'Masculino', '617071998', 5868, 'offline', 'Casado', '541558893712locelso.jpg', 0),
-(55, 'sleon7@gmail.com', '$2y$10$mdiJMHYuPFt6jA648iVQ8OJXhjGBRn7H0CyV3.rSGat5Va9uj01kS', 'Sergio', 'León Limones', '1989-09-07', 'Masculino', '689346200', 2115, 'offline', 'Casado', '55155889367042844697_2155401134470488_3631384957458317312_o.jpg', 0),
-(56, 'rodriguezvargasjesus@gmail.com', '$2y$10$XWZU3Nfi7Jc3o8pk3mGVquoPQV4uwrVLNFcbqKKs5h0cnU9INyMI2', 'Jesús', 'Rodríguez Vargas', '1998-07-17', 'Masculino', '653013862', 6118, 'online', 'Soltero', '561558903361IMG_20190525_202747.jpg', 0),
-(57, 'pizarra_maria_71@hotmail.es', '$2y$10$I5NdwrdrObPeb1UOYWPzse.s3yIkmsyeuPKCQ9FP7mbkRJCLuY/ku', 'María José', 'Vargas García', '1971-11-18', 'Femenino', '653013862', 6118, 'offline', 'Casada', '571558893571capa1.png', 0);
+INSERT INTO `usuarios` (`id`, `correo`, `pass`, `nombre`, `apellidos`, `fechanac`, `sexo`, `telefono`, `codpueblo`, `estado`, `estadocivil`, `fotoPerfil`, `baneado`, `fecha_baneo`, `visitas`) VALUES
+(30, 'admin@whomeet.es', '$2y$10$pb3YiUVzxOEaCgAmLDlOOOk8TucyyiTr6.T/XG3Y/6XYutPdQc5Ie', 'Administrador', 'WhoMeet', '1998-07-17', 'Masculino', '653012862', 6118, 'offline', 'Con pareja', '301558893604logo.png', 0, NULL, 35),
+(54, 'qsetien@gmail.com', '$2y$10$etHLMNC1EKXzrPaCcIw0huYCO2jhB6qrxsqydrqZJ3dnTdRND2SWm', 'Enrique', 'Setién Solar', '1952-02-04', 'Masculino', '617071998', 5868, 'offline', 'Casado', '541559652383D48CbtOWsAYTJPI.jpg', 0, '2019-06-06 18:28:25', 21),
+(55, 'sleon7@gmail.com', '$2y$10$mdiJMHYuPFt6jA648iVQ8OJXhjGBRn7H0CyV3.rSGat5Va9uj01kS', 'Sergio', 'León Limones', '1989-09-07', 'Masculino', '689346200', 2115, 'offline', 'Casado', '55155889367042844697_2155401134470488_3631384957458317312_o.jpg', 0, NULL, 3),
+(56, 'rodriguezvargasjesus@gmail.com', '$2y$10$XWZU3Nfi7Jc3o8pk3mGVquoPQV4uwrVLNFcbqKKs5h0cnU9INyMI2', 'Jesús', 'Rodríguez Vargas', '1998-07-17', 'Masculino', '653013862', 6118, 'offline', 'Soltero', '561559861061IMG_20190121_092851_1.jpg', 0, NULL, 75),
+(57, 'pizarra_maria_71@hotmail.es', '$2y$10$I5NdwrdrObPeb1UOYWPzse.s3yIkmsyeuPKCQ9FP7mbkRJCLuY/ku', 'María José', 'Vargas García', '1971-11-18', 'Femenino', '653013862', 6118, 'offline', 'Casada', '5715590709042luz5i.jpg', 0, NULL, 8),
+(58, 'johndoe@gmail.com', '$2y$10$.roHm28KXoOrIk49eCdMFuF1YNSe6WVhzAtQdYlrNmoR3OclcLuem', 'John', 'Doe', '0001-12-29', 'Otro', '666666666', 2902, 'offline', 'Viudx', '581558995049Snapchat-1723882205.jpg', 0, NULL, 2),
+(211, 'lserra@gmail.com', '$2y$10$1yh7nefCu1Yi8PJvzdR/SuIhX9HPCBuheIiiGDuaKeVPRHcBAo0PS', 'Lorenzo', 'Serra Ferrer', '1961-11-04', 'Masculino', '673922209', 853, 'offline', 'Casado', '2111559842183club-directors-LorenzoSerraFerrer.jpg', 0, NULL, 20);
 
 --
 -- Índices para tablas volcadas
@@ -8383,6 +8564,12 @@ ALTER TABLE `comentarios`
   ADD PRIMARY KEY (`idComentario`),
   ADD KEY `id_espacioComentado` (`id_espacioComentado`),
   ADD KEY `id_usuario` (`id_usuario`);
+
+--
+-- Indices de la tabla `comunidad`
+--
+ALTER TABLE `comunidad`
+  ADD PRIMARY KEY (`idComunidad`);
 
 --
 -- Indices de la tabla `estados`
@@ -8398,6 +8585,13 @@ ALTER TABLE `es_amigo`
   ADD PRIMARY KEY (`idamigo`),
   ADD KEY `amigo` (`amigo`),
   ADD KEY `FK_AMIGOS` (`amigo_fk_a`);
+
+--
+-- Indices de la tabla `fotosusuario`
+--
+ALTER TABLE `fotosusuario`
+  ADD PRIMARY KEY (`idFoto`),
+  ADD KEY `idUsuario` (`idUsuario`);
 
 --
 -- Indices de la tabla `notificaciones`
@@ -8418,7 +8612,8 @@ ALTER TABLE `poblacion`
 -- Indices de la tabla `provincia`
 --
 ALTER TABLE `provincia`
-  ADD PRIMARY KEY (`idprovincia`);
+  ADD PRIMARY KEY (`idprovincia`),
+  ADD KEY `codComunidad` (`codComunidad`);
 
 --
 -- Indices de la tabla `solicitudes`
@@ -8444,25 +8639,37 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `comentarios`
 --
 ALTER TABLE `comentarios`
-  MODIFY `idComentario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=106;
+  MODIFY `idComentario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=146;
+
+--
+-- AUTO_INCREMENT de la tabla `comunidad`
+--
+ALTER TABLE `comunidad`
+  MODIFY `idComunidad` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `estados`
 --
 ALTER TABLE `estados`
-  MODIFY `idEstado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=138;
+  MODIFY `idEstado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=167;
 
 --
 -- AUTO_INCREMENT de la tabla `es_amigo`
 --
 ALTER TABLE `es_amigo`
-  MODIFY `idamigo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
+  MODIFY `idamigo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=170;
+
+--
+-- AUTO_INCREMENT de la tabla `fotosusuario`
+--
+ALTER TABLE `fotosusuario`
+  MODIFY `idFoto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `notificaciones`
 --
 ALTER TABLE `notificaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=116;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=200;
 
 --
 -- AUTO_INCREMENT de la tabla `poblacion`
@@ -8480,13 +8687,13 @@ ALTER TABLE `provincia`
 -- AUTO_INCREMENT de la tabla `solicitudes`
 --
 ALTER TABLE `solicitudes`
-  MODIFY `idSolicitud` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `idSolicitud` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=212;
 
 --
 -- Restricciones para tablas volcadas
@@ -8513,6 +8720,12 @@ ALTER TABLE `es_amigo`
   ADD CONSTRAINT `amigo` FOREIGN KEY (`amigo`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Filtros para la tabla `fotosusuario`
+--
+ALTER TABLE `fotosusuario`
+  ADD CONSTRAINT `fotosusuario_ibfk_1` FOREIGN KEY (`idUsuario`) REFERENCES `usuarios` (`id`);
+
+--
 -- Filtros para la tabla `notificaciones`
 --
 ALTER TABLE `notificaciones`
@@ -8523,6 +8736,12 @@ ALTER TABLE `notificaciones`
 --
 ALTER TABLE `poblacion`
   ADD CONSTRAINT `poblacion_ibfk_1` FOREIGN KEY (`codprovincia`) REFERENCES `provincia` (`idprovincia`);
+
+--
+-- Filtros para la tabla `provincia`
+--
+ALTER TABLE `provincia`
+  ADD CONSTRAINT `provincia_ibfk_1` FOREIGN KEY (`codComunidad`) REFERENCES `comunidad` (`idComunidad`);
 
 --
 -- Filtros para la tabla `solicitudes`

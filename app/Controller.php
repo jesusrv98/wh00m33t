@@ -723,6 +723,13 @@ class Controller
             $idGaleria = $_COOKIE['idGaleria'];
         }
 
+        $arrayUsuarioPerfil = $m->findPerfilUsuarioDatos($idGaleria);
+        $nombreUsuario = implode(array_column($arrayUsuarioPerfil, "nombre"));
+        $apellidosUsuario = implode(array_column($arrayUsuarioPerfil, "apellidos"));
+
+        $arrayCountFotosUsuario = $m->getCountFotoPerfil($idGaleria);
+        $countFotosUsuario = implode(array_column($arrayCountFotosUsuario, "COUNT(*)"));
+
         $params = array(
             'countMensajesPV' => $countMensajesPV,
             'nombre' => '',
@@ -730,6 +737,9 @@ class Controller
             'listaFotos' => $m->getFotoPerfil($idGaleria),
             'idUsuario' => $idUsuario,
             'fotoPerfil' => $fotoPerfil,
+            'nombreUsuario' => $nombreUsuario,
+            'apellidosUsuario' => $apellidosUsuario,
+            'countFotosUsuario' => $countFotosUsuario,
             'baneado' => $baneado
         );
 

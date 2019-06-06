@@ -15,6 +15,9 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
+                <h4 style="color:#33cbad" class="bg-light border p-4 rounded">Fotos de <u><?= $params['nombreUsuario']." ".$params['apellidosUsuario'] ?></u> (<?= $params['countFotosUsuario'] ?>)</h4>
+            </div>
+            <div class="col-12">
                 <article class="row">
                     <?php foreach ($params['listaFotos'] as $foto) : ?>
                         <article class="col-md-3 text-center">
