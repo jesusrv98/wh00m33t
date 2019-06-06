@@ -172,6 +172,21 @@ class Model
         }
         return $isAmigo;
     }
+
+    public function isAmigoPerfil($idConectado, $idDos)
+    {
+        $sql = "SELECT * FROM es_amigo WHERE (amigo =" . $idDos . " AND amigo_fk_a = " . $idConectado . " )";
+        $result = mysqli_query($this->conexion, $sql);
+        
+        if(mysqli_num_rows($result) >= 1){
+            return true;
+        }else{
+            return false;
+        }
+
+        return $result;
+    }
+
     public function setConectado($idUsuario)
     {
 
@@ -241,7 +256,7 @@ class Model
 
     public function findAmigosByIdUsuarioPaginacion($idUsuario, $empezar_desde, $cantidad_resultados_por_pagina)
     {
-        $sql = "SELECT * FROM (usuarios u JOIN poblacion p ON u.codpueblo = p.idpoblacion) JOIN provincia pr ON pr.idprovincia = p.codprovincia  WHERE id IN (SELECT amigo FROM es_amigo WHERE amigo_fk_a = $idUsuario AND amigo != $idUsuario) LIMIT $empezar_desde, $cantidad_resultados_por_pagina";
+        $sql = "SELECT * FROM (usuarios u JOIN poblacion p ON u.codpueblo = p.idpoblacion) JOIN provincia pr ON pr.idprovincia = p.codprovincia  WHERE id IN (SELECT amigo FROM es_amigo WHERE amigo_fk_a = $idUsuario AND amigo != $idUsuario) ORDER BY u.nombre LIMIT $empezar_desde, $cantidad_resultados_por_pagina";
         $result = mysqli_query($this->conexion, $sql);
 
         $amigo = array();
@@ -705,12 +720,15 @@ class Model
         $sql = "SELECT e.*, u.* FROM estados e JOIN usuarios u ON u.id = e.idUsuario WHERE u.id = $idUsuario ORDER BY e.fecha DESC";
         $result = mysqli_query($this->conexion, $sql);
 
-        $publicacion = array();
-        while ($row = mysqli_fetch_assoc($result)) {
-            $publicacion[] = $row;
-        }
+        return $result;
+    }
 
-        return $publicacion;
+    public function findPerfilUsuarioPublicacionesByIdPaginacion($idUsuario, $empezar_desde, $cantidad_resultados_por_pagina)
+    {
+        $sql = "SELECT e.*, u.* FROM estados e JOIN usuarios u ON u.id = e.idUsuario WHERE u.id = $idUsuario ORDER BY e.fecha DESC LIMIT $empezar_desde, $cantidad_resultados_por_pagina";
+        $result = mysqli_query($this->conexion, $sql);
+
+        return $result;
     }
 
     public function updateVisitasUsuarios($idUsuario, $visitas)
@@ -722,5 +740,51 @@ class Model
     public function validarDatos($n, $e, $p, $hc, $f, $g)
     {
         return (is_string($n) & is_numeric($e) & is_numeric($p) & is_numeric($hc) & is_numeric($f) & is_numeric($g));
+    }
+
+    public function getFotoPerfil($idUsuario)
+    {
+        $sql = "SELECT * FROM `fotosusuario` WHERE idUsuario = $idUsuario";
+        $result = mysqli_query($this->conexion, $sql);
+
+        $foto = array();
+        while ($row = mysqli_fetch_assoc($result)) {
+            $foto[] = $row;
+        }
+
+        return $foto;
+    }
+
+    public function getFotoPerfilLimit($idUsuario)
+    {
+        $sql = "SELECT * FROM `fotosusuario` WHERE idUsuario = $idUsuario ORDER BY fechaSubida DESC LIMIT 4";
+        $result = mysqli_query($this->conexion, $sql);
+
+        $foto = array();
+        while ($row = mysqli_fetch_assoc($result)) {
+            $foto[] = $row;
+        }
+
+        return $foto;
+    }
+
+    public function getCountFotoPerfil($idUsuario)
+    {
+        $sql = "SELECT COUNT(*) FROM `fotosusuario` WHERE idUsuario = $idUsuario";
+        $result = mysqli_query($this->conexion, $sql);
+
+        $foto = array();
+        while ($row = mysqli_fetch_assoc($result)) {
+            $foto[] = $row;
+        }
+
+        return $foto;
+    }
+
+    public function setFotoUsuario($idUsuario, $rutaFoto, $fecha, $tituloFoto)
+    {
+        $tituloFoto = htmlspecialchars($tituloFoto);
+        $sql = "INSERT INTO `fotosusuario`(`idFoto`, `rutaFoto`, `tituloFoto`, `fechaSubida`, `idUsuario`) VALUES (null, '$rutaFoto', '$tituloFoto', '$fecha', $idUsuario)";
+        $result = mysqli_query($this->conexion, $sql);
     }
 }

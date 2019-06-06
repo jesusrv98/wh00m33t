@@ -193,35 +193,6 @@ class Controller
         require __DIR__ . '/templates/inicio.php';
     }
 
-    function icreate($filename)
-    {
-        $isize = getimagesize($filename);
-        if ($isize['mime'] == 'image/jpeg') {
-            return imagecreatefromjpeg($filename);
-        } elseif ($isize['mime'] == 'image/png') {
-            return imagecreatefrompng($filename);
-        } elseif ($isize['mime'] == 'image/gif') {
-            return imagecreatefromgif($filename);
-        } else {
-            return null;
-        }
-        /* Add as many formats as you can */
-    }
-
-    /**
-     * Simple image resample into new image
-     *
-     * @param $image Image resource
-     * @param $width
-     * @param $height
-     */
-    function simpleresize($image, $width, $height)
-    {
-        $new = imageCreateTrueColor($width, $height);
-        imagecopyresampled($new, $image, 0, 0, 0, 0, $width, $height, imagesx($image), imagesy($image));
-        return $new;
-    }
-
     public function busqueda()
     {
         $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
@@ -652,32 +623,80 @@ class Controller
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['perfilUsuario']) && !empty($_POST['perfilUsuario'])) {
             $perfilUsuario = $_POST['perfilUsuario'];
+            setcookie('perfilUsuario', $perfilUsuario, time() + 3600);
         } else {
-            $perfilUsuario = $_POST['perfilUsuario'];
+            $perfilUsuario = $_COOKIE['perfilUsuario'];
+        }
+
+        $mensajeFoto = "";
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['tituloFoto'])) {
+            $mensajeFoto = "entra";
+            if (isset($_POST['tituloFoto']) && !empty($_POST['tituloFoto'])) {
+                $tituloFoto = $_POST['tituloFoto'];
+            } else {
+                $tituloFoto = "";
+            }
+
+            $carpetaDestino = "fotosUsuarios/";
+
+            # si hay algun archivo que subir
+            if (isset($_FILES["fotoSubir"]) && $_FILES["fotoSubir"]["name"]) {
+
+                # si es un formato de imagen
+                if ($_FILES["fotoSubir"]["type"] == "image/jpeg" || $_FILES["fotoSubir"]["type"] == "image/pjpeg" || $_FILES["fotoSubir"]["type"] == "image/gif" || $_FILES["fotoSubir"]["type"] == "image/png") {
+                    # si exsite la carpeta o se ha creado
+                    if (file_exists($carpetaDestino) || @mkdir($carpetaDestino)) {
+                        $origen = $_FILES["fotoSubir"]["tmp_name"];
+                        $destino = $carpetaDestino . $idUsuario . " - " . time() . $_FILES["fotoSubir"]["name"];
+                        if (@move_uploaded_file($origen, $destino)) {
+                            $imgh = $this->icreate($destino);
+                            $imgr = $this->simpleresize($imgh, 400, 400);
+                            $fecha = new DateTime("now");
+                            $resultado = $m->setFotoUsuario($idUsuario, $idUsuario . " - " . time() . $_FILES["fotoSubir"]["name"], $fecha->format('Y-m-d H:i:s'), $tituloFoto);
+                            $mensajeFoto = "Foto subida correctamente";
+                            
+                        } else {
+                            $mensajeFoto = "<br>No se ha podido mover el archivo: " . $_FILES["fotoSubir"]["name"];
+                        }
+                    } else {
+                        $mensajeFoto = "<br>No se ha podido crear la carpeta: " . $carpetaDestino;
+                    }
+                } else {
+                    $mensajeFoto = "<br>" . $_FILES["fotoSubir"]["name"] . " - NO es imagen jpg, png o gif";
+                }
+            } else {
+                $mensajeFoto = "<br>No se ha subido ninguna imagen";
+            }
         }
 
 
         $arrayPerfilUsuarioDatos = $m->findPerfilUsuarioDatos($perfilUsuario);
         $arrayPerfilUsuarioEstado = $m->findPerfilUsuarioEstado($perfilUsuario);
-        $arrayPerfilUsuarioPublicaciones = $m->findPerfilUsuarioPublicacionesById($perfilUsuario);
         $visitas = implode(array_column($arrayPerfilUsuarioDatos, "visitas"));
-        $idUSuarioPerfil = implode(array_column($arrayPerfilUsuarioDatos, "id"));
+        $idUsuarioPerfil = implode(array_column($arrayPerfilUsuarioDatos, "id"));
+        $nombreUsuario = implode(array_column($arrayPerfilUsuarioDatos, "nombre"));
+        $arrayCountFotosUsuario = $m->getCountFotoPerfil($idUsuarioPerfil);
+        $countFotosUsuario = implode(array_column($arrayCountFotosUsuario, "COUNT(*)"));
         $visitasNuevo = $visitas;
-        if($idUsuario != $idUSuarioPerfil) {
-            $visitasNuevo = $visitas+1;
+        if ($idUsuario != $idUsuarioPerfil) {
+            $visitasNuevo = $visitas + 1;
             $m->updateVisitasUsuarios($perfilUsuario, $visitasNuevo);
         }
-        
 
         $params = array(
             'countMensajesPV' => $countMensajesPV,
             'perfilUsuarioDatos' => $arrayPerfilUsuarioDatos,
             'perfilUsuarioEstado' => $arrayPerfilUsuarioEstado,
-            'perfilUsuarioPublicaciones' => $arrayPerfilUsuarioPublicaciones,
+            'perfilUsuarioPublicaciones' => $m->findPerfilUsuarioPublicacionesById($perfilUsuario),
+            'listaFotosLimit' => $m->getFotoPerfilLimit($idUsuarioPerfil),
             'visitas' => $visitasNuevo,
+            'contadorFotosUsuario' => $countFotosUsuario,
             'nombre' => '',
             'nombreBusqueda' => '',
+            'mensajeFoto' => $mensajeFoto,
             'idUsuario' => $idUsuario,
+            'idUsuarioPerfil' => $idUsuarioPerfil,
+            'nombreUsuario' => $nombreUsuario,
             'fotoPerfil' => $fotoPerfil,
             'baneado' => $baneado
         );
@@ -685,6 +704,66 @@ class Controller
         require __DIR__ . '/templates/perfil.php';
     }
 
+    public function galeria()
+    {
+        $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
+
+        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
+        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $idUsuario = implode(array_column($arrayUsuario, "id"));
+        $fotoPerfil = implode(array_column($arrayUsuario, "fotoPerfil"));
+        $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
+        $countMensajesPV = implode(array_column($arrayMensajesPrivados, "count(*)"));
+        $baneado = $m->isBaneado($idUsuario);
+
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $idGaleria = $_POST['idGaleria'];
+            setcookie('idGaleria',$idGaleria, time() +3600);
+        }else{
+            $idGaleria = $_COOKIE['idGaleria'];
+        }
+
+        $params = array(
+            'countMensajesPV' => $countMensajesPV,
+            'nombre' => '',
+            'nombreBusqueda' => '',
+            'listaFotos' => $m->getFotoPerfil($idGaleria),
+            'idUsuario' => $idUsuario,
+            'fotoPerfil' => $fotoPerfil,
+            'baneado' => $baneado
+        );
+
+        require __DIR__ . '/templates/galeria.php';
+    }
+
+    function icreate($filename)
+    {
+        $isize = getimagesize($filename);
+        if ($isize['mime'] == 'image/jpeg') {
+            return imagecreatefromjpeg($filename);
+        } elseif ($isize['mime'] == 'image/png') {
+            return imagecreatefrompng($filename);
+        } elseif ($isize['mime'] == 'image/gif') {
+            return imagecreatefromgif($filename);
+        } else {
+            return null;
+        }
+        /* Add as many formats as you can */
+    }
+
+    function simpleresize($image, $width, $height)
+    {
+        /**
+         * Simple image resample into new image
+         *
+         * @param $image Image resource
+         * @param $width
+         * @param $height
+         */
+        $new = imageCreateTrueColor($width, $height);
+        imagecopyresampled($new, $image, 0, 0, 0, 0, $width, $height, imagesx($image), imagesy($image));
+        return $new;
+    }
     function formatearFecha($fechaEntrada)
     {
         $estadoActualFecha = $fechaEntrada;
@@ -852,6 +931,8 @@ class Controller
         $arrayUsuario = $m->buscarSoloUsuario($correo);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
         $m->setDesconectado($idUsuario);
+        setcookie('idGaleria', null, time() -1);
+        setcookie('perfilUsuario', null, time() -1);
         session_destroy();
         header('Location: ../web/paginaInicio');
     }

@@ -21,7 +21,8 @@ $map = array(
     'gestionAmigos' => array('controller' => 'Controller', 'action' => 'gestionAmigos'),
     'gestionUsuarios' => array('controller' => 'Controller', 'action' => 'gestionUsuarios'),
     'estadisticas' => array('controller' => 'Controller', 'action' => 'estadisticas'),
-    'gestionContenido' => array('controller' => 'Controller', 'action' => 'gestionContenido')
+    'gestionContenido' => array('controller' => 'Controller', 'action' => 'gestionContenido'),
+    'galeria' => array('controller' => 'Controller', 'action' => 'galeria')
 
 );
 

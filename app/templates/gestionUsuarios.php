@@ -229,7 +229,10 @@ if ($params['idUsuarioConectado'] != 30) {
                         </div>
                         <div class="col-7 col-sm-7 col-md-7 col-lg-11 col-xl-11">
                             <div class="card-body">
-                                <h3 class="card-title font-weight-bold nombreCompleto" style="color:#42cfb3;"><?php echo $usuario['nombre'] . " " . $usuario['apellidos'] ?></h3> <small class="text-muted">Id: <?= $usuario['id'] ?></small>
+                                <form method="post" action="index.php?ctl=perfil">
+                                    <input type="hidden" value="<?= $usuario['id'] ?>" name="perfilUsuario">
+                                    <h3 class="card-title font-weight-bold nombreCompleto" onclick="$(this).parent().submit()" style="color:#42cfb3;cursor:pointer"><?php echo $usuario['nombre'] . " " . $usuario['apellidos'] ?></h3> <small class="text-muted">Id: <?= $usuario['id'] ?></small>
+                                </form>
                                 <h6><small class="text-muted">Correo: <?= $usuario['correo'] ?></small></h6>
                                 <h6><small class="text-muted">Edad: <?= $c->aniosHastaHoy($usuario['fechanac']) ?></small></h6>
                                 <h6><small class="text-muted">Sexo: <?= $usuario['sexo'] ?></small></h6>
@@ -250,16 +253,16 @@ if ($params['idUsuarioConectado'] != 30) {
                                         </button>
                                     </form>
                                     <?php
-                                        $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
-                                        $isBanned = $m->isBaneado($usuario['id']);
+                                    $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
+                                    $isBanned = $m->isBaneado($usuario['id']);
                                     ?>
                                     <form method=" post" class="form-inline my-2 my-md-0">
-                                        <?php if(!$isBanned) : ?>
+                                        <?php if (!$isBanned) : ?>
                                             <button type="button" id='<?= $usuario['id'] ?>' class="btn btn-sm botonBanear" style="background: lightgrey" title="Banear usuario">
                                                 <i class="fas fa-ban text-white"></i> <span class="textoCambiarBanear text-white">Banear usuario</span>
                                             </button>
                                         <?php endif; ?>
-                                        <?php if($isBanned) : ?>
+                                        <?php if ($isBanned) : ?>
                                             <button type="button" id='<?= $usuario['id'] ?>' class="btn btn-sm botonDesbanear" style="background: lightgrey" title="Desbanear usuario">
                                                 <i class="fas fa-unlock text-white"></i> <span class="textoCambiarDesbanear text-white">Desbanear usuario</span>
                                             </button>

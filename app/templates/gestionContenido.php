@@ -6,7 +6,7 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
 
 <script type="text/javascript" src="js/jqueryGoogle.js"></script>
 <script>
-    $(document).ready( function() {
+    $(document).ready(function() {
         $(".borrarPublicacion").click(function() {
             if (confirm("¿Desea borrar su publicación?")) {
                 var boton = $(this);
@@ -14,10 +14,10 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                 var idUsuario = boton.parent().attr("id");
 
                 var parametros = {
-                        'idUsuario': idUsuario,
-                        'idEstado': idEstado,
-                        'tipo': 'estado'
-                    };
+                    'idUsuario': idUsuario,
+                    'idEstado': idEstado,
+                    'tipo': 'estado'
+                };
                 $.ajax({
                     data: parametros,
                     url: '../app/templates/includes/servletGestionEstadosYComentarios.php',
@@ -25,7 +25,7 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                     async: true,
                     success: function(msg) {
                         if (msg == 'ok') {
-                            boton.parent().parent().parent().parent().css("display","none");
+                            boton.parent().parent().parent().parent().css("display", "none");
                         } else {
                             alert(msg);
                         }
@@ -41,11 +41,11 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                 var idUsuario = boton.parent().parent().attr("id");
 
                 var parametros = {
-                        'idUsuario': idUsuario,
-                        'idComentario': idComentario,
-                        'idEstado': idEstado,
-                        'tipo': 'comentario'
-                    };
+                    'idUsuario': idUsuario,
+                    'idComentario': idComentario,
+                    'idEstado': idEstado,
+                    'tipo': 'comentario'
+                };
                 $.ajax({
                     data: parametros,
                     url: '../app/templates/includes/servletGestionEstadosYComentarios.php',
@@ -53,7 +53,7 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                     async: true,
                     success: function(msg) {
                         if (msg == 'ok') {
-                            boton.parent().parent().parent().parent().css("display","none");
+                            boton.parent().parent().parent().parent().css("display", "none");
                         } else {
                             alert(msg);
                         }
@@ -92,7 +92,10 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                         </div>
                         <div class="media-body">
                             <div class="d-flex justify-content-between" id=<?= $publicacion['id'] ?>>
-                                <h4 class="media-heading" style="color: #33cbad;"><?= $publicacion['nombre'] . " " . $publicacion['apellidos'] ?></h4>
+                                <form method="post" action="index.php?ctl=perfil">
+                                    <input type="hidden" value="<?= $publicacion['id'] ?>" name="perfilUsuario">
+                                    <h4 class="media-heading" onclick="$(this).parent().submit()" style="color: #33cbad;cursor:pointer"><?= $publicacion['nombre'] . " " . $publicacion['apellidos'] ?></h4>
+                                </form>
                                 <i class="fas fa-times text-danger borrarPublicacion" style="cursor:pointer" id="<?= $publicacion['idEstado'] ?>" title="Borrar publicación"></i>
                             </div>
                             <p><?= $publicacion['estadoCuerpo'] ?></p>
@@ -123,10 +126,13 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                                 <img src="images/<?= $comentario['fotoPerfil'] ?>" width="60" height="60" alt="Foto perfil" class="media-object rounded-circle mr-2 mt-1 border">
                                             </div>
                                             <div class="media-body">
-                                                <h4 class="media-heading"><?= $comentario['nombre'] . " " . $comentario['apellidos'] ?>
-                                                    <small style="font-size: 0.8rem" class="text-muted">
-                                                        <?= $c->formatearFecha($comentario['fecha_comentario']) ?>
-                                                    </small></h4>
+                                                <form method="post" action="index.php?ctl=perfil">
+                                                    <input type="hidden" value="<?= $comentario['id'] ?>" name="perfilUsuario">
+                                                    <h4 class="media-heading" onclick="$(this).parent().submit()" style="cursor:pointer"><?= $comentario['nombre'] . " " . $comentario['apellidos'] ?>
+                                                </form>
+                                                <small style="font-size: 0.8rem" class="text-muted">
+                                                    <?= $c->formatearFecha($comentario['fecha_comentario']) ?>
+                                                </small></h4>
                                                 <div id="<?= $comentario['id'] ?>" class="d-flex justify-content-between">
                                                     <p><?= $comentario['textoComentario'] ?>.</p>
                                                     <small id="<?= $publicacion['idEstado'] ?>"><i class="fas fa-times text-secondary borrarComentario" style="cursor:pointer" id="<?= $comentario['idComentario'] ?>" title="Borrar comentario"></i></small>
