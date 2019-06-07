@@ -37,14 +37,12 @@ if($params['baneado']) {
         #fondodelmenu:hover {
             background-color: #539689;
             color: white;
-            font-size: 1em;
             border-radius: 1em;
         }
 
         #fondosubmenu:hover {
             background-color: #539689;
             color: white;
-            font-size: 1em;
         }
 
         #guardarpubli:hover {
@@ -56,6 +54,10 @@ if($params['baneado']) {
         #fondoDegradado {
             background: linear-gradient(#93ECFF, white);
             color: #027F6D;
+        }
+        .texto {
+            font-size:1.2rem;
+            font-weight: bolder;
         }
     </style>
     <!-- Fin style -->
@@ -72,15 +74,15 @@ if($params['baneado']) {
         <div style="color:#027F6D" class="collapse navbar-collapse" id="navbarsExample05">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" style="color:#33cbad" id="fondodelmenu" href='index.php?ctl=inicio'><i class="fas fa-home"></i> Inicio</a>
+                    <a class="nav-link texto" style="color:#33cbad;" id="fondodelmenu" href='index.php?ctl=inicio'><i class="fas fa-home"></i> Inicio</a>
                 </li>
                 <li class="nav-item">
                     <form method="post" action="index.php?ctl=perfil">
-                        <button type="submit" name="perfilUsuario" value="<?= implode(array_column($_SESSION['usuarioconectado'], "id")) ?>" class="nav-link" style="color:#33cbad; border:none" id="fondodelmenu" ><i class="far fa-user"></i> Perfil</button>  
+                        <button type="submit" name="perfilUsuario" value="<?= implode(array_column($_SESSION['usuarioconectado'], "id")) ?>" class="nav-link texto" style="color:#33cbad; border:none" id="fondodelmenu" ><i class="far fa-user"></i> Perfil</button>  
                     </form>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" style="color:#33cbad" id="fondodelmenu" href='index.php?ctl=mensajes'><i class="fas fa-comment-alt"></i> Mensajes
+                    <a class="nav-link texto" style="color:#33cbad" id="fondodelmenu" href='index.php?ctl=mensajes'><i class="fas fa-comment-alt"></i> Mensajes
                         <?php
                             if ($params['countMensajesPV']) {
                                 echo "<span class='badge badge-success'>" . $params['countMensajesPV'] . "</span></a>";
@@ -89,35 +91,35 @@ if($params['baneado']) {
                     </a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="fondodelmenu" style="color:#33cbad" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="far fa-bell"></i>
+                    <a class="nav-link dropdown-toggle texto" id="fondodelmenu" style="color:#33cbad" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="far fa-bell"></i>
                         Gestión del perfil
                     </a>
                     <div class="dropdown-menu" aria-labelledby="dropdown05">
-                        <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=solicitudes'><i class="fas fa-user"></i> Solicitudes</a>
-                        <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=gestionAmigos'><i class="fas fa-users"></i> Amigos</a>
+                        <a class="dropdown-item texto" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=solicitudes'><i class="fas fa-user"></i> Solicitudes</a>
+                        <a class="dropdown-item texto" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=gestionAmigos'><i class="fas fa-users"></i> Amigos</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="fondodelmenu" style="color:#33cbad" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cog"></i>
+                    <a class="nav-link dropdown-toggle texto" id="fondodelmenu" style="color:#33cbad" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cog"></i>
                         Configuración
                     </a>
                     <div class="dropdown-menu" aria-labelledby="dropdown05">
-                        <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=configuracion'><i class="fas fa-wrench"></i> Configuración</a>
-                        <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=contacto'><i class="fas fa-phone"></i> Contacto</a>
-                        <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=logout'><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+                        <a class="dropdown-item texto" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=configuracion'><i class="fas fa-wrench"></i> Configuración</a>
+                        <a class="dropdown-item texto" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=contacto'><i class="fas fa-phone"></i> Contacto</a>
+                        <a class="dropdown-item texto" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=logout'><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
                     </div>
                 </li>
             </ul>
             <?php if(implode(array_column($_SESSION['usuarioconectado'], "id")) == 30) : ?>
                 <ul class="navbar-nav d-flex justify-content-end">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" id="fondodelmenu" style="color:#33cbad" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-key"></i>
+                        <a class="nav-link dropdown-toggle texto" id="fondodelmenu" style="color:#33cbad" href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-key"></i>
                             Administración
                         </a>
                         <div class="dropdown-menu" aria-labelledby="dropdown05">
-                            <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=gestionUsuarios'><i class="fas fa-users-cog"></i> Gestión de usuarios</a>
-                            <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=gestionContenido'><i class="fas fa-trash-alt"></i> Gestión de contenido</a>
-                            <a class="dropdown-item" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=estadisticas'><i class="fas fa-chart-bar"></i> Estadísticas</a>
+                            <a class="dropdown-item texto" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=gestionUsuarios'><i class="fas fa-users-cog"></i> Gestión de usuarios</a>
+                            <a class="dropdown-item texto" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=gestionContenido'><i class="fas fa-trash-alt"></i> Gestión de contenido</a>
+                            <a class="dropdown-item texto" style="color:#33cbad" id="fondosubmenu" href='index.php?ctl=estadisticas'><i class="fas fa-chart-bar"></i> Estadísticas</a>
                         </div>
                     </li>
                 </ul>

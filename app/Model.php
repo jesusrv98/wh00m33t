@@ -177,10 +177,10 @@ class Model
     {
         $sql = "SELECT * FROM es_amigo WHERE (amigo =" . $idDos . " AND amigo_fk_a = " . $idConectado . " )";
         $result = mysqli_query($this->conexion, $sql);
-        
-        if(mysqli_num_rows($result) >= 1){
+
+        if (mysqli_num_rows($result) >= 1) {
             return true;
-        }else{
+        } else {
             return false;
         }
 
@@ -744,7 +744,7 @@ class Model
 
     public function getFotoPerfil($idUsuario)
     {
-        $sql = "SELECT * FROM `fotosusuario` WHERE idUsuario = $idUsuario";
+        $sql = "SELECT * FROM `fotosusuario` WHERE idUsuario = $idUsuario ORDER BY fechaSubida DESC";
         $result = mysqli_query($this->conexion, $sql);
 
         $foto = array();
@@ -786,5 +786,51 @@ class Model
         $tituloFoto = htmlspecialchars($tituloFoto);
         $sql = "INSERT INTO `fotosusuario`(`idFoto`, `rutaFoto`, `tituloFoto`, `fechaSubida`, `idUsuario`) VALUES (null, '$rutaFoto', '$tituloFoto', '$fecha', $idUsuario)";
         $result = mysqli_query($this->conexion, $sql);
+    }
+
+    public function getCountMeGustaByFoto($idFoto)
+    {
+        $sql = "SELECT COUNT(DISTINCT(idUsuario)) AS 'countMeGusta' FROM megusta WHERE idFoto = $idFoto";
+        $result = mysqli_query($this->conexion, $sql);
+
+        $meGusta = array();
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $meGusta[] = $row;
+        }
+
+        return $meGusta;
+    }
+
+    public function setMeGusta($idFoto, $idUsuario)
+    {
+        $sql = "INSERT INTO `megusta`(`idMeGusta`, `idFoto`, `idUsuario`) VALUES (null, $idFoto, $idUsuario)";
+        $result = mysqli_query($this->conexion, $sql);
+    }
+
+    public function borrarMeGusta($idFoto, $idUsuario)
+    {
+        $sql = "DELETE FROM megusta WHERE idFoto = $idFoto AND idUsuario = $idUsuario";
+        $result = mysqli_query($this->conexion, $sql);
+    }
+
+    public function tieneTuMeGusta($idFoto, $idUsuario)
+    {
+        $sql = "SELECT * FROM megusta WHERE idFoto = $idFoto AND idUsuario = $idUsuario";
+        $result = mysqli_query($this->conexion, $sql);
+
+        if(mysqli_num_rows($result) == 0){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    public function borrarFoto($idFoto)
+    {
+        $sql = "DELETE FROM fotosusuario WHERE idfoto = $idFoto";
+        $result = mysqli_query($this->conexion, $sql);
+
+        return $result;
     }
 }

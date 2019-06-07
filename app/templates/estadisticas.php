@@ -54,7 +54,7 @@ $datosCantidadEstados = json_encode($valoresCantidadEstados);
                 <div id="usuariosPorProvincia"></div>
             </div>
             <div class="col-12 d-block mt-5 mb-5">
-                <h3 class="text-center" style="color: #33cbad;">Cantidad de estados por usuarios</h3>
+                <h3 class="text-center" style="color: #33cbad;">Cantidad de publicaciones por usuario</h3>
                 <div id="estadosPorUsuarios"></div>
             </div>
         </div>

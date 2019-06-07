@@ -197,7 +197,7 @@
 </head>
 
 <body class="text-center" style="background: linear-gradient(#93ECFF, white);background-repeat: no-repeat;">
-    <div class="container-fluid">
+    <div class="container">
         <div class="row">
             <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
                 <img class="img-fluid" src="images/logo.png" alt="logoWhoMeet.png">

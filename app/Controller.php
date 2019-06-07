@@ -651,10 +651,10 @@ class Controller
                         if (@move_uploaded_file($origen, $destino)) {
                             $imgh = $this->icreate($destino);
                             $imgr = $this->simpleresize($imgh, 400, 400);
+                            
                             $fecha = new DateTime("now");
                             $resultado = $m->setFotoUsuario($idUsuario, $idUsuario . " - " . time() . $_FILES["fotoSubir"]["name"], $fecha->format('Y-m-d H:i:s'), $tituloFoto);
                             $mensajeFoto = "Foto subida correctamente";
-                            
                         } else {
                             $mensajeFoto = "<br>No se ha podido mover el archivo: " . $_FILES["fotoSubir"]["name"];
                         }
@@ -716,10 +716,10 @@ class Controller
         $countMensajesPV = implode(array_column($arrayMensajesPrivados, "count(*)"));
         $baneado = $m->isBaneado($idUsuario);
 
-        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $idGaleria = $_POST['idGaleria'];
-            setcookie('idGaleria',$idGaleria, time() +3600);
-        }else{
+            setcookie('idGaleria', $idGaleria, time() + 3600000);
+        } else {
             $idGaleria = $_COOKIE['idGaleria'];
         }
 
@@ -735,7 +735,8 @@ class Controller
             'nombre' => '',
             'nombreBusqueda' => '',
             'listaFotos' => $m->getFotoPerfil($idGaleria),
-            'idUsuario' => $idUsuario,
+            'idUsuarioConectado' => $idUsuario,
+            'idUsuarioPerfil' => $idGaleria,
             'fotoPerfil' => $fotoPerfil,
             'nombreUsuario' => $nombreUsuario,
             'apellidosUsuario' => $apellidosUsuario,
@@ -941,8 +942,8 @@ class Controller
         $arrayUsuario = $m->buscarSoloUsuario($correo);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
         $m->setDesconectado($idUsuario);
-        setcookie('idGaleria', null, time() -1);
-        setcookie('perfilUsuario', null, time() -1);
+        setcookie('idGaleria', null, time() - 1);
+        setcookie('perfilUsuario', null, time() - 1);
         session_destroy();
         header('Location: ../web/paginaInicio');
     }
