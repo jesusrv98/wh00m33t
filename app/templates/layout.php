@@ -66,7 +66,7 @@ if($params['baneado']) {
 <body>
     <!-- BARRA DE NAVEGACIÓN -->
     <nav class="navbar navbar-expand-md navbar-dark sticky-top" style="background: linear-gradient(#93ECFF,white); color: #027F6D">
-        <a class="navbar-brand" style="color:#027F6D" href='index.php?ctl=inicio'><img src="images/logo.png" width="100" height="100" class="d-inline-block align-top" alt="Logo" /></a>
+        <a class="navbar-brand" style="color:#027F6D" href='index.php?ctl=inicio'><img src="images/logo.png" width="110" height="55" class="d-inline-block align-top" alt="Logo" /></a>
         <button class="navbar-toggler" style="background:#33cbad" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
             <span style="color:#027F6D" class="navbar-toggler-icon"></span>
         </button>

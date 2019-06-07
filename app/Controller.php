@@ -747,6 +747,32 @@ class Controller
         require __DIR__ . '/templates/galeria.php';
     }
 
+    public function mensajes() {
+        $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
+
+        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
+        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $idUsuario = implode(array_column($arrayUsuario, "id"));
+        $fotoPerfil = implode(array_column($arrayUsuario, "fotoPerfil"));
+        $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
+        $countMensajesPV = implode(array_column($arrayMensajesPrivados, "count(*)"));
+        $baneado = $m->isBaneado($idUsuario);
+
+        $listaUsuariosMensajes = $m->getListaAmigosConMensajes($idUsuario);
+
+        $params = array(
+            'countMensajesPV' => $countMensajesPV,
+            'nombre' => '',
+            'nombreBusqueda' => '',
+            'listaUsuariosMensajes' => $listaUsuariosMensajes,
+            'idUsuarioConectado' => $idUsuario,
+            'fotoPerfil' => $fotoPerfil,
+            'baneado' => $baneado
+        );
+
+        require __DIR__ . '/templates/mensajes.php';
+    }
+
     function icreate($filename)
     {
         $isize = getimagesize($filename);

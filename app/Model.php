@@ -833,4 +833,19 @@ class Model
 
         return $result;
     }
+
+    public function getListaAmigosConMensajes($idUsuario)
+    {
+        $sql = "SELECT DISTINCT u.*, m.* FROM usuarios u JOIN mensajes m ON u.id = m.idUsuarioEnvia OR u.id = m.idUsuarioRecibe WHERE u.id !=$idUsuario GROUP BY u.id ORDER BY m.fechaMensaje DESC";
+        $result = mysqli_query($this->conexion, $sql);
+
+        $listaAmigos = array();
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $listaAmigos[] = $row;
+        }
+
+        return $listaAmigos;
+    
+    }
 }
