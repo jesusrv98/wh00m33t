@@ -57,7 +57,6 @@ if($params['baneado']) {
         }
         .texto {
             font-size:1.2rem;
-            font-weight: bolder;
         }
     </style>
     <!-- Fin style -->
