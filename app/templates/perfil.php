@@ -449,6 +449,6 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
 <?php $contenido = ob_get_clean() ?>
 
 <head>
-    <title>WhoMeet - Perfil de usuario </title>
+    <title>WhoMeet - Perfil </title>
 </head>
 <?php include 'layout.php' ?>

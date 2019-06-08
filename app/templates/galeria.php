@@ -160,6 +160,6 @@ $c = new Controller();
 <?php $contenido = ob_get_clean() ?>
 
 <head>
-    <title>WhoMeet - Busqueda </title>
+    <title>WhoMeet - Galería </title>
 </head>
 <?php include 'layout.php' ?>
