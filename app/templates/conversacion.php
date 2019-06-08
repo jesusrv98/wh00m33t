@@ -54,7 +54,7 @@ $c = new Controller();
             <div class="modal-footer">
                 <div class="type_msg">
                     <div class="input_msg_write">
-                        <section style="width:95%">
+                        <section style="width:95%" id="<?= $params['idUsuarioConversacion'] ?>">
                             <input type="text" id="mensajeNuevo" class="write_msg" placeholder="Escribe tu mensaje..." />
                         </section>
                         <section class="d-flex justify-content-center" style="width:5%;">
@@ -78,6 +78,7 @@ $c = new Controller();
     }
 
     $(document).ready(function() {
+        actualizarNotificaciones();
         autoResizeConversacion();
         scrollToBottom();
         $(window).resize(function() {
@@ -85,6 +86,7 @@ $c = new Controller();
         });
         $("#botonEnviarMensaje").click(function() {
             var mensajeNuevo = $("#mensajeNuevo").val();
+            var input = $(this).find("input");
             var idUsuarioRecibe = $(this).find("i").attr("id");
             var fechaHoy = new Date();
 
@@ -97,7 +99,8 @@ $c = new Controller();
                 var parametros = {
                     'mensajeNuevo': mensajeNuevo,
                     'idUsuarioEnvia': <?php echo $params['idUsuario'] ?>,
-                    'idUsuarioRecibe': idUsuarioRecibe
+                    'idUsuarioRecibe': idUsuarioRecibe,
+                    'tipo': 'mensaje'
                 };
                 $.ajax({
                     data: parametros,
@@ -106,10 +109,11 @@ $c = new Controller();
                     async: true,
                     success: function(msg) {
                         if (msg == 'ok') {
-
                             $('.contenedorNuevoMensaje').removeClass('d-none');
-                            $('.contenedorNuevoMensaje').append("<div class='outgoing_msg message'><div class='sent_msg'><p>"+mensajeNuevo+"</p><span class='time_date> <?= $c->horaMensajes($mensaje['fechaMensaje']) ?> | Hoy</span></div></div>");
-
+                            $('.contenedorNuevoMensaje').append("<div class='outgoing_msg message'><div class='sent_msg'><p>" + mensajeNuevo + "</p><span class='time_date>" + fechaHoy.getHours + ":" + fechaHoy.getMinutes + " | Hoy</span></div></div>");
+                            input.val("");
+                            input.attr("placeholder", "Escribe tu mensaje...");
+                            scrollToBottom();
                         } else {
                             alert(msg);
                         }
@@ -117,7 +121,67 @@ $c = new Controller();
                 });
             }
         });
+        $("#mensajeNuevo").keypress(function(e) {
+            var code = (e.keyCode ? e.keyCode : e.which);
+            var input = $(this);
+            if (code == 13) {
+                var mensajeNuevo = $(this).val();
+                var idUsuarioRecibe = $(this).parent().attr("id");
+                var fechaHoy = new Date();
+
+                if (mensajeNuevo.trim() == '') {
+                    alert('No se puede enviar un mensaje en blanco.');
+                    $(this).focus();
+                    return false;
+                } else {
+                    var parametros = {
+                        'mensajeNuevo': mensajeNuevo,
+                        'idUsuarioEnvia': <?php echo $params['idUsuario'] ?>,
+                        'idUsuarioRecibe': idUsuarioRecibe,
+                        'tipo': 'mensaje'
+                    };
+                    $.ajax({
+                        data: parametros,
+                        url: '../app/templates/includes/servletEnviarMensajes.php',
+                        type: 'post',
+                        async: true,
+                        success: function(msg) {
+                            if (msg == 'ok') {
+                                $('.contenedorNuevoMensaje').removeClass('d-none');
+                                $('.contenedorNuevoMensaje').append("<div class='outgoing_msg message'><div class='sent_msg'><p>" + mensajeNuevo + "</p><span class='time_date>" + fechaHoy.getHours + ":" + fechaHoy.getMinutes + " | Hoy</span></div></div>");
+                                input.val("");
+                                input.attr("placeholder", "Escribe tu mensaje...");
+                                scrollToBottom();
+                            } else {
+                                alert(msg);
+                            }
+                        }
+                    });
+                }
+            }
+        });
     });
+
+    function actualizarNotificaciones() {
+        var parametros = {
+            'idUsuarioEnvia': <?= $params['idUsuarioConversacion'] ?>,
+            'idUsuarioRecibe': <?= $params['idUsuario'] ?>,
+            'tipo': 'actualizar'
+        };
+        $.ajax({
+            data: parametros,
+            url: '../app/templates/includes/servletEnviarMensajes.php',
+            type: 'post',
+            async: true,
+            success: function(msg) {
+                if (msg == 'ok') {
+                    scrollToBottom();
+                } else {
+                    alert(msg);
+                }
+            }
+        });
+    }
 
     function autoResizeConversacion() {
         var altoPantalla = window.innerHeight;
@@ -134,6 +198,7 @@ $c = new Controller();
     const messages = document.getElementById('msg_history');
 
     function scrollToBottom() {
+        debugger;
         messages.scrollTop = messages.scrollHeight;
     }
 </script>

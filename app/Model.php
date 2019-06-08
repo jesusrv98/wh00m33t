@@ -833,9 +833,9 @@ class Model
         $sql = "SELECT * FROM megusta WHERE idFoto = $idFoto AND idUsuario = $idUsuario";
         $result = mysqli_query($this->conexion, $sql);
 
-        if(mysqli_num_rows($result) == 0){
+        if (mysqli_num_rows($result) == 0) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
@@ -850,7 +850,7 @@ class Model
 
     public function getListaAmigosConMensajes($idUsuario)
     {
-        $sql = "SELECT DISTINCT * FROM usuarios u JOIN mensajes m ON u.id IN(m.idUsuarioEnvia, m.idUsuarioRecibe) WHERE u.id IN(SELECT idUsuarioEnvia FROM mensajes WHERE idUsuarioRecibe = $idUsuario) OR id IN(SELECT idUsuarioRecibe FROM mensajes WHERE idUsuarioEnvia = $idUsuario) GROUP BY u.id";
+        $sql = "SELECT DISTINCT * FROM usuarios u JOIN mensajes m ON u.id IN(m.idUsuarioEnvia, m.idUsuarioRecibe) WHERE u.id IN(SELECT idUsuarioEnvia FROM mensajes WHERE idUsuarioRecibe = $idUsuario) OR id IN(SELECT idUsuarioRecibe FROM mensajes WHERE idUsuarioEnvia = $idUsuario) GROUP BY u.id ORDER BY m.fechaMensaje DESC";
         $result = mysqli_query($this->conexion, $sql);
 
         $listaAmigos = array();
@@ -864,7 +864,7 @@ class Model
 
     public function countMensajesSinVerPantallaMensajesGeneral($idUsuarioEnvia, $idUsuarioRecibe)
     {
-        $sql = "SELECT COUNT(DISTINCT(idMensaje)) as 'contador' FROM mensajes WHERE (idUsuarioEnvia = $idUsuarioEnvia AND idUsuarioRecibe = $idUsuarioRecibe  AND mensajeVisto = 0) OR (idUsuarioEnvia = $idUsuarioRecibe AND idUsuarioRecibe = $idUsuarioEnvia AND mensajeVisto = 0)";
+        $sql = "SELECT COUNT(DISTINCT(idMensaje)) as 'contador' FROM mensajes WHERE (idUsuarioEnvia = $idUsuarioRecibe AND idUsuarioRecibe = $idUsuarioEnvia AND mensajeVisto = 0)";
         $result = mysqli_query($this->conexion, $sql);
 
         $contador = array();
@@ -893,6 +893,14 @@ class Model
     public function enviarMensaje($idUsuarioEnvia, $idUsuarioRecibe, $cuerpoMensaje, $fecha)
     {
         $sql = "INSERT INTO `mensajes`(`idMensaje`, `idUsuarioEnvia`, `idUsuarioRecibe`, `cuerpoMensaje`, `fechaMensaje`, `mensajeVisto`) VALUES (null, $idUsuarioEnvia, $idUsuarioRecibe, '$cuerpoMensaje', '$fecha', 0)";
+        $result = mysqli_query($this->conexion, $sql);
+
+        return $result;
+    }
+
+    public function actualizarVistoMensajes($idUsuarioEnvia, $idUsuarioRecibe)
+    {
+        $sql = "UPDATE `mensajes` SET `mensajeVisto`= 1 WHERE `idUsuarioEnvia` = $idUsuarioEnvia AND `idUsuarioRecibe` = $idUsuarioRecibe";
         $result = mysqli_query($this->conexion, $sql);
 
         return $result;

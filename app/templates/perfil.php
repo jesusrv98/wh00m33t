@@ -253,11 +253,12 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                     <?php endif; ?>
                                     <?php if (!$m->tieneSolicitud($perfilUsuarioEstado['id'], $params['idUsuario'])) : ?>
                                         <?php if ($params['idUsuario'] != $params['idUsuarioPerfil']) : ?>
-                                            <a href="index.php?ctl=mensajes" style="text-decoration: none;color:grey;">
-                                                <div class="form-group btn" style="background-color: #cecece">
+                                            <form action="index.php?ctl=conversacion" method="POST">
+                                                <div class="form-group btn" onclick="$(this).parent().submit()" style="background-color: #cecece;cursor:pointer">
+                                                    <input type="hidden" name="idUsuarioConversacion" value="<?= $params['idUsuarioPerfil'] ?>">
                                                     <i class="fas fa-envelope"></i> Enviar mensaje privado
                                                 </div>
-                                            </a>
+                                            </form>
                                         <?php endif; ?>
                                         <?php if ($params['idUsuario'] == $params['idUsuarioPerfil']) : ?>
                                             <a href="index.php?ctl=configuracion" style="text-decoration: none;color:grey;">

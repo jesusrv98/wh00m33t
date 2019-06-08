@@ -15,6 +15,7 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
     window.resize = function() {
         $(".contenedorChat").css("max-height", window.innerHeight / 1.7 + "px");
     }
+
     $(document).ready(function() {
         $(".contenedorChat").css("max-height", window.innerHeight / 1.7 + "px");
         $(".contenedorChat").css("overflow-y", "auto");
@@ -74,6 +75,7 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                 });
             }
         });
+
         $('.botonComentar').click(function() {
             var formulario = $(this).parent().parent();
             var comentarioNuevo = $(formulario.find(".comentarioNuevo")).val();
@@ -118,6 +120,7 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                 });
             }
         });
+
         $(".comentarioNuevo").keypress(function(e) {
             var code = (e.keyCode ? e.keyCode : e.which);
             if (code == 13) {
@@ -165,6 +168,7 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                 }
             }
         });
+
         $("#estadoNuevo").keypress(function(e) {
             var code = (e.keyCode ? e.keyCode : e.which);
             if (code == 13) {
@@ -214,9 +218,11 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                 }
             }
         });
+
         $("#fotoSubir").change(function() {
             $(this).parent().submit();
         });
+
         $(".borrarPublicacion").click(function() {
             if (confirm("¿Desea borrar su publicación?")) {
                 var boton = $(this);
@@ -242,6 +248,7 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                 });
             }
         });
+
         $(".borrarComentario").click(function() {
             if (confirm("¿Desea borrar su comentario?")) {
                 var boton = $(this);
@@ -269,6 +276,7 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                 });
             }
         });
+
     });
 </script>
 <div class="container-fluid">
@@ -308,9 +316,9 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                             if ($params['existeNotificaciones']) {
                                 if ($params['countMensajesPV']) {
                                     if ($params['countMensajesPV'] == 1) {
-                                        echo "<p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-envelope'></i> Tienes " . $params['countMensajesPV'] . " mensaje privado nuevo.</p>";
+                                        echo "<a style='text-decoration: none;' href='index.php?ctl=mensajes'><p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-envelope'></i> Tienes " . $params['countMensajesPV'] . " mensaje privado nuevo.</p></a>";
                                     } else {
-                                        echo "<p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-user-friends'></i> Tienes " . $params['countMensajesPV'] . " mensajes privados nuevos.</p>";
+                                        echo "<a style='text-decoration: none;' href='index.php?ctl=mensajes'><p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-user-friends'></i> Tienes " . $params['countMensajesPV'] . " mensajes privados nuevos.</p></a>";
                                     }
                                 }
                                 if ($params['countPeticiones']) {
