@@ -29,7 +29,7 @@ if($params['baneado']) {
             <link href="fonts/fontawesome/css/all.css" rel="stylesheet">
     <!-- FIN DE ETIQUETAS DE IMPORTACIÓN -->
     <!-- Estilos y favicon -->
-    <link rel="icon" href="images/logo.png">
+    <link rel="icon" href="images/logoInicio.png">
     <style type="text/css">
         #fondodelmenu {
             background:transparent;
@@ -56,7 +56,7 @@ if($params['baneado']) {
             color: #027F6D;
         }
         .texto {
-            font-size:1.2rem;
+            font-size:1.1rem;
         }
     </style>
     <!-- Fin style -->

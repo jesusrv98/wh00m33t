@@ -11,6 +11,7 @@ $map = array(
     'inicio' => array('controller' => 'Controller', 'action' => 'inicio'),
     'perfil' => array('controller' => 'Controller', 'action' => 'perfil'),
     'mensajes' => array('controller' => 'Controller', 'action' => 'mensajes'),
+    'conversacion' => array('controller' => 'Controller', 'action' => 'conversacion'),
     'buscar' => array('controller' => 'Controller', 'action' => 'configuracion'),
     'contacto' => array('controller' => 'Controller', 'action' => 'contacto'),
     'logout' => array('controller' => 'Controller', 'action' => 'logout'),

@@ -651,7 +651,7 @@ class Controller
                         if (@move_uploaded_file($origen, $destino)) {
                             $imgh = $this->icreate($destino);
                             $imgr = $this->simpleresize($imgh, 400, 400);
-                            
+
                             $fecha = new DateTime("now");
                             $resultado = $m->setFotoUsuario($idUsuario, $idUsuario . " - " . time() . $_FILES["fotoSubir"]["name"], $fecha->format('Y-m-d H:i:s'), $tituloFoto);
                             $mensajeFoto = "Foto subida correctamente";
@@ -747,7 +747,8 @@ class Controller
         require __DIR__ . '/templates/galeria.php';
     }
 
-    public function mensajes() {
+    public function mensajes()
+    {
         $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
 
         $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
@@ -765,12 +766,52 @@ class Controller
             'nombre' => '',
             'nombreBusqueda' => '',
             'listaUsuariosMensajes' => $listaUsuariosMensajes,
-            'idUsuarioConectado' => $idUsuario,
+            'idUsuario' => $idUsuario,
             'fotoPerfil' => $fotoPerfil,
             'baneado' => $baneado
         );
 
         require __DIR__ . '/templates/mensajes.php';
+    }
+
+    public function conversacion()
+    {
+        $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
+
+        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
+        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $idUsuario = implode(array_column($arrayUsuario, "id"));
+        $fotoPerfil = implode(array_column($arrayUsuario, "fotoPerfil"));
+        $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
+        $countMensajesPV = implode(array_column($arrayMensajesPrivados, "count(*)"));
+        $baneado = $m->isBaneado($idUsuario);
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['idUsuarioConversacion']) && !empty($_POST['idUsuarioConversacion'])) {
+            $listaMensajes = $m->getListaMensajesConversacion($idUsuario, $_POST['idUsuarioConversacion']);
+            $arrayOtroUsuario = $m->findUsuarioById($_POST['idUsuarioConversacion']);
+            $fotoPerfilOtro = implode(array_column($arrayOtroUsuario, "fotoPerfil"));
+            $nombreOtro = implode(array_column($arrayOtroUsuario, "nombre"));
+            $apellidosOtro = implode(array_column($arrayOtroUsuario, "apellidos"));
+        } else {
+            header("Location: index.php?ctl=mensajes");
+        }
+
+
+        $params = array(
+            'countMensajesPV' => $countMensajesPV,
+            'nombre' => '',
+            'nombreBusqueda' => '',
+            'listaMensajes' => $listaMensajes,
+            'idUsuario' => $idUsuario,
+            'idUsuarioConversacion' => $_POST['idUsuarioConversacion'],
+            'fotoPerfil' => $fotoPerfil,
+            'nombreOtro' => $nombreOtro,
+            'apellidosOtro' => $apellidosOtro,
+            'fotoPerfilOtro' => $fotoPerfilOtro,
+            'baneado' => $baneado
+        );
+
+        require __DIR__ . '/templates/conversacion.php';
     }
 
     function icreate($filename)
@@ -917,6 +958,75 @@ class Controller
                 break;
         }
         echo $dia . " de " . $mesTexto;
+    }
+
+    function fechaMensajes($fecha)
+    {
+        date_default_timezone_set('Europe/Madrid');
+        setlocale(LC_ALL, "es_ES");
+        $hoy = new DateTime("now");
+        $fechaMensaje = new DateTime($fecha);
+        $diaHoy = $hoy->format("d");
+        $mesHoy = $hoy->format("m");
+        $anioHoy = $hoy->format("Y");
+        $dia = $fechaMensaje->format("d");
+        $mes = $fechaMensaje->format("m");
+        $anio = $fechaMensaje->format("Y");
+        $mesTexto = "";
+
+        if ($anio != $anioHoy || $mes != $mesHoy || $dia != $diaHoy) {
+            switch ($mes) {
+                case '01':
+                    $mesTexto = "enero";
+                    break;
+                case '02':
+                    $mesTexto = "febrero";
+                    break;
+                case '03':
+                    $mesTexto = "marzo";
+                    break;
+                case '04':
+                    $mesTexto = "abril";
+                    break;
+                case '05':
+                    $mesTexto = "mayo";
+                    break;
+                case '06':
+                    $mesTexto = "junio";
+                    break;
+                case '07':
+                    $mesTexto = "julio";
+                    break;
+                case '08':
+                    $mesTexto = "agosto";
+                    break;
+                case '09':
+                    $mesTexto = "septiembre";
+                    break;
+                case '10':
+                    $mesTexto = "octubre";
+                    break;
+                case '11':
+                    $mesTexto = "noviembre";
+                    break;
+                case '12':
+                    $mesTexto = "diciembre";
+                    break;
+            }
+            echo $dia . " de " . $mesTexto;
+        }else{
+            echo "Hoy";
+        }
+        
+    }
+
+    public function horaMensajes($fecha) {
+        date_default_timezone_set('Europe/Madrid');
+        setlocale(LC_ALL, "es_ES");
+        $objetoHoraMensaje = new DateTime($fecha);
+        $horaMensaje = $objetoHoraMensaje->format("H:i");
+
+        echo $horaMensaje;
     }
 
     public function login()

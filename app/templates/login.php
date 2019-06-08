@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="images/logo.png">
+    <link rel="icon" href="images/logoInicio.png">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
     <title>WhoMeet - Iniciar sesión</title>
@@ -200,7 +200,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                <img class="img-fluid" src="images/logo.png" alt="logoWhoMeet.png">
+                <img class="img-fluid" src="images/logoInicio.png" alt="Logo WhoMeet">
             </div>
             <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
                 <form class="form-signin" method="POST" action="index.php?ctl=login">

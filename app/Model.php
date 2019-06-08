@@ -39,6 +39,20 @@ class Model
         return $usuarios;
     }
 
+    public function findUsuarioById($idUsuario)
+    {
+        $sql = "select * from usuarios WHERE id ='" . $idUsuario . "'";
+
+        $result = mysqli_query($this->conexion, $sql);
+
+        $usuario = array();
+        while ($row = mysqli_fetch_assoc($result)) {
+            $usuario[] = $row;
+        }
+
+        return $usuario;
+    }
+
     public function findNotificaciones($idUsuario)
     {
 
@@ -836,7 +850,7 @@ class Model
 
     public function getListaAmigosConMensajes($idUsuario)
     {
-        $sql = "SELECT DISTINCT u.*, m.* FROM usuarios u JOIN mensajes m ON u.id = m.idUsuarioEnvia OR u.id = m.idUsuarioRecibe WHERE u.id !=$idUsuario GROUP BY u.id ORDER BY m.fechaMensaje DESC";
+        $sql = "SELECT DISTINCT * FROM usuarios u JOIN mensajes m ON u.id IN(m.idUsuarioEnvia, m.idUsuarioRecibe) WHERE u.id IN(SELECT idUsuarioEnvia FROM mensajes WHERE idUsuarioRecibe = $idUsuario) OR id IN(SELECT idUsuarioRecibe FROM mensajes WHERE idUsuarioEnvia = $idUsuario) GROUP BY u.id";
         $result = mysqli_query($this->conexion, $sql);
 
         $listaAmigos = array();
@@ -846,6 +860,41 @@ class Model
         }
 
         return $listaAmigos;
-    
+    }
+
+    public function countMensajesSinVerPantallaMensajesGeneral($idUsuarioEnvia, $idUsuarioRecibe)
+    {
+        $sql = "SELECT COUNT(DISTINCT(idMensaje)) as 'contador' FROM mensajes WHERE (idUsuarioEnvia = $idUsuarioEnvia AND idUsuarioRecibe = $idUsuarioRecibe  AND mensajeVisto = 0) OR (idUsuarioEnvia = $idUsuarioRecibe AND idUsuarioRecibe = $idUsuarioEnvia AND mensajeVisto = 0)";
+        $result = mysqli_query($this->conexion, $sql);
+
+        $contador = array();
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $contador[] = $row;
+        }
+
+        return $contador;
+    }
+
+    public function getListaMensajesConversacion($idUsuarioEnvia, $idUsuarioRecibe)
+    {
+        $sql = "SELECT * FROM mensajes m JOIN usuarios u ON u.id IN(m.idUsuarioEnvia, m.idUsuarioRecibe) WHERE (m.idUsuarioEnvia = $idUsuarioEnvia AND m.idUsuarioRecibe = $idUsuarioRecibe) OR (m.idUsuarioEnvia = $idUsuarioRecibe and m.idUsuarioRecibe = $idUsuarioEnvia) GROUP BY m.idMensaje ORDER BY m.fechaMensaje";
+        $result = mysqli_query($this->conexion, $sql);
+
+        $mensajes = array();
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $mensajes[] = $row;
+        }
+
+        return $mensajes;
+    }
+
+    public function enviarMensaje($idUsuarioEnvia, $idUsuarioRecibe, $cuerpoMensaje, $fecha)
+    {
+        $sql = "INSERT INTO `mensajes`(`idMensaje`, `idUsuarioEnvia`, `idUsuarioRecibe`, `cuerpoMensaje`, `fechaMensaje`, `mensajeVisto`) VALUES (null, $idUsuarioEnvia, $idUsuarioRecibe, '$cuerpoMensaje', '$fecha', 0)";
+        $result = mysqli_query($this->conexion, $sql);
+
+        return $result;
     }
 }
