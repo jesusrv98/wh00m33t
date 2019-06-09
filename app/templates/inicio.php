@@ -57,7 +57,7 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                             $('.statusMessage').html("<div class='alert alert-success' role='alert' >Estado actualizado</div>");
 
                             $('.contenedorNuevosEstados').removeClass('d-none');
-                            $('.contenedorNuevosEstados').prepend("<section style='border-bottom: 1px solid #33cbad;' class='container p-2 mt-2'><div class='media'><div class='media-left'><img src='images/<?= $params['fotoPerfil'] ?>' width='69' height='64' alt='Foto perfil' class='media-object rounded-circle mr-2 mt-1 border' /></div><div class='media-body'><h4 class='media-heading' style='color: #33cbad;'><?= implode(array_column($_SESSION['usuarioconectado'], 'nombre')) . " " . implode(array_column($_SESSION['usuarioconectado'], 'apellidos')) ?></h4><p>" + estadoNuevo + "</p><p class='d-flex justify-content-end align-items-center'><small class='text-muted'>Hace un instante</small></p></div></div></section>");
+                            $('.contenedorNuevosEstados').prepend("<section style='border-bottom: 1px solid #33cbad;' class='container p-2 mt-2'><div class='media'><div class='media-left'><img src='images/<?= $params['fotoPerfil'] ?>' width='69' height='64' alt='Foto perfil' class='media-object rounded-circle mr-2 mt-1 border' /></div><div class='media-body'><h4 class='media-heading' style='color: #33cbad;'><?= $params['nombreUsuario'] . " " . $params['apellidosUsuario'] ?></h4><p>" + estadoNuevo + "</p><p class='d-flex justify-content-end align-items-center'><small class='text-muted'>Hace un instante</small></p></div></div></section>");
 
                         } else {
                             $('.statusMessage').removeClass('d-none');
@@ -82,8 +82,8 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
             var idEstado = $(formulario.find('.idEstado')).val();
             var idUsuarioDirigido = $(formulario.find('.idUsuarioDirigido')).val();
             var fotoPerfil = "<?= $params['fotoPerfil'] ?>";
-            var nombre = "<?php echo implode(array_column($_SESSION['usuarioconectado'], 'nombre')) ?>";
-            var apellido = "<?php echo implode(array_column($_SESSION['usuarioconectado'], 'apellidos')) ?>";
+            var nombre = "<?= $params['nombreUsuario']  ?>";
+            var apellido = "<?= $params['apellidosUsuario'] ?>";
             var nombreUsuario = nombre + " " + apellido;
 
             if (comentarioNuevo.trim() == '') {
@@ -129,8 +129,8 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                 var idEstado = $(formulario.find('.idEstado')).val();
                 var idUsuarioDirigido = $(formulario.find('.idUsuarioDirigido')).val();
                 var fotoPerfil = "<?= $params['fotoPerfil'] ?>";
-                var nombre = "<?php echo implode(array_column($_SESSION['usuarioconectado'], 'nombre')) ?>";
-                var apellido = "<?php echo implode(array_column($_SESSION['usuarioconectado'], 'apellidos')) ?>";
+                var nombre = "<?= $params['nombreUsuario'] ?>";
+                var apellido = "<?php $params['apellidosUsuario'] ?>";
                 var nombreUsuario = nombre + " " + apellido;
 
                 if (comentarioNuevo.trim() == '') {
@@ -201,7 +201,7 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                 $('.statusMessage').html("<div class='alert alert-success' role='alert'>Estado actualizado</div>");
 
                                 $('.contenedorNuevosEstados').removeClass('d-none');
-                                $('.contenedorNuevosEstados').prepend("<section style='border-bottom: 1px solid #33cbad;' class='container p-2 mt-2'><div class='media'><div class='media-left'><img src='images/<?= $params['fotoPerfil'] ?>' width='69' height='64' alt='Foto perfil' class='media-object rounded-circle mr-2 mt-1 border' /></div><div class='media-body'><h4 class='media-heading' style='color: #33cbad;'><?= implode(array_column($_SESSION['usuarioconectado'], 'nombre')) . " " . implode(array_column($_SESSION['usuarioconectado'], 'apellidos')) ?></h4><p>" + estadoNuevo + "</p><p class='d-flex justify-content-end align-items-center'><small class='text-muted'>Hace un instante</small></p></div></div></section>");
+                                $('.contenedorNuevosEstados').prepend("<section style='border-bottom: 1px solid #33cbad;' class='container p-2 mt-2'><div class='media'><div class='media-left'><img src='images/<?= $params['fotoPerfil'] ?>' width='69' height='64' alt='Foto perfil' class='media-object rounded-circle mr-2 mt-1 border' /></div><div class='media-body'><h4 class='media-heading' style='color: #33cbad;'><?= $params['nombreUsuario'] . " " . $params['apellidosUsuario'] ?></h4><p>" + estadoNuevo + "</p><p class='d-flex justify-content-end align-items-center'><small class='text-muted'>Hace un instante</small></p></div></div></section>");
 
                             } else {
                                 $('.statusMessage').removeClass('d-none');
@@ -296,7 +296,7 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                 <div class="col-12">
                                     <form method="post" action="index.php?ctl=perfil">
                                         <input type="hidden" value="<?= implode(array_column($_SESSION['usuarioconectado'], 'id')) ?>" name="perfilUsuario">
-                                        <p style="color: #33cbad;cursor:pointer;" onclick="$(this).parent().submit()"><?= implode(array_column($_SESSION['usuarioconectado'], 'nombre')) . " " . implode(array_column($_SESSION['usuarioconectado'], 'apellidos')); ?></p>
+                                        <p style="color: #33cbad;cursor:pointer;" onclick="$(this).parent().submit()"><?= $params['nombreUsuario'] . " " . $params['apellidosUsuario'] ?></p>
                                     </form>
                                 </div>
                                 <div class="col-12">

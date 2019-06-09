@@ -3,27 +3,47 @@ ob_start();
 $c = new Controller();
 $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
 ?>
+<script src="js/jqueryGoogle.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#selectProvincias").change(function() {
+            $("#selectProvincias option:selected").each(function() {
+                var idprovincia = $(this).val();
+                $("#selectPueblos").removeAttr("disabled");
+                $("#selectPueblos").attr("required");
+                $.post("../app/templates/includes/getMunicipio.php", {
+                    idprovincia: idprovincia
+                }).done(
+                    function(data) {
+                        $("#selectPueblos").html(data);
+                    });
+            });
+        });
+    });
+</script>
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
-                        <form class="was-validated">
+                        <form method="POST" action="index.php?ctl=configuracion">
                             <div class="mb-3">
                                 <h1 for="validationInput" class="text-center mb-5" style="color:#33cbad;">Configuración de cuenta de usuario</h1>
+                                <?php if ($params['msg'] != "") : ?>
+                                    <div class="alert alert-success" role="alert">
+                                        <span><?= $params['msg'] ?></span>
+                                    </div>
+                                <?php endif; ?>
                                 <label>
                                     Datos de acceso:
                                 </label>
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
-                                        <input type="text" class="form-control validated" id="validationTextarea" name="correoActual" placeholder="Correo electrónico actual..." required />
-                                        <div class="invalid-feedback">
-                                            Para editar introduzca su correo actual.
-                                        </div>
+                                        <input type="text" autocomplete="off" class="form-control validated" id="validationTextarea" name="correoActual" placeholder="Correo electrónico actual..." required />
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <input type="text" class="form-control" name="correoNuevo" placeholder="Correo electrónico nuevo..." />
+                                        <input type="text" autocomplete="off" class="form-control" name="correoNuevo" placeholder="Correo electrónico nuevo..." />
                                     </div>
                                 </div>
                             </div>
@@ -31,34 +51,52 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                 <label>
                                     Contraseña:
                                 </label>
-                                <input type="password" class="form-control validated" id="validationTextarea" placeholder="Contraseña..." />
-                                <div class="invalid-feedback">
-                                    Para editar introduzca su contraseña.
+                                <input type="password" name="contrasenaNueva" autocomplete="off" class="form-control" onload="$(this).val('jj')" placeholder="Contraseña..." />
+                            </div>
+
+                            <label class="mt-2">
+                                Municipio:
+                            </label>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <select id="selectProvincias" name="selectProvinciasR" class="custom-select">
+                                        <option selected="" value=""> -- Seleccionar Provincia -- </option>
+                                        <?php foreach ($params['provincias'] as $provincia) : ?>
+                                            <option value="<?= $provincia['idprovincia'] ?>"><?= $provincia['provincia'] ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mt-3 mt-md-0">
+                                    <select name="selectPueblos" id="selectPueblos" class="custom-select" disabled>
+                                        <option> -- Seleccionar municipio -- </option>
+                                    </select>
                                 </div>
                             </div>
+                            <label class="mt-2">
+                                Teléfono:
+                            </label>
+                            <div>
+                                <input type="text" name="telefonoNuevo" size="9" autocomplete="off" class="form-control" placeholder="Teléfono nuevo..." />
+                            </div>
 
-                            <label>
+                            <label class="mt-2">
                                 Sexo:
                             </label>
-                            <div class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" id="customControlValidation2" name="radio-stacked" required>
-                                <label class="custom-control-label" for="customControlValidation2">Hombre</label>
-                            </div>
-                            <div class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" id="customControlValidation3" name="radio-stacked" required>
-                                <label class="custom-control-label" for="customControlValidation3">Mujer</label>
-                            </div>
-                            <div class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" id="customControlValidation2" name="radio-stacked" required>
-                                <label class="custom-control-label" for="customControlValidation2">Otro</label>
-                                <div class="invalid-feedback">Debes seleccionar uno</div>
+                            <div>
+                                <select name="selectGeneroR" id="selectGenero" value="<?php echo $params['selectGeneroR'] ?>" class="custom-select">
+                                    <option value=""> -- Seleccionar Género --</option>
+                                    <option value="1">Masculino</option>
+                                    <option value="2">Femenino</option>
+                                    <option value="3">Otro</option>
+                                    <option value="4">No especificar</option>
+                                </select>
                             </div>
 
-                            <label>
+                            <label class="mt-2">
                                 Estado civil:
                             </label>
                             <div class="form-group">
-                                <select class="custom-select" required>
+                                <select class="custom-select" name="estadoCivilNuevo">
                                     <option value="">--Seleccione uno--</option>
                                     <option value="1">En matrimonio</option>
                                     <option value="2">En soltería</option>
@@ -68,33 +106,20 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                 <div class="invalid-feedback">Debe elegir su estado civil</div>
                             </div>
 
-                            <div class="form-group">
-                                <div class="col-4 col-sm-4 col-md-2 col-lg-2 col-xl-2">
-                                    <img id="foto" class="img-thumbnail">
-                                </div>
-                            </div>
-
-                            <div class="custom-file">
-                                <input type="file" name="foto" id="botonFoto">
-                                <label class="custom-file-label" for="botonFoto">Cambiar foto de perfil...</label>
-                            </div>
                             <label class="mt-2">
                                 Editar nombre:
                             </label>
                             <div class="alert alert-warning" role="alert">
-                                <span>Recuerda que sólo puedes cambiar una vez de nombre.</span>
                                 <div class="form-group mt-1">
-                                    <input type="text" name="nuevo" class="form-control" placeholder="Nuevo nombre...">
+                                    <input type="text" autocomplete="off" name="nombreNuevo" class="form-control" placeholder="Nuevo nombre...">
                                 </div>
-                            </div>
-                            <div class="custom-control custom-checkbox mb-3">
-                                <input type="checkbox" class="custom-control-input" id="customControlValidation1" required>
-                                <label class="custom-control-label" for="customControlValidation1">Confirmo que deseo hacer cambios en mi perfil</label>
-                                <div class="invalid-feedback">Este campo es necesario</div>
+                                <div class="form-group mt-1">
+                                    <input type="text" autocomplete="off" name="apellidosNuevos" class="form-control" placeholder="Nuevos apellidos...">
+                                </div>
                             </div>
 
                             <div class="form-group">
-                                <input type="submit" value="Guardar cambios" class="btn btn-success form-control" onsubmit="return false;">
+                                <input type="submit" value="Guardar cambios" class="btn btn-success form-control">
                             </div>
                         </form>
                     </div>

@@ -238,9 +238,9 @@ class Model
         return $solicitudes;
     }
 
-    public function findPublicacionesConComentarioByCorreo($correo)
+    public function findPublicacionesConComentarioById($id)
     {
-        $sql = "SELECT e.*, u.* FROM estados e JOIN usuarios u ON e.idUsuario = u.id WHERE e.idUsuario in ( SELECT amigo_fk_a FROM es_amigo WHERE amigo_fk_a IN (SELECT id FROM usuarios WHERE correo = '$correo' )) AND e.idEstado IN (SELECT id_fkTipo FROM notificaciones WHERE vista = 0)";
+        $sql = "SELECT e.*, u.* FROM estados e JOIN usuarios u ON e.idUsuario = u.id WHERE e.idUsuario in ( SELECT amigo_fk_a FROM es_amigo WHERE amigo_fk_a IN (SELECT id FROM usuarios WHERE id = '$id' )) AND e.idEstado IN (SELECT id_fkTipo FROM notificaciones WHERE vista = 0)";
         $result = mysqli_query($this->conexion, $sql);
 
         $comentarios = array();
@@ -901,6 +901,71 @@ class Model
     public function actualizarVistoMensajes($idUsuarioEnvia, $idUsuarioRecibe)
     {
         $sql = "UPDATE `mensajes` SET `mensajeVisto`= 1 WHERE `idUsuarioEnvia` = $idUsuarioEnvia AND `idUsuarioRecibe` = $idUsuarioRecibe";
+        $result = mysqli_query($this->conexion, $sql);
+
+        return $result;
+    }
+
+    public function actualizarCorreo($idUsuario, $correoElectronico)
+    {
+        $sql = "UPDATE usuarios SET correo = '$correoElectronico' WHERE id = $idUsuario";
+        $result = mysqli_query($this->conexion, $sql);
+
+        return $result;
+    }
+
+    public function actualizarContrasena($idUsuario, $contrasena)
+    {
+        $hashed_password = password_hash($contrasena, PASSWORD_DEFAULT);
+        $sql = "UPDATE usuarios SET pass = '$hashed_password' WHERE id = $idUsuario";
+        $result = mysqli_query($this->conexion, $sql);
+
+        return $result;
+    }
+
+    public function actualizarNombre($idUsuario, $nombre)
+    {
+        $sql = "UPDATE usuarios SET nombre = '$nombre' WHERE id = $idUsuario";
+        $result = mysqli_query($this->conexion, $sql);
+
+        return $result;
+    }
+
+    public function actualizarApellidos($idUsuario, $apellidos)
+    {
+        $sql = "UPDATE usuarios SET apellidos = '$apellidos' WHERE id = $idUsuario";
+        $result = mysqli_query($this->conexion, $sql);
+
+        return $result;
+    }
+
+    public function actualizarSexo($idUsuario, $sexo)
+    {
+        $sql = "UPDATE usuarios SET sexo = '$sexo' WHERE id = $idUsuario";
+        $result = mysqli_query($this->conexion, $sql);
+
+        return $result;
+    }
+
+    public function actualizarTelefono($idUsuario, $telefono)
+    {
+        $sql = "UPDATE usuarios SET telefono = '$telefono' WHERE id = $idUsuario";
+        $result = mysqli_query($this->conexion, $sql);
+
+        return $result;
+    }
+
+    public function actualizarCodPueblo($idUsuario, $codPueblo)
+    {
+        $sql = "UPDATE usuarios SET codpueblo = '$codPueblo' WHERE id = $idUsuario";
+        $result = mysqli_query($this->conexion, $sql);
+
+        return $result;
+    }
+
+    public function actualizarEstadoCivil($idUsuario, $estadoCivil)
+    {
+        $sql = "UPDATE usuarios SET estadocivil = '$estadoCivil' WHERE id = $idUsuario";
         $result = mysqli_query($this->conexion, $sql);
 
         return $result;

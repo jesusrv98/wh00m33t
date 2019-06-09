@@ -2,6 +2,60 @@
 session_start();
 class Controller
 {
+    public function login()
+    {
+        $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
+
+        $params = array(
+            'email' => '',
+            'password' => '',
+            'resultado' => array(),
+            'provincias' => $m->listaProvincias(),
+            'mensaje' => '',
+            'mensaje2' => '',
+            'error' => '',
+            'nombreR' => '',
+            'apellidosR' => '',
+            'correoR' => '',
+            'contrasenaR' => '',
+            'contrasenaR2' => '',
+            'telefonoR' => '',
+            'fechanacR' => '',
+            'selectPueblosR' => '',
+            'selectGeneroR' => '',
+            'selectEstadoCivilR' => ''
+        );
+
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $params['email'] = $_POST['email'];
+            $params['password'] = $_POST['password'];
+            $params['resultado'] = $m->verificar($params['password'], $params['email']);
+
+            if ($params['resultado']) {
+                $correo = $params['email'];
+                $arrayUsuario = $m->buscarSoloUsuario($correo);
+                $_SESSION['usuarioconectado'] = $arrayUsuario;
+                $idUsuario = implode(array_column($arrayUsuario, "id"));
+                $m->setConectado($idUsuario);
+            } else {
+                $params['mensaje'] = "Usuario o contraseña incorrecta.";
+            }
+        }
+        require __DIR__ . '/templates/login.php';
+    }
+    public function logout()
+    {
+        $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
+        $id = implode(array_column($_SESSION['usuarioconectado'], "id"));
+        $arrayUsuario = $m->findUsuarioById($id);
+        $idUsuario = implode(array_column($arrayUsuario, "id"));
+        $m->setDesconectado($idUsuario);
+        setcookie('idGaleria', null, time() - 1);
+        setcookie('perfilUsuario', null, time() - 1);
+        session_destroy();
+        header('Location: ../web/paginaInicio');
+    }
 
     public function inicio()
     {
@@ -10,10 +64,12 @@ class Controller
         if (!isset($_SESSION['usuarioconectado'])) {
             header("Location: index.php?ctl=login");
         }
-        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
-        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $id = implode(array_column($_SESSION['usuarioconectado'], "id"));
+        $arrayUsuario = $m->findUsuarioById($id);
         $visitas = implode(array_column($arrayUsuario, "visitas"));
         $idUsuario = implode(array_column($arrayUsuario, "id"));
+        $nombreUsuario = implode(array_column($arrayUsuario, "nombre"));
+        $apellidosUsuario = implode(array_column($arrayUsuario, "apellidos"));
         $correoUsuario = implode(array_column($arrayUsuario, "correo"));
         $fotoPerfil = implode(array_column($arrayUsuario, "fotoPerfil"));
 
@@ -183,6 +239,8 @@ class Controller
             'nuevoEstado' => '',
             'pagina' => $pagina,
             'nombreBusqueda' => '',
+            'nombreUsuario' => $nombreUsuario,
+            'apellidosUsuario' => $apellidosUsuario,
             'countUsuariosConectados' => $countUsuariosConectado,
             'listaUsuariosConectados' => $arrayUsuariosConectados,
             'fotoPerfil' =>  $fotoPerfil,
@@ -204,8 +262,8 @@ class Controller
         }
 
 
-        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
-        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $id = implode(array_column($_SESSION['usuarioconectado'], "id"));
+        $arrayUsuario = $m->findUsuarioById($id);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
         $baneado = $m->isBaneado($idUsuario);
 
@@ -301,8 +359,8 @@ class Controller
         }
 
 
-        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
-        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $id = implode(array_column($_SESSION['usuarioconectado'], "id"));
+        $arrayUsuario = $m->findUsuarioById($id);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
 
         $baneado = $m->isBaneado($idUsuario);
@@ -341,8 +399,8 @@ class Controller
         }
 
 
-        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
-        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $id = implode(array_column($_SESSION['usuarioconectado'], "id"));
+        $arrayUsuario = $m->findUsuarioById($id);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
         $fotoPerfil = implode(array_column($arrayUsuario, "fotoPerfil"));
         $nombre = implode(array_column($arrayUsuario, "nombre"));
@@ -350,7 +408,7 @@ class Controller
         $baneado = $m->isBaneado($idUsuario);
 
         $arrayCountComentariosEstados = $m->findCountComentariosEstadosById($idUsuario);
-        $arrayComentariosEstados = $m->findPublicacionesConComentarioByCorreo($correo);
+        $arrayComentariosEstados = $m->findPublicacionesConComentarioById($id);
         $countComentariosEstados = implode(array_column($arrayCountComentariosEstados, "count(*)"));
 
 
@@ -385,8 +443,8 @@ class Controller
         }
 
 
-        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
-        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $id = implode(array_column($_SESSION['usuarioconectado'], "id"));
+        $arrayUsuario = $m->findUsuarioById($id);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
 
         $baneado = $m->isBaneado($idUsuario);
@@ -457,8 +515,8 @@ class Controller
     {
         $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
 
-        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
-        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $id = implode(array_column($_SESSION['usuarioconectado'], "id"));
+        $arrayUsuario = $m->findUsuarioById($id);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
         $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
         $countMensajesPV = implode(array_column($arrayMensajesPrivados, "count(*)"));
@@ -494,8 +552,8 @@ class Controller
     {
         $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
 
-        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
-        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $id = implode(array_column($_SESSION['usuarioconectado'], "id"));
+        $arrayUsuario = $m->findUsuarioById($id);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
         $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
         $countMensajesPV = implode(array_column($arrayMensajesPrivados, "count(*)"));
@@ -530,8 +588,8 @@ class Controller
 
         $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
 
-        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
-        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $id = implode(array_column($_SESSION['usuarioconectado'], "id"));
+        $arrayUsuario = $m->findUsuarioById($id);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
         $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
         $countMensajesPV = implode(array_column($arrayMensajesPrivados, "count(*)"));
@@ -607,8 +665,8 @@ class Controller
     {
         $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
 
-        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
-        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $id = implode(array_column($_SESSION['usuarioconectado'], "id"));
+        $arrayUsuario = $m->findUsuarioById($id);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
         $fotoPerfil = implode(array_column($arrayUsuario, "fotoPerfil"));
         $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
@@ -708,8 +766,8 @@ class Controller
     {
         $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
 
-        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
-        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $id = implode(array_column($_SESSION['usuarioconectado'], "id"));
+        $arrayUsuario = $m->findUsuarioById($id);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
         $fotoPerfil = implode(array_column($arrayUsuario, "fotoPerfil"));
         $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
@@ -751,8 +809,8 @@ class Controller
     {
         $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
 
-        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
-        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $id = implode(array_column($_SESSION['usuarioconectado'], "id"));
+        $arrayUsuario = $m->findUsuarioById($id);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
         $fotoPerfil = implode(array_column($arrayUsuario, "fotoPerfil"));
         $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
@@ -778,8 +836,8 @@ class Controller
     {
         $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
 
-        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
-        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $id = implode(array_column($_SESSION['usuarioconectado'], "id"));
+        $arrayUsuario = $m->findUsuarioById($id);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
         $fotoPerfil = implode(array_column($arrayUsuario, "fotoPerfil"));
         $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
@@ -818,16 +876,103 @@ class Controller
     {
         $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
 
-        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
-        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $id = implode(array_column($_SESSION['usuarioconectado'], "id"));
+        $arrayUsuario = $m->findUsuarioById($id);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
         $fotoPerfil = implode(array_column($arrayUsuario, "fotoPerfil"));
+        $correo = implode(array_column($arrayUsuario, "correo"));
         $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
         $countMensajesPV = implode(array_column($arrayMensajesPrivados, "count(*)"));
         $baneado = $m->isBaneado($idUsuario);
+        $msg = null;
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            
+            error_reporting(0);
+            $correoActual = $_POST['correoActual'];
+            $correoNuevo = $_POST['correoNuevo'];
+            $contrasenaNueva = $_POST['contrasenaNueva'];
+            $codPueblo = $_POST['selectPueblos'];
+            $sexo = $_POST['selectGeneroR'];
+            $estadoCivil = $_POST['estadoCivilNuevo'];
+            $nombreNuevo = $_POST['nombreNuevo'];
+            $apellidosNuevos = $_POST['apellidosNuevos'];
+            $telefonoNuevo = $_POST['telefonoNuevo'];
+            if ($correoActual != null) {
+                if ($correoActual != '') {
+                    if ($correoActual == $correo) {
+                        if (empty($correoNuevo)) {
+                            $correoNuevo == null;
+                        } else {
+                            $consulta = $m->actualizarCorreo($idUsuario, $correoNuevo);
+                            if ($consulta) {
+                                $msg = "Correo cambiado corréctamente</br>";
+                            }
+                        }
+                        if (empty($contrasenaNueva)) {
+                            $contrasenaNueva == null;
+                        } else {
+                            $consulta = $m->actualizarContrasena($idUsuario, $contrasenaNueva);
+                            if ($consulta) {
+                                $msg .= "Contraseña cambiado corréctamente</br>";
+                            }
+                        }
+                        if (empty($codPueblo)) {
+                            $codPueblo == null;
+                        } else {
+                            $consulta = $m->actualizarCodPueblo($idUsuario, $codPueblo);
+                            if ($consulta) {
+                                $msg .= "Pueblo de residencia cambiado corréctamente</br>";
+                            }
+                        }
+                        if (empty($sexo)) {
+                            $sexo == null;
+                        } else {
+                            $consulta = $m->actualizarSexo($idUsuario, $sexo);
+                            if ($consulta) {
+                                $msg .= "Género cambiado corréctamente</br>";
+                            }
+                        }
+                        if (empty($estadoCivil)) {
+                            $estadoCivil == null;
+                        } else {
+                            $consulta = $m->actualizarEstadoCivil($idUsuario, $estadoCivil);
+                            if ($consulta) {
+                                $msg .= "Estado civil cambiado corréctamente</br>";
+                            }
+                        }
+                        if (empty($nombreNuevo)) {
+                            $nombreNuevo == null;
+                        } else {
+                            $consulta = $m->actualizarNombre($idUsuario, $nombreNuevo);
+                            if ($consulta) {
+                                $msg .= "Nombre cambiado corréctamente</br>";
+                            }
+                        }
+                        if (empty($apellidosNuevos)) {
+                            $apellidosNuevos == null;
+                        } else {
+                            $consulta = $m->actualizarApellidos($idUsuario, $apellidosNuevos);
+                            if ($consulta) {
+                                $msg .= "Apellidos cambiados corréctamente</br>";
+                            }
+                        }
+                        if (empty($telefonoNuevo)) {
+                            $telefonoNuevo == null;
+                        } else {
+                            $consulta = $m->actualizarTelefono($idUsuario, $telefonoNuevo);
+                            if ($consulta) {
+                                $msg .= "Teléfono cambiado corréctamente</br>";
+                            }
+                        }
+                    } else {
+                        $msg = "Introduzca corréctamente su correo";
+                    }
+                } else {
+                    $msg = "Debe escribir su correo electrónico actual";
+                }
+            } else {
+                $msg = "Debe escribir su correo electrónico actual";
+            }
         }
 
 
@@ -835,7 +980,9 @@ class Controller
             'countMensajesPV' => $countMensajesPV,
             'nombre' => '',
             'nombreBusqueda' => '',
+            'provincias' => $m->listaProvincias(),
             'idUsuario' => $idUsuario,
+            'msg' => $msg,
             'fotoPerfil' => $fotoPerfil,
             'baneado' => $baneado
         );
@@ -1056,60 +1203,5 @@ class Controller
         $horaMensaje = $objetoHoraMensaje->format("H:i");
 
         echo $horaMensaje;
-    }
-
-    public function login()
-    {
-        $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
-
-        $params = array(
-            'email' => '',
-            'password' => '',
-            'resultado' => array(),
-            'provincias' => $m->listaProvincias(),
-            'mensaje' => '',
-            'mensaje2' => '',
-            'error' => '',
-            'nombreR' => '',
-            'apellidosR' => '',
-            'correoR' => '',
-            'contrasenaR' => '',
-            'contrasenaR2' => '',
-            'telefonoR' => '',
-            'fechanacR' => '',
-            'selectPueblosR' => '',
-            'selectGeneroR' => '',
-            'selectEstadoCivilR' => ''
-        );
-
-
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $params['email'] = $_POST['email'];
-            $params['password'] = $_POST['password'];
-            $params['resultado'] = $m->verificar($params['password'], $params['email']);
-
-            if ($params['resultado']) {
-                $correo = $params['email'];
-                $arrayUsuario = $m->buscarSoloUsuario($correo);
-                $_SESSION['usuarioconectado'] = $arrayUsuario;
-                $idUsuario = implode(array_column($arrayUsuario, "id"));
-                $m->setConectado($idUsuario);
-            } else {
-                $params['mensaje'] = "Usuario o contraseña incorrecta.";
-            }
-        }
-        require __DIR__ . '/templates/login.php';
-    }
-    public function logout()
-    {
-        $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
-        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
-        $arrayUsuario = $m->buscarSoloUsuario($correo);
-        $idUsuario = implode(array_column($arrayUsuario, "id"));
-        $m->setDesconectado($idUsuario);
-        setcookie('idGaleria', null, time() - 1);
-        setcookie('perfilUsuario', null, time() - 1);
-        session_destroy();
-        header('Location: ../web/paginaInicio');
     }
 }
