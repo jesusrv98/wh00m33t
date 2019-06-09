@@ -55,6 +55,7 @@ if($params['baneado']) {
             background: linear-gradient(#93ECFF, white);
             color: #027F6D;
         }
+
         .texto {
             font-size:1.1rem;
         }
@@ -137,7 +138,7 @@ if($params['baneado']) {
     <!-- FIN DE CONTENIDO -->
 
     <!-- PIE -->
-    <div>
+    <div id="piePagina">
         <div style="text-align: center; vertical-align: bottom;color:#33cbad;font-weight: bold" >- WhoMeet &copy; 2019 -</div>
     </div>
     <!-- FIN DE PIE -->

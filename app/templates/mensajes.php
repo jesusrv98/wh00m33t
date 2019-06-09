@@ -25,7 +25,6 @@ $c = new Controller();
     }
 </style>
 <script src="js/jqueryGoogle.js"></script>
-
 <!-- MENSAJES -->
 <div class="container-fluid">
     <div class="messaging elementoHeight">
@@ -35,13 +34,6 @@ $c = new Controller();
                     <div class="headind_srch">
                         <div class="recent_heading">
                             <h4>Chats</h4>
-                        </div>
-                        <div class="srch_bar">
-                            <div class="stylish-input-group">
-                                <input type="text" class="search-bar" placeholder="Buscar">
-                                <span class="input-group-addon">
-                                    <button type="button"> <i class="fa fa-search" aria-hidden="true"></i> </button>
-                                </span> </div>
                         </div>
                     </div>
                     <div class="inbox_chat">

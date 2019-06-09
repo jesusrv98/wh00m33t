@@ -11,6 +11,10 @@ $c = new Controller();
     .inbox-chat {
         height: 100%;
     }
+
+    #piePagina {
+        display: none;
+    }
 </style>
 <script src="js/jqueryGoogle.js"></script>
 
@@ -51,7 +55,7 @@ $c = new Controller();
                 </div>
                 <!-- FIN DE CONTENIDO DE MODAL -->
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" style="display: flex; flex-direction: column">
                 <div class="type_msg">
                     <div class="input_msg_write">
                         <section style="width:95%" id="<?= $params['idUsuarioConversacion'] ?>">
@@ -84,12 +88,13 @@ $c = new Controller();
         $(window).resize(function() {
             autoResizeConversacion();
         });
+
+
         $("#botonEnviarMensaje").click(function() {
             var mensajeNuevo = $("#mensajeNuevo").val();
             var input = $(this).find("input");
             var idUsuarioRecibe = $(this).find("i").attr("id");
             var fechaHoy = new Date();
-
 
             if (mensajeNuevo.trim() == '') {
                 alert('No se puede enviar un mensaje en blanco.');
@@ -148,7 +153,7 @@ $c = new Controller();
                         success: function(msg) {
                             if (msg == 'ok') {
                                 $('.contenedorNuevoMensaje').removeClass('d-none');
-                                $('.contenedorNuevoMensaje').append("<div class='outgoing_msg message'><div class='sent_msg'><p>" + mensajeNuevo + "</p><span class='time_date>" + fechaHoy.getHours + ":" + fechaHoy.getMinutes + " | Hoy</span></div></div>");
+                                $('.contenedorNuevoMensaje').append("<div class='outgoing_msg message'><div class='sent_msg'><p>" + mensajeNuevo + "</p><span class='time_date>" + fechaHoy.getHours + ":" + fechaHoy.getMinutes + " | Hoy </span></div></div>");
                                 input.val("");
                                 input.attr("placeholder", "Escribe tu mensaje...");
                                 scrollToBottom();
@@ -186,19 +191,22 @@ $c = new Controller();
     function autoResizeConversacion() {
         var altoPantalla = window.innerHeight;
         var elemento = $('.msg_history');
+        var scrollEmoji = $(".scrollEmoji");
         var distanciaTopElemento = elemento.offset().top;
+        var widthElemento = elemento.width();
         var resto = altoPantalla - distanciaTopElemento;
         var pie = $('.modal-footer');
         var distanciaTopPie = pie.height();
         elemento.css("height", resto - distanciaTopPie - 60 + "px");
         elemento.css("max-height", resto - distanciaTopPie - 60 + "px")
+        scrollEmoji.css("width", widthElemento + "px");
+        scrollEmoji.css("max-width", widthElemento + "px");
     }
 
 
     const messages = document.getElementById('msg_history');
 
     function scrollToBottom() {
-        debugger;
         messages.scrollTop = messages.scrollHeight;
     }
 </script>

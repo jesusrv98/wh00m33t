@@ -23,8 +23,9 @@ $map = array(
     'gestionUsuarios' => array('controller' => 'Controller', 'action' => 'gestionUsuarios'),
     'estadisticas' => array('controller' => 'Controller', 'action' => 'estadisticas'),
     'gestionContenido' => array('controller' => 'Controller', 'action' => 'gestionContenido'),
-    'galeria' => array('controller' => 'Controller', 'action' => 'galeria')
-
+    'galeria' => array('controller' => 'Controller', 'action' => 'galeria'),
+    'configuracion' => array('controller' => 'Controller', 'action' => 'configuracion')
+    
 );
 
 // Parseo de la ruta

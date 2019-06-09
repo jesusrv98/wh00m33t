@@ -75,9 +75,6 @@ ob_start();
                                             <i class='fas fa-user-times'></i>
                                         </button>
                                     </form>
-                                    <form method="post" class="form-inline my-2 my-md-0">
-                                        <button type="button" class="btn btn-sm" style="background: lightgrey" title="Bloquear usuario"><i class="fas fa-ban text-white"></i></button>
-                                    </form>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between">
                                     <p class="card-text">Sexo: <?php echo $amigo['sexo'] ?> </p>

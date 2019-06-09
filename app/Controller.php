@@ -814,6 +814,35 @@ class Controller
         require __DIR__ . '/templates/conversacion.php';
     }
 
+    public function configuracion()
+    {
+        $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
+
+        $correo = implode(array_column($_SESSION['usuarioconectado'], "correo"));
+        $arrayUsuario = $m->buscarSoloUsuario($correo);
+        $idUsuario = implode(array_column($arrayUsuario, "id"));
+        $fotoPerfil = implode(array_column($arrayUsuario, "fotoPerfil"));
+        $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
+        $countMensajesPV = implode(array_column($arrayMensajesPrivados, "count(*)"));
+        $baneado = $m->isBaneado($idUsuario);
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            
+        }
+
+
+        $params = array(
+            'countMensajesPV' => $countMensajesPV,
+            'nombre' => '',
+            'nombreBusqueda' => '',
+            'idUsuario' => $idUsuario,
+            'fotoPerfil' => $fotoPerfil,
+            'baneado' => $baneado
+        );
+
+        require __DIR__ . '/templates/configuracion.php';
+    }
+
     function icreate($filename)
     {
         $isize = getimagesize($filename);
@@ -1014,13 +1043,13 @@ class Controller
                     break;
             }
             echo $dia . " de " . $mesTexto;
-        }else{
+        } else {
             echo "Hoy";
         }
-        
     }
 
-    public function horaMensajes($fecha) {
+    public function horaMensajes($fecha)
+    {
         date_default_timezone_set('Europe/Madrid');
         setlocale(LC_ALL, "es_ES");
         $objetoHoraMensaje = new DateTime($fecha);

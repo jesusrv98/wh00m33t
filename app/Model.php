@@ -13,7 +13,7 @@ class Model
         }
         mysqli_select_db($mvc_bd_conexion, $dbname);
 
-        mysqli_set_charset($mvc_bd_conexion, 'utf8');
+        mysqli_set_charset($mvc_bd_conexion, 'utf8mb4');
 
         $this->conexion = $mvc_bd_conexion;
     }
@@ -850,7 +850,7 @@ class Model
 
     public function getListaAmigosConMensajes($idUsuario)
     {
-        $sql = "SELECT DISTINCT * FROM usuarios u JOIN mensajes m ON u.id IN(m.idUsuarioEnvia, m.idUsuarioRecibe) WHERE u.id IN(SELECT idUsuarioEnvia FROM mensajes WHERE idUsuarioRecibe = $idUsuario) OR id IN(SELECT idUsuarioRecibe FROM mensajes WHERE idUsuarioEnvia = $idUsuario) GROUP BY u.id ORDER BY m.fechaMensaje DESC";
+        $sql = "SELECT DISTINCT * FROM usuarios u JOIN mensajes m ON u.id IN(m.idUsuarioRecibe,m.idUsuarioEnvia) WHERE u.id IN(SELECT idUsuarioEnvia FROM mensajes WHERE idUsuarioRecibe = $idUsuario) OR u.id IN(SELECT idUsuarioRecibe FROM mensajes WHERE idUsuarioEnvia = $idUsuario) GROUP BY u.id ORDER BY u.nombre";
         $result = mysqli_query($this->conexion, $sql);
 
         $listaAmigos = array();
