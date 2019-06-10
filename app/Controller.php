@@ -424,6 +424,8 @@ class Controller
             'idUsuarioConectado' => $idUsuario,
             'publicaciones' => $arrayComentariosEstados,
             'fotoPerfil' => $fotoPerfil,
+            'nombreUsuario' => $nombre,
+            'apellidosUsuario' => $apellidos,
             'baneado' => $baneado
         );
 
@@ -669,6 +671,8 @@ class Controller
         $arrayUsuario = $m->findUsuarioById($id);
         $idUsuario = implode(array_column($arrayUsuario, "id"));
         $fotoPerfil = implode(array_column($arrayUsuario, "fotoPerfil"));
+        $nombreUsuario = implode(array_column($arrayUsuario, "nombre"));
+        $apellidosUsuario = implode(array_column($arrayUsuario, "apellidos"));
         $arrayMensajesPrivados = $m->findCountMensajesPvById($idUsuario);
         $countMensajesPV = implode(array_column($arrayMensajesPrivados, "count(*)"));
         $baneado = $m->isBaneado($idUsuario);
@@ -756,6 +760,8 @@ class Controller
             'idUsuarioPerfil' => $idUsuarioPerfil,
             'nombreUsuario' => $nombreUsuario,
             'fotoPerfil' => $fotoPerfil,
+            'nombreUsuario' => $nombreUsuario,
+            'apellidosUsuario' => $apellidosUsuario,
             'baneado' => $baneado
         );
 
@@ -927,6 +933,20 @@ class Controller
                         if (empty($sexo)) {
                             $sexo == null;
                         } else {
+                            switch ($_POST['selectGeneroR']) {
+                                case '1':
+                                    $sexo = "Masculino";
+                                    break;
+                                case '2':
+                                    $sexo = "Femenino";
+                                    break;
+                                case '3':
+                                    $sexo = "Otro";
+                                    break;
+                                default:
+                                    $sexo = "No especificado";
+                                    break;
+                            }
                             $consulta = $m->actualizarSexo($idUsuario, $sexo);
                             if ($consulta) {
                                 $msg .= "Género cambiado corréctamente</br>";
@@ -935,6 +955,26 @@ class Controller
                         if (empty($estadoCivil)) {
                             $estadoCivil == null;
                         } else {
+                            switch ($_POST['estadoCivilNuevo']) {
+                                case '1':
+                                    $estadoCivil = "Sin pareja";
+                                    break;
+                                case '2':
+                                    $estadoCivil = "Con pareja";
+                                    break;
+                                case '3':
+                                    $estadoCivil = "En matrimonio";
+                                    break;
+                                case '4':
+                                    $estadoCivil = "En divorcio";
+                                    break;
+                                case '5':
+                                    $estadoCivil = "En viudez";
+                                    break;
+                                default:
+                                    $estadoCivil = "No especificar";
+                                    break;
+                            }
                             $consulta = $m->actualizarEstadoCivil($idUsuario, $estadoCivil);
                             if ($consulta) {
                                 $msg .= "Estado civil cambiado corréctamente</br>";

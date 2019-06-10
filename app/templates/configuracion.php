@@ -97,11 +97,13 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                             </label>
                             <div class="form-group">
                                 <select class="custom-select" name="estadoCivilNuevo">
-                                    <option value="">--Seleccione uno--</option>
-                                    <option value="1">En matrimonio</option>
-                                    <option value="2">En soltería</option>
-                                    <option value="3">En divorcio</option>
-                                    <option value="3">En viudez</option>
+                                    <option value=''> -- Estado civil --</option>
+                                    <option value="1">Soltero/a</option>
+                                    <option value="2">Con pareja</option>
+                                    <option value="3">Casado/a</option>
+                                    <option value="4">Divorciado/a</option>
+                                    <option value="5">Viudo/a</option>
+                                    <option value="6">No especificar</option>
                                 </select>
                                 <div class="invalid-feedback">Debe elegir su estado civil</div>
                             </div>

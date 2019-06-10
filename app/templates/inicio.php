@@ -400,9 +400,6 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                         <li class="nav-item">
                             <a class="nav-link active" style="color: #33cbad" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Amigos</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" style="color: #33cbad" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Eventos</a>
-                        </li>
                     </ul>
                     <div class="tab-content" id="myTabContent">
                         <!-- Pestaña amigos -->
@@ -523,13 +520,6 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                             <!-- Fin publicación -->
                         </div>
                         <!-- Fin pestaña amigos -->
-                        <!-- Pestaña sitios -->
-                        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                            <!-- sitio -->
-
-                            <!-- Fin sitio -->
-                            <!-- Segundo sitio -->
-                        </div><!-- Fin pestaña sitios -->
                     </div> <!-- Fin tab-content -->
                 </div>
             </div><!-- Final row centro -->

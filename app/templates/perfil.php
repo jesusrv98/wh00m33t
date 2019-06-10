@@ -18,8 +18,8 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
             var idEstado = $(formulario.find('.idEstado')).val();
             var idUsuarioDirigido = $(formulario.find('.idUsuarioDirigido')).val();
             var fotoPerfil = "<?= $params['fotoPerfil'] ?>";
-            var nombre = "<?php echo implode(array_column($_SESSION['usuarioconectado'], 'nombre')) ?>";
-            var apellido = "<?php echo implode(array_column($_SESSION['usuarioconectado'], 'apellidos')) ?>";
+            var nombre = "<?php $params['nombreUsuario'] ?>";
+            var apellido = "<?php $params['apellidosUsuario'] ?>";
             var nombreUsuario = nombre + " " + apellido;
 
             if (comentarioNuevo.trim() == '') {
@@ -64,8 +64,8 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                 var idEstado = $(formulario.find('.idEstado')).val();
                 var idUsuarioDirigido = $(formulario.find('.idUsuarioDirigido')).val();
                 var fotoPerfil = "<?= $params['fotoPerfil'] ?>";
-                var nombre = "<?php echo implode(array_column($_SESSION['usuarioconectado'], 'nombre')) ?>";
-                var apellido = "<?php echo implode(array_column($_SESSION['usuarioconectado'], 'apellidos')) ?>";
+                var nombre = "<?php $params['nombreUsuario'] ?>";
+                var apellido = "<?php $params['apellidosUsuario'] ?>";
                 var nombreUsuario = nombre + " " + apellido;
 
                 if (comentarioNuevo.trim() == '') {
@@ -412,10 +412,10 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
                     <div class="row d-flex justify-content-center">
                         <?php foreach ($params['listaFotosLimit'] as $foto) : ?>
-                            <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6" style="border:1px">
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 d-flex justify-content-center" style="border:1px">
                                 <form method="post" action="index.php?ctl=galeria">
                                     <input type="hidden" name="idGaleria" value="<?= $params['idUsuarioPerfil'] ?>">
-                                    <img onclick="$(this).parent().submit()" src="fotosUsuarios/<?= $foto['rutaFoto'] ?>" style="cursor:pointer" class="img-fluid border border-info rounded mb-1">
+                                    <img onclick="$(this).parent().submit()" src="fotosUsuarios/<?= $foto['rutaFoto'] ?>" style="cursor:pointer" width="150" height="144" class="border rounded mb-1">
                                 </form>
                             </div>
                         <?php endforeach; ?>

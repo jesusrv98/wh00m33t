@@ -12,8 +12,8 @@ $c = new Controller();
             var idEstado = $(formulario.find('.idEstado')).val();
             var idUsuarioDirigido = $(formulario.find('.idUsuarioDirigido')).val();
             var fotoPerfil = "<?= $params['fotoPerfil'] ?>";
-            var nombre = "<?php echo implode(array_column($_SESSION['usuarioconectado'], 'nombre')) ?>";
-            var apellido = "<?php echo implode(array_column($_SESSION['usuarioconectado'], 'apellidos')) ?>";
+            var nombre = "<?php $params['nombreUsuario'] ?>";
+            var apellido = "<?php $params['apellidosUsuario'] ?>";
             var nombreUsuario = nombre + " " + apellido;
 
             if (comentarioNuevo.trim() == '') {
@@ -58,8 +58,8 @@ $c = new Controller();
                 var idEstado = $(formulario.find('.idEstado')).val();
                 var idUsuarioDirigido = $(formulario.find('.idUsuarioDirigido')).val();
                 var fotoPerfil = "<?= $params['fotoPerfil'] ?>";
-                var nombre = "<?php echo implode(array_column($_SESSION['usuarioconectado'], 'nombre')) ?>";
-                var apellido = "<?php echo implode(array_column($_SESSION['usuarioconectado'], 'apellidos')) ?>";
+                var nombre = "<?php $params['nombreUsuario'] ?>";
+                var apellido = "<?php $params['apellidosUsuario'] ?>";
                 var nombreUsuario = nombre + " " + apellido;
 
                 if (comentarioNuevo.trim() == '') {

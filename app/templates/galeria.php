@@ -72,9 +72,9 @@ $c = new Controller();
             if (confirm("¿Desea borrar su foto?")) {
                 var boton = $(this);
                 var idFoto = boton.attr("id");
-                var rutaFoto= boton .parent().parent().find("a").find("img").attr("src");
+                var rutaFoto = boton.parent().parent().find("a").find("img").attr("src");
 
-                var parametros = { 
+                var parametros = {
                     'idFoto': idFoto,
                     'tipo': 'borrarFoto',
                     'rutaFoto': rutaFoto
@@ -116,9 +116,9 @@ $c = new Controller();
                         $arrayMeGusta = $m->getCountMeGustaByFoto($foto['idFoto']);
                         $countMeGusta = implode(array_column($arrayMeGusta, "countMeGusta"));
                         ?>
-                        <article class="col-md-3 text-center mb-5">
+                        <article class="col-6 col-sm-4 col-md-3 text-center mb-5">
                             <a href="fotosUsuarios/<?= $foto['rutaFoto'] ?>" data-lightbox="example-set" data-title="<?= $foto['tituloFoto'] ?>">
-                                <img src="fotosUsuarios/<?= $foto['rutaFoto'] ?>" style="width:40%; height:25%" alt="<?= $foto['tituloFoto'] ?>" class="img-thumbnail">
+                                <img src="fotosUsuarios/<?= $foto['rutaFoto'] ?>" width="150" height="145" alt="<?= $foto['tituloFoto'] ?>" class="border rounded">
                             </a>
                             <p class="mt-1"><?= $foto['tituloFoto'] ?></p>
                             <div class="d-flex align-items-center text-center justify-content-center">
@@ -152,8 +152,25 @@ $c = new Controller();
     </div>
     <script src="lightbox/js/lightbox.js"></script>
     <script>
+        var altoDisponible = window.innerHeight-100;
+        window.onresize = function() {
+            altoDisponible = window.innerHeight-100;
+        }
+        window.onload = function() {
+            altoDisponible = window.innerHeight-100;
+        }
+        $(document).ready(function() {
+            altoDisponible = window.innerHeight-100;
+            $(window).resize(function() {
+                altoDisponible = window.innerHeight-100;
+            });
+        });
+
         lightbox.option({
-            'albumLabel': "Imagen %1 de %2"
+            'albumLabel': "Imagen %1 de %2",
+            'alwaysShowNavOnTouchDevices': true,
+            'disableScrolling': true,
+            'maxHeight': altoDisponible
         })
     </script>
 </body>
