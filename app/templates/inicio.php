@@ -318,7 +318,7 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                     if ($params['countMensajesPV'] == 1) {
                                         echo "<a style='text-decoration: none;' href='index.php?ctl=mensajes'><p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-envelope'></i> Tienes " . $params['countMensajesPV'] . " mensaje privado nuevo.</p></a>";
                                     } else {
-                                        echo "<a style='text-decoration: none;' href='index.php?ctl=mensajes'><p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-user-friends'></i> Tienes " . $params['countMensajesPV'] . " mensajes privados nuevos.</p></a>";
+                                        echo "<a style='text-decoration: none;' href='index.php?ctl=mensajes'><p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-envelope'></i> Tienes " . $params['countMensajesPV'] . " mensajes privados nuevos.</p></a>";
                                     }
                                 }
                                 if ($params['countPeticiones']) {
@@ -333,20 +333,6 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                         echo "<a style='text-decoration: none;' href='index.php?ctl=comentariosEstados'><p style='color:#77bf5c;font-weight:inherit;'><i class='far fa-comment-dots'></i> Tienes " . $params['countComentariosEstados'] . " comentario en estado.</p></a>";
                                     } else {
                                         echo "<a style='text-decoration: none;' href='index.php?ctl=comentariosEstados'><p style='color:#77bf5c;font-weight:inherit;'><i class='far fa-comment-dots'></i> Tienes " . $params['countComentariosEstados'] . " comentarios en estado nuevos.</p></a>";
-                                    }
-                                }
-                                if ($params['countComentarios']) {
-                                    if ($params['countComentarios'] == 1) {
-                                        echo "<a style='text-decoration: none;' href='index.php?ctl=comentarios'><p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-comment'></i> Tienes " . $params['countComentarios'] . " comentario nuevo.</p></a>";
-                                    } else {
-                                        echo "<a style='text-decoration: none;' href='index.php?ctl=comentarios'><p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-comment'></i> Tienes " . $params['countComentarios'] . " comentarios nuevos.</p></a>";
-                                    }
-                                }
-                                if ($params['countComentariosFotos']) {
-                                    if ($params['countComentariosFotos'] == 1) {
-                                        echo "<p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-comment-dots'></i> Tienes " . $params['countComentariosFotos'] . " comentario en foto nuevo.</p>";
-                                    } else {
-                                        echo "<p style='color:#77bf5c;font-weight:inherit;'><i class='fas fa-comment-dots'></i> Tienes " . $params['countComentariosFotos'] . " comentarios en fotos nuevos.</p>";
                                     }
                                 }
                             } else {

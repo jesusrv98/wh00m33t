@@ -123,6 +123,7 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                             <div class="form-group">
                                 <input type="submit" value="Guardar cambios" class="btn btn-success form-control">
                             </div>
+                            <small class="text-danger">* Debe escribir su correo electrónico actual para confirmar cualquier cambio.</small>
                         </form>
                     </div>
                 </div>

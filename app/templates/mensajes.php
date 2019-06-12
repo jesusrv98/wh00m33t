@@ -50,8 +50,8 @@ $c = new Controller();
                                                         <h5><?= $usuarioMensaje['nombre'] . " " . $usuarioMensaje['apellidos'] ?></h5>
                                                     </section>
                                                 </div>
-                                                <div class="d-flex justify-content-between align-items-center col-12">
-                                                    <label class="text-muted"><?= $c->formatearFecha($usuarioMensaje['fechaMensaje']) ?></label>
+                                                <div class="d-flex justify-content-end align-items-center col-12">
+                                                    
                                                     <button type="button" style="max-width: 50px;max-height: 50px;" class="btn btn-success">
                                                         <span class="badge badge-light"><?= implode(array_column($m->countMensajesSinVerPantallaMensajesGeneral($params['idUsuario'], $usuarioMensaje['id']), "contador")) ?></span>
                                                     </button>
@@ -70,9 +70,6 @@ $c = new Controller();
                                                     <section>
                                                         <h5><?= $usuarioMensaje['nombre'] . " " . $usuarioMensaje['apellidos'] ?></h5>
                                                     </section>
-                                                </div>
-                                                <div class="d-flex justify-content-start align-items-center col-12">
-                                                    <label class="text-muted"><?= $c->formatearFecha($usuarioMensaje['fechaMensaje']) ?></label>
                                                 </div>
                                             </div>
                                         </div>

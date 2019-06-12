@@ -584,9 +584,9 @@ class Model
         return $pueblo;
     }
 
-    public function borrarUsuario($idUSuario)
+    public function borrarUsuario($idUsuario)
     {
-        $sql = "DELETE FROM usuarios WHERE id = $idUSuario";
+        $sql = "DELETE FROM usuarios WHERE id = $idUsuario";
         $result = mysqli_query($this->conexion, $sql);
         if ($result) {
             return true;

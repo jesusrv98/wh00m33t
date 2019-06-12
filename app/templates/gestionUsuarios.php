@@ -124,9 +124,6 @@ if ($params['idUsuarioConectado'] != 30) {
                         } else {
                             alert("No se pudo borraar: " + msg);
                         }
-                    },
-                    error: function() {
-                        alert("Ha ocurrido un error y no se puede borrar.");
                     }
                 });
             }

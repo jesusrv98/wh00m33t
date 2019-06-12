@@ -107,11 +107,6 @@
                                                 <i class='fas fa-user-times'></i> <span class="textoCambiarCancelar">Cancelar</span>
                                             </button>
                                         </form>
-                                        <form method="post" class="form-inline my-2 my-md-0 form-bloquear">
-                                            <button type="button" class="btn btn-sm botonBloquear" value='<?= $solicitud['id'] ?>' style="background: lightgrey" title="Bloquear usuario">
-                                                <i class="fas fa-ban text-white"></i> <span class="text-white textoCambiarBloquear">Bloquear</span>
-                                            </button>
-                                        </form>
                                     </div>
                                     <div class="d-flex align-items-center justify-content-between">
                                         <p class="card-text">Sexo: <?php echo $solicitud['sexo'] ?> </p>
