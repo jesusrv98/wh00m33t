@@ -291,7 +291,7 @@ class Model
 
     public function countAmigosByIdUsuario($idUsuario)
     {
-        $sql = "SELECT count(*) FROM usuarios WHERE id IN (SELECT amigo FROM es_amigo WHERE amigo_fk_a = $idUsuario AND amigo != $idUsuario)";
+        $sql = "SELECT count(*) FROM usuarios WHERE id IN (SELECT amigo FROM es_amigo WHERE amigo_fk_a = $idUsuario AND amigo != $idUsuario) AND id != 30";
         $result = mysqli_query($this->conexion, $sql);
 
         $amigo = array();
@@ -443,7 +443,7 @@ class Model
     public function findUsuariosByNombre($nombre, $empezar_desde, $cantidad_resultados_por_pagina)
     {
         $nombre = htmlspecialchars($nombre);
-        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%" . $nombre . "%' AND u.id != " . implode(array_column($_SESSION['usuarioconectado'], "id")) . " order by u.nombre ASC  LIMIT $empezar_desde, $cantidad_resultados_por_pagina";
+        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%" . $nombre . "%' AND u.id != " . implode(array_column($_SESSION['usuarioconectado'], "id")) . " AND u.id != 30 order by u.nombre ASC  LIMIT $empezar_desde, $cantidad_resultados_por_pagina";
 
         $result = mysqli_query($this->conexion, $sql);
 
@@ -458,7 +458,7 @@ class Model
     public function findAllUsuariosByNombre($nombre)
     {
         $nombre = htmlspecialchars($nombre);
-        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%" . $nombre . "%' AND u.id != " . implode(array_column($_SESSION['usuarioconectado'], "id")) . " order by u.nombre ASC";
+        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%" . $nombre . "%' AND u.id != " . implode(array_column($_SESSION['usuarioconectado'], "id")) . " AND u.id != 30 order by u.nombre ASC";
 
         $result = mysqli_query($this->conexion, $sql);
 
@@ -473,7 +473,7 @@ class Model
     public function findUsuariosNombre($nombre)
     {
         $nombre = htmlspecialchars($nombre);
-        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%" . $nombre . "%' AND u.id != " . implode(array_column($_SESSION['usuarioconectado'], "id")) . " order by u.nombre ASC";
+        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%" . $nombre . "%' AND u.id != " . implode(array_column($_SESSION['usuarioconectado'], "id")) . " AND u.id != 30 order by u.nombre ASC";
 
         $result = mysqli_query($this->conexion, $sql);
         return $result;
@@ -482,7 +482,7 @@ class Model
     public function countfindUsuariosByNombre($nombre)
     {
         $nombre = htmlspecialchars($nombre);
-        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%" . $nombre . "%' AND u.id != " . implode(array_column($_SESSION['usuarioconectado'], "id")) . " order by u.nombre ASC";
+        $sql = "SELECT DISTINCT(u.id),u.*, po.*, pr.* FROM (usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia WHERE CONCAT(u.nombre, ' ', u.apellidos) LIKE '%" . $nombre . "%' AND u.id != " . implode(array_column($_SESSION['usuarioconectado'], "id")) . " AND u.id != 30 order by u.nombre ASC";
 
         $result = mysqli_query($this->conexion, $sql);
 
@@ -507,7 +507,7 @@ class Model
 
     public function countfindUsuariosConectado()
     {
-        $sql = "SELECT DISTINCT(u.id),u.*  FROM usuarios u JOIN es_amigo am ON u.id = am.amigo_fk_a WHERE u.id != " . implode(array_column($_SESSION['usuarioconectado'], "id")) . " AND u.estado = 'Online' AND u.id IN(SELECT amigo FROM es_amigo WHERE amigo_fk_a = " . implode(array_column($_SESSION['usuarioconectado'], "id")) . ") ORDER BY u.nombre ASC";
+        $sql = "SELECT DISTINCT(u.id),u.*  FROM usuarios u JOIN es_amigo am ON u.id = am.amigo_fk_a WHERE u.id != " . implode(array_column($_SESSION['usuarioconectado'], "id")) . " AND u.estado = 'Online' AND u.id IN(SELECT amigo FROM es_amigo WHERE amigo_fk_a = " . implode(array_column($_SESSION['usuarioconectado'], "id")) . ") AND u.id != 30 ORDER BY u.nombre ASC";
 
         $result = mysqli_query($this->conexion, $sql);
 
@@ -660,7 +660,7 @@ class Model
 
     public function findUsuariosPorComunidad()
     {
-        $sql = "SELECT co.comunidad ,COUNT(*) FROM ((usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia) JOIN comunidad co ON pr.codComunidad = co.idComunidad GROUP BY co.comunidad";
+        $sql = "SELECT co.comunidad ,COUNT(*) FROM ((usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia) JOIN comunidad co ON pr.codComunidad = co.idComunidad WHERE u.id !=30 GROUP BY co.comunidad";
 
         $result = mysqli_query($this->conexion, $sql);
 
@@ -669,7 +669,7 @@ class Model
 
     public function findUsuariosPorProvincia()
     {
-        $sql = "SELECT pr.provincia ,COUNT(*) FROM ((usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia) JOIN comunidad co ON pr.codComunidad = co.idComunidad GROUP BY pr.provincia";
+        $sql = "SELECT pr.provincia ,COUNT(*) FROM ((usuarios u JOIN poblacion po ON u.codpueblo = po.idpoblacion) JOIN provincia pr ON po.codprovincia = pr.idprovincia) JOIN comunidad co ON pr.codComunidad = co.idComunidad WHERE u.id != 30 GROUP BY pr.provincia";
 
         $result = mysqli_query($this->conexion, $sql);
 
@@ -678,7 +678,7 @@ class Model
 
     public function findCantidadEstadosPorUsuario()
     {
-        $sql = "SELECT CONCAT(u.nombre,' ',u.apellidos) AS nombre, COUNT(*) FROM usuarios u JOIN estados e ON u.id = e.idUsuario GROUP BY u.nombre";
+        $sql = "SELECT CONCAT(u.nombre,' ',u.apellidos) AS nombre, COUNT(*) FROM usuarios u JOIN estados e ON u.id = e.idUsuario WHERE u.id != 30 GROUP BY u.nombre";
         $result = mysqli_query($this->conexion, $sql);
         return $result;
     }

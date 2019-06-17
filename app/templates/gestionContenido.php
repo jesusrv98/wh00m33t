@@ -94,7 +94,11 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                             <div class="d-flex justify-content-between" id=<?= $publicacion['id'] ?>>
                                 <form method="post" action="index.php?ctl=perfil">
                                     <input type="hidden" value="<?= $publicacion['id'] ?>" name="perfilUsuario">
-                                    <h4 class="media-heading" onclick="$(this).parent().submit()" style="color: #33cbad;cursor:pointer"><?= $publicacion['nombre'] . " " . $publicacion['apellidos'] ?></h4>
+                                    <h4 class="media-heading" onclick="$(this).parent().submit()" style="color: #33cbad;cursor:pointer"><?= $publicacion['nombre'] . " " . $publicacion['apellidos'] ?>
+                                        <?php if ($publicacion['verificado'] != null) { ?>
+                                            <i style="color:#33cbad;font-size: 0.8em" title="Perfil verificado" class="fas fa-check-circle"></i>
+                                        <?php } ?>
+                                    </h4>
                                 </form>
                                 <i class="fas fa-times text-danger borrarPublicacion" style="cursor:pointer" id="<?= $publicacion['idEstado'] ?>" title="Borrar publicación"></i>
                             </div>
@@ -129,6 +133,9 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                                 <form method="post" action="index.php?ctl=perfil">
                                                     <input type="hidden" value="<?= $comentario['id'] ?>" name="perfilUsuario">
                                                     <h4 class="media-heading" onclick="$(this).parent().submit()" style="cursor:pointer"><?= $comentario['nombre'] . " " . $comentario['apellidos'] ?>
+                                                        <?php if ($comentario['verificado'] != null) { ?>
+                                                            <i style="color:#33cbad;font-size: 0.8em" title="Perfil verificado" class="fas fa-check-circle"></i>
+                                                        <?php } ?>
                                                 </form>
                                                 <small style="font-size: 0.8rem" class="text-muted">
                                                     <?= $c->formatearFecha($comentario['fecha_comentario']) ?>

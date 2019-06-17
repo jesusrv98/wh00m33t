@@ -72,6 +72,7 @@ class Controller
         $apellidosUsuario = implode(array_column($arrayUsuario, "apellidos"));
         $correoUsuario = implode(array_column($arrayUsuario, "correo"));
         $fotoPerfil = implode(array_column($arrayUsuario, "fotoPerfil"));
+        $correo = implode(array_column($arrayUsuario, "correo"));
 
         $baneado = $m->isBaneado($idUsuario);
 
@@ -758,7 +759,6 @@ class Controller
             'mensajeFoto' => $mensajeFoto,
             'idUsuario' => $idUsuario,
             'idUsuarioPerfil' => $idUsuarioPerfil,
-            'nombreUsuario' => $nombreUsuario,
             'fotoPerfil' => $fotoPerfil,
             'nombreUsuario' => $nombreUsuario,
             'apellidosUsuario' => $apellidosUsuario,
@@ -856,6 +856,7 @@ class Controller
             $fotoPerfilOtro = implode(array_column($arrayOtroUsuario, "fotoPerfil"));
             $nombreOtro = implode(array_column($arrayOtroUsuario, "nombre"));
             $apellidosOtro = implode(array_column($arrayOtroUsuario, "apellidos"));
+            $verificado = implode(array_column($arrayOtroUsuario, "verificado"));
         } else {
             header("Location: index.php?ctl=mensajes");
         }
@@ -872,6 +873,7 @@ class Controller
             'nombreOtro' => $nombreOtro,
             'apellidosOtro' => $apellidosOtro,
             'fotoPerfilOtro' => $fotoPerfilOtro,
+            'verificado' => $verificado,
             'baneado' => $baneado
         );
 

@@ -92,7 +92,11 @@
               <div class="card-body">
                 <form method="post" action="index.php?ctl=perfil">
                   <input type="hidden" value="<?= $amigo['id'] ?>" name="perfilUsuario">
-                  <h3 class="card-title font-weight-bold" onclick="$(this).parent().submit()" style="color: #33cbad;cursor:pointer;"><?= $amigo['nombre'] . " " . $amigo['apellidos'] ?></h3>
+                  <h3 class="card-title font-weight-bold" onclick="$(this).parent().submit()" style="color: #33cbad;cursor:pointer;"><?= $amigo['nombre'] . " " . $amigo['apellidos'] ?>
+                    <?php if ($amigo['verificado'] != null) { ?>
+                      <i style="color:#33cbad;font-size: 0.8em" title="Perfil verificado" class="fas fa-check-circle"></i>
+                    <?php } ?>
+                  </h3>
                 </form>
                 <div class="d-flex justify-content-end align-items-center">
                   <?php

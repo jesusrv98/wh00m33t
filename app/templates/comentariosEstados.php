@@ -150,7 +150,10 @@ $c = new Controller();
                             <div class="media-body">
                                 <form method="post" action="index.php?ctl=perfil">
                                     <input type="hidden" value="<?= $publicacion['id'] ?>" name="perfilUsuario">
-                                    <h4 class="media-heading" onclick="$(this).parent().submit()" style="color: #33cbad;cursor:pointer;"><?= $publicacion['nombre'] . " " . $publicacion['apellidos'] ?></h4>
+                                    <h4 class="media-heading" onclick="$(this).parent().submit()" style="color: #33cbad;cursor:pointer;"><?= $publicacion['nombre'] . " " . $publicacion['apellidos'] ?>
+                                        <?php if ($publicacion['verificado'] != null) { ?>
+                                            <i style="color:#33cbad;font-size: 0.8em" title="Perfil verificado" class="fas fa-check-circle"></i>
+                                        <?php } ?></h4>
                                 </form>
 
                                 <p><?= $publicacion['estadoCuerpo'] ?></p>
@@ -187,6 +190,9 @@ $c = new Controller();
                                                     <form method="post" action="index.php?ctl=perfil">
                                                         <input type="hidden" value="<?= $comentario['id'] ?>" name="perfilUsuario">
                                                         <h4 class="media-heading" onclick="$(this).parent().submit()" style="cursor:pointer;"><?= $comentario['nombre'] . " " . $comentario['apellidos'] ?>
+                                                            <?php if ($comentario['verificado'] != null) { ?>
+                                                                <i style="color:#33cbad;font-size: 0.8em" title="Perfil verificado" class="fas fa-check-circle"></i>
+                                                            <?php } ?>
                                                     </form>
                                                     <small style="font-size: 0.8rem" class="text-muted">
                                                         <?= $c->formatearFecha($comentario['fecha_comentario']) ?>
@@ -208,8 +214,10 @@ $c = new Controller();
                                 <img src="images/<?= $publicacion['fotoPerfil'] ?>" width="69" height="64" alt="Foto perfil" class="media-object rounded-circle mr-2 mt-1 border">
                             </div>
                             <div class="media-body">
-                                <h4 class="media-heading" style="color: #33cbad;"><?= $publicacion['nombre'] . " " . $publicacion['apellidos'] ?></h4>
-
+                                <h4 class="media-heading" style="color: #33cbad;"><?= $publicacion['nombre'] . " " . $publicacion['apellidos'] ?>
+                                    <?php if ($comentario['verificado'] != null) { ?>
+                                        <i style="color:#33cbad;font-size: 0.8em" title="Perfil verificado" class="fas fa-check-circle"></i>
+                                    <?php } ?></h4>
                                 <p><?= $publicacion['estadoCuerpo'] ?></p>
                                 <!-- Botón de responder -->
                                 <p class="d-flex justify-content-between align-items-center">

@@ -40,6 +40,9 @@ ob_start();
         background: #33cbad;
         border-color: inherit;
     }
+    #piePagina{
+        display:none;
+    }
 </style>
 <div class="container-fluid">
     <div class="row">
@@ -58,32 +61,38 @@ ob_start();
         </div>
         <div class="col-12">
             <?php foreach ($params['listaAmigos'] as $amigo) : ?>
-                <div class="card mt-2">
-                    <div class="row no-gutters">
-                        <div class="col-5 col-sm-5 col-md-5 col-lg-1 col-xl-1 d-flex justify-content-center align-items-center">
-                            <img src="images/<?php echo $amigo['fotoPerfil'] ?>" class="media-object rounded-circle mr-2 mt-1 border" width="90" height="84" alt="Foto de perfil de <?php echo $amigo['correo'] ?>">
-                        </div>
-                        <div class="col-7 col-sm-7 col-md-7 col-lg-11 col-xl-11">
-                            <div class="card-body">
-                                <form method="post" action="index.php?ctl=perfil">
-                                    <input type="hidden" value="<?= $amigo['id'] ?>" name="perfilUsuario">
-                                    <h3 class="card-title font-weight-bold" onclick="$(this).parent().submit()" style="color: #33cbad;cursor:pointer;"><?= $amigo['nombre'] . " " . $amigo['apellidos'] ?></h3>
-                                </form>
-                                <div class="d-flex justify-content-end align-items-center">
-                                    <form method='post' class='form-inline my-2 my-md-0 mr-1'>
-                                        <button type='button' value='<?= $amigo['id'] ?>' class='btn btn-sm btn-danger botonEliminar'>
-                                            <i class='fas fa-user-times'></i>
-                                        </button>
+                <?php if ($amigo['id'] != 30) : ?>
+                    <div class="card mt-2">
+                        <div class="row no-gutters">
+                            <div class="col-5 col-sm-5 col-md-5 col-lg-1 col-xl-1 d-flex justify-content-center align-items-center">
+                                <img src="images/<?php echo $amigo['fotoPerfil'] ?>" class="media-object rounded-circle mr-2 mt-1 border" width="90" height="84" alt="Foto de perfil de <?php echo $amigo['correo'] ?>">
+                            </div>
+                            <div class="col-7 col-sm-7 col-md-7 col-lg-11 col-xl-11">
+                                <div class="card-body">
+                                    <form method="post" action="index.php?ctl=perfil">
+                                        <input type="hidden" value="<?= $amigo['id'] ?>" name="perfilUsuario">
+                                        <h3 class="card-title font-weight-bold" onclick="$(this).parent().submit()" style="color: #33cbad;cursor:pointer;"><?= $amigo['nombre'] . " " . $amigo['apellidos'] ?>
+                                            <?php if ($amigo['verificado'] != null) { ?>
+                                                <i style="color:#33cbad;font-size: 0.8em" title="Perfil verificado" class="fas fa-check-circle"></i>
+                                            <?php } ?>
+                                        </h3>
                                     </form>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <p class="card-text">Sexo: <?php echo $amigo['sexo'] ?> </p>
-                                    <p class="card-text"><small class="text-muted"><?php echo $amigo['poblacion'] . ", " . $amigo['provincia'] . "." ?></small></p>
+                                    <div class="d-flex justify-content-end align-items-center">
+                                        <form method='post' class='form-inline my-2 my-md-0 mr-1'>
+                                            <button type='button' value='<?= $amigo['id'] ?>' class='btn btn-sm btn-danger botonEliminar'>
+                                                <i class='fas fa-user-times'></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <p class="card-text">Sexo: <?php echo $amigo['sexo'] ?> </p>
+                                        <p class="card-text"><small class="text-muted"><?php echo $amigo['poblacion'] . ", " . $amigo['provincia'] . "." ?></small></p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                <?php endif; ?>
             <?php endforeach; ?>
         </div>
         <!--  -->

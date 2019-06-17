@@ -47,11 +47,15 @@ $c = new Controller();
                                                 <div class="chat_img d-flex justify-content-between align-items-center">
                                                     <img src="images/<?= $usuarioMensaje['fotoPerfil'] ?>" class="media-object rounded-circle mr-2 mt-1 border" width="90" height="84" alt="foto_perfil">
                                                     <section>
-                                                        <h5><?= $usuarioMensaje['nombre'] . " " . $usuarioMensaje['apellidos'] ?></h5>
+                                                        <h5><?= $usuarioMensaje['nombre'] . " " . $usuarioMensaje['apellidos'] ?>
+                                                            <?php if ($usuarioMensaje['verificado'] != null) { ?>
+                                                                <i style="color:#33cbad;font-size: 0.8em" title="Perfil verificado" class="fas fa-check-circle"></i>
+                                                            <?php } ?>
+                                                        </h5>
                                                     </section>
                                                 </div>
                                                 <div class="d-flex justify-content-end align-items-center col-12">
-                                                    
+
                                                     <button type="button" style="max-width: 50px;max-height: 50px;" class="btn btn-success">
                                                         <span class="badge badge-light"><?= implode(array_column($m->countMensajesSinVerPantallaMensajesGeneral($params['idUsuario'], $usuarioMensaje['id']), "contador")) ?></span>
                                                     </button>
@@ -68,7 +72,11 @@ $c = new Controller();
                                                 <div class="chat_img d-flex justify-content-between align-items-center">
                                                     <img src="images/<?= $usuarioMensaje['fotoPerfil'] ?>" class="media-object rounded-circle mr-2 mt-1 border" width="90" height="84" alt="foto_perfil">
                                                     <section>
-                                                        <h5><?= $usuarioMensaje['nombre'] . " " . $usuarioMensaje['apellidos'] ?></h5>
+                                                        <h5><?= $usuarioMensaje['nombre'] . " " . $usuarioMensaje['apellidos'] ?>
+                                                            <?php if ($usuarioMensaje['verificado'] != null) { ?>
+                                                                <i style="color:#33cbad;font-size: 0.8em" title="Perfil verificado" class="fas fa-check-circle"></i>
+                                                            <?php } ?>
+                                                        </h5>
                                                     </section>
                                                 </div>
                                             </div>

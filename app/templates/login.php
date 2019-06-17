@@ -285,7 +285,7 @@
                                                             <i class="fa fa-phone"></i>
                                                         </span>
                                                     </div>
-                                                    <input name="telefonoR" id="telefono" class="form-control" value="<?php echo $params['telefonoR'] ?>" placeholder="Teléfono móvil..." type="text">
+                                                    <input name="telefonoR" id="telefono" class="form-control" size="9" minlength="9" min="9" max="9" maxlength="9" value="<?php echo $params['telefonoR'] ?>" pattern="[0-9]{9}" placeholder="Teléfono móvil..." type="tel">
                                                 </div>
                                                 <div class="form-group input-group col-md-12">
                                                     <div class="input-group-prepend">

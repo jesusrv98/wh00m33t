@@ -228,7 +228,11 @@ if ($params['idUsuarioConectado'] != 30) {
                             <div class="card-body">
                                 <form method="post" action="index.php?ctl=perfil">
                                     <input type="hidden" value="<?= $usuario['id'] ?>" name="perfilUsuario">
-                                    <h3 class="card-title font-weight-bold nombreCompleto" onclick="$(this).parent().submit()" style="color:#42cfb3;cursor:pointer"><?php echo $usuario['nombre'] . " " . $usuario['apellidos'] ?></h3> <small class="text-muted">Id: <?= $usuario['id'] ?></small>
+                                    <h3 class="card-title font-weight-bold nombreCompleto" onclick="$(this).parent().submit()" style="color:#42cfb3;cursor:pointer"><?php echo $usuario['nombre'] . " " . $usuario['apellidos'] ?>
+                                        <?php if ($usuario['verificado'] != null) { ?>
+                                            <i style="color:#33cbad;font-size: 0.8em" title="Perfil verificado" class="fas fa-check-circle"></i>
+                                        <?php } ?>
+                                    </h3> <small class="text-muted">Id: <?= $usuario['id'] ?></small>
                                 </form>
                                 <h6><small class="text-muted">Correo: <?= $usuario['correo'] ?></small></h6>
                                 <h6><small class="text-muted">Edad: <?= $c->aniosHastaHoy($usuario['fechanac']) ?></small></h6>

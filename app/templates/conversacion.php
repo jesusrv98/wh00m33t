@@ -24,7 +24,11 @@ $c = new Controller();
         <div class="modal-header">
             <div class="d-flex align-items-center container-fluid row">
                 <div class="incoming_msg_img col-4 col-sm-4 col-md-3 col-lg-2 col-xl-2"> <img src="images/<?= $params['fotoPerfilOtro'] ?>" alt="foto_perfil" width="60" height="60" class="media-object rounded-circle mr-2 mt-1 border"> </div>
-                <h5 class="modal-title col-7 col-sm-7 col-md-8 col-lg-9 col-xl-9"><?= $params['nombreOtro'] . " " . $params['apellidosOtro'] ?></h5>
+                <h5 class="modal-title col-7 col-sm-7 col-md-8 col-lg-9 col-xl-9"><?= $params['nombreOtro'] . " " . $params['apellidosOtro'] ?>
+                    <?php if ($params['verificado'] != null) { ?>
+                        <i style="color:#33cbad;font-size: 0.8em" title="Perfil verificado" class="fas fa-check-circle"></i>
+                    <?php } ?>
+                </h5>
             </div>
         </div>
         <div class="modal-body">

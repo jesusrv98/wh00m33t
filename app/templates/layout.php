@@ -18,6 +18,10 @@ if ($params['baneado']) {
     <!-- ETIQUETAS META -->
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="NoIndex, Follow">
+    <meta name="google" content="nositelinkssearchbox">
+    <meta name=”googlebot” content=”nosnippet”>
+    <meta name="author" content="Jesús Rodríguez Vargas">
     <!-- FIN ETIQUETAS META -->
 
     <!-- ETIQUETAS LINK DE IMPORTACIÓN -->

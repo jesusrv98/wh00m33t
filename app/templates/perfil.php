@@ -18,8 +18,8 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
             var idEstado = $(formulario.find('.idEstado')).val();
             var idUsuarioDirigido = $(formulario.find('.idUsuarioDirigido')).val();
             var fotoPerfil = "<?= $params['fotoPerfil'] ?>";
-            var nombre = "<?php $params['nombreUsuario'] ?>";
-            var apellido = "<?php $params['apellidosUsuario'] ?>";
+            var nombre = "<?= $params['nombreUsuario'] ?>";
+            var apellido = "<?= $params['apellidosUsuario'] ?>";
             var nombreUsuario = nombre + " " + apellido;
 
             if (comentarioNuevo.trim() == '') {
@@ -64,8 +64,8 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                 var idEstado = $(formulario.find('.idEstado')).val();
                 var idUsuarioDirigido = $(formulario.find('.idUsuarioDirigido')).val();
                 var fotoPerfil = "<?= $params['fotoPerfil'] ?>";
-                var nombre = "<?php $params['nombreUsuario'] ?>";
-                var apellido = "<?php $params['apellidosUsuario'] ?>";
+                var nombre = "<?= $params['nombreUsuario'] ?>";
+                var apellido = "<?= $params['apellidosUsuario'] ?>";
                 var nombreUsuario = nombre + " " + apellido;
 
                 if (comentarioNuevo.trim() == '') {
@@ -239,7 +239,9 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                 <!-- Nombre de usuario -->
                 <?php foreach ($params['perfilUsuarioEstado'] as $perfilUsuarioEstado) : ?>
                     <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                        <h2><?php echo $perfilUsuarioEstado['nombre'] . " " . $perfilUsuarioEstado['apellidos']; ?></h2>
+                        <h2><?php echo $perfilUsuarioEstado['nombre'] . " " . $perfilUsuarioEstado['apellidos']; ?> <?php if ($perfilUsuarioEstado['verificado'] != null) { ?>
+                            <i style="font-size: 0.8em;color:#33cbad" title="Perfil verificado" class="fas fa-check-circle"></i>
+                        <?php } ?></h2>
                     </div>
                     <!-- Cabecera de mensaje privado -->
                     <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
@@ -322,7 +324,11 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                                 <div class="d-flex justify-content-between">
                                                     <form method="post" action="index.php?ctl=perfil">
                                                         <input type="hidden" value="<?= $publicacion['id'] ?>" name="perfilUsuario">
-                                                        <h4 class="media-heading" onclick="$(this).parent().submit()" style="color: #33cbad;cursor:pointer;"><?= $publicacion['nombre'] . " " . $publicacion['apellidos'] ?></h4>
+                                                        <h4 class="media-heading" onclick="$(this).parent().submit()" style="color: #33cbad;cursor:pointer;"><?= $publicacion['nombre'] . " " . $publicacion['apellidos'] ?>
+                                                            <?php if ($publicacion['verificado'] != null) { ?>
+                                                                <i style="font-size: 0.8em;color:#33cbad" title="Perfil verificado" class="fas fa-check-circle"></i>
+                                                            <?php } ?>
+                                                        </h4>
                                                     </form>
                                                     <?php if ($esSuEstado) : ?>
                                                         <i class="fas fa-times text-danger borrarPublicacion" style="cursor:pointer" id="<?= $publicacion['idEstado'] ?>" title="Borrar publicación"></i>
@@ -363,6 +369,9 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                                                     <form method="post" action="index.php?ctl=perfil">
                                                                         <input type="hidden" value="<?= $comentario['id'] ?>" name="perfilUsuario">
                                                                         <h4 class="media-heading" onclick="$(this).parent().submit()" style="cursor:pointer;"><?= $comentario['nombre'] . " " . $comentario['apellidos'] ?>
+                                                                            <?php if ($comentario['verificado'] != null) { ?>
+                                                                                <i style="font-size: 0.8em;color:#33cbad" title="Perfil verificado" class="fas fa-check-circle"></i>
+                                                                            <?php } ?>
                                                                     </form>
                                                                     <small style="font-size: 0.8rem" class="text-muted">
                                                                         <?= $c->formatearFecha($comentario['fecha_comentario']) ?>
@@ -426,7 +435,7 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                         <form method="post" action="index.php?ctl=perfil" enctype="multipart/form-data">
                             <input type="file" accept="image/png, .jpeg, .jpg, image/gif" id="fotoSubir" name="fotoSubir" class="btn btn-sm btn-info" title="Cambiar foto de perfil" style="display: none" />
                             <label class="btn btn-sm text-white btn-block" style="background: #33cbad" for="fotoSubir"><i class="fas fa-upload"></i>&nbsp; Subir foto</label>
-                            <input type="text" class="form-control form-control-sm" name="tituloFoto" placeholder="Título de foto">
+                            <input type="text" class="form-control form-control-sm" name="tituloFoto" autocomplete="off" placeholder="Título de foto">
                         </form>
                     </div>
                     <?php if ($params['mensajeFoto']) : ?>

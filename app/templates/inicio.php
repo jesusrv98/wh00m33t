@@ -10,6 +10,9 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
         background: #33cbad;
         border-color: inherit;
     }
+    #piePagina{
+        display:none;
+    }
 </style>
 <script>
     window.resize = function() {
@@ -296,7 +299,9 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                 <div class="col-12">
                                     <form method="post" action="index.php?ctl=perfil">
                                         <input type="hidden" value="<?= implode(array_column($_SESSION['usuarioconectado'], 'id')) ?>" name="perfilUsuario">
-                                        <p style="color: #33cbad;cursor:pointer;" onclick="$(this).parent().submit()"><?= $params['nombreUsuario'] . " " . $params['apellidosUsuario'] ?></p>
+                                        <p style="color: #33cbad;cursor:pointer;" onclick="$(this).parent().submit()"><?= $params['nombreUsuario'] . " " . $params['apellidosUsuario'] ?> <?php if (implode(array_column($_SESSION['usuarioconectado'], 'verificado')) != null) { ?>
+                                                <i style="color:#33cbad;font-size: 0.8em" title="Perfil verificado" class="fas fa-check-circle"></i>
+                                            <?php } ?></p>
                                     </form>
                                 </div>
                                 <div class="col-12">
@@ -407,7 +412,11 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                                 <div class="d-flex justify-content-between">
                                                     <form method="post" action="index.php?ctl=perfil">
                                                         <input type="hidden" value="<?= $publicacion['id'] ?>" name="perfilUsuario">
-                                                        <h4 class="media-heading" onclick="$(this).parent().submit()" style="color: #33cbad;cursor:pointer;"><?= $publicacion['nombre'] . " " . $publicacion['apellidos'] ?></h4>
+                                                        <h4 class="media-heading" onclick="$(this).parent().submit()" style="color: #33cbad;cursor:pointer;"><?= $publicacion['nombre'] . " " . $publicacion['apellidos'] ?>
+                                                            <?php if ($publicacion['verificado'] != null) { ?>
+                                                                <i style="font-size: 0.8em;color:#33cbad" title="Perfil verificado" class="fas fa-check-circle"></i>
+                                                            <?php } ?>
+                                                        </h4>
                                                     </form>
                                                     <?php if ($esSuEstado) : ?>
                                                         <i class="fas fa-times text-danger borrarPublicacion" style="cursor:pointer" id="<?= $publicacion['idEstado'] ?>" title="Borrar publicación"></i>
@@ -447,6 +456,9 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                                                     <form method="post" action="index.php?ctl=perfil">
                                                                         <input type="hidden" value="<?= $comentario['id'] ?>" name="perfilUsuario">
                                                                         <h4 class="media-heading" onclick="$(this).parent().submit()" style="cursor:pointer;"><?= $comentario['nombre'] . " " . $comentario['apellidos'] ?>
+                                                                            <?php if ($comentario['verificado'] != null) { ?>
+                                                                                <i style="color:#33cbad;font-size: 0.8em" title="Perfil verificado" class="fas fa-check-circle"></i>
+                                                                            <?php } ?>
                                                                     </form>
                                                                     <small style="font-size: 0.8rem" class="text-muted">
                                                                         <?= $c->formatearFecha($comentario['fecha_comentario']) ?>
@@ -473,7 +485,11 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                                 <img src="images/<?= $publicacion['fotoPerfil'] ?>" width="69" height="64" alt="Foto perfil" class="media-object rounded-circle mr-2 mt-1 border">
                                             </div>
                                             <div class="media-body">
-                                                <h4 class="media-heading" style="color: #33cbad;"><?= $publicacion['nombre'] . " " . $publicacion['apellidos'] ?></h4>
+                                                <h4 class="media-heading" style="color: #33cbad;"><?= $publicacion['nombre'] . " " . $publicacion['apellidos'] ?>
+                                                    <?php if ($publicacion['verificado'] != null) { ?>
+                                                        <i style="color:#33cbad;font-size: 0.8em" title="Perfil verificado" class="fas fa-check-circle"></i>
+                                                    <?php } ?>
+                                                </h4>
 
                                                 <p><?= $publicacion['estadoCuerpo'] ?></p>
                                                 <!-- Botón de responder -->
@@ -521,10 +537,10 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
                     <div class="row">
                         <div class="col-6">
-                            <a class="btn btn-sm text-light btn-block" target="_blank" style="background:#1da1f2;text-decoration: none" href="http://twitter.com/home?status=<?php echo urlencode("¡Hola, estoy usando WhoMeet! ¿A qué esperas para unirte e interactuar conmigo? @WhooMeetES http://localhost/proyectoGIT/wh00m33t/web/paginaInicio/ "); ?>">Twittear <i class="fab fa-twitter text-light"></i></a>
+                            <a class="btn btn-sm text-light btn-block" target="_blank" style="background:#1da1f2;text-decoration: none" href="http://twitter.com/home?status=<?php echo urlencode("¡Hola, estoy usando WhoMeet! ¿A qué esperas para unirte e interactuar conmigo? @WhooMeetES http://whomeet.es.mialias.net/web/paginaInicio "); ?>">Twittear <i class="fab fa-twitter text-light"></i></a>
                         </div>
                         <div class="col-6">
-                            <a class="btn btn-sm text-light btn-block" target="_blank" style="background:#2467B1;text-decoration: none" href="http://www.facebook.com/sharer.php?u=<?php echo urlencode('https://whomeet.ddns.net/proyectoGIT/wh00m33t/web/paginaInicio') ?>">Facebook <i class="fab fa-facebook text-light"></i></a>
+                            <a class="btn btn-sm text-light btn-block" target="_blank" style="background:#2467B1;text-decoration: none" href="http://www.facebook.com/sharer.php?u=<?php echo urlencode('http://whomeet.es.mialias.net/web/paginaInicio') ?>">Facebook <i class="fab fa-facebook text-light"></i></a>
                         </div>
                         <div class="col-12">
                             <p class="text-muted small">¡Invita a tus amigos a nuestra red social y empieza a interactuar con ellos desde ya!</p>
@@ -536,13 +552,15 @@ $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario, Config::$mvc_bd_
                                     <h6>Usuarios conectados (<?= $params['countUsuariosConectados'] ?>) <i class="fas fa-circle" style="color:#77bf5c;"></i></h6>
                                 </div>
                                 <?php foreach ($params['listaUsuariosConectados'] as $usuarioConectado) : ?>
-                                    <div class="col-12">
-                                        <form method="post" action="index.php?ctl=perfil">
-                                            <input type="hidden" value="<?= $usuarioConectado['id'] ?>" name="perfilUsuario">
-                                            <label style="cursor:pointer;" onclick="$(this).parent().submit()"><i class="fas fa-circle" style="color:#77bf5c;font-size: 11px;"></i> <?= $usuarioConectado['nombre'] . " " . $usuarioConectado['apellidos'] ?></label>
+                                    <?php if ($usuarioConectado['id'] != 30) : ?>
+                                        <div class="col-12">
+                                            <form method="post" action="index.php?ctl=perfil">
+                                                <input type="hidden" value="<?= $usuarioConectado['id'] ?>" name="perfilUsuario">
+                                                <label style="cursor:pointer;" onclick="$(this).parent().submit()"><i class="fas fa-circle" style="color:#77bf5c;font-size: 11px;"></i> <?= $usuarioConectado['nombre'] . " " . $usuarioConectado['apellidos'] ?></label>
 
-                                        </form>
-                                    </div>
+                                            </form>
+                                        </div>
+                                    <?php endif; ?>
                                 <?php endforeach; ?>
                             </div>
                         </div>

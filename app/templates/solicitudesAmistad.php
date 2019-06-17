@@ -66,7 +66,11 @@
         });
     });
 </script>
-
+<style>
+    #piePagina{
+        display:none;
+    }
+</style>
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
@@ -94,7 +98,10 @@
                                 <div class="card-body">
                                     <form method="post" action="index.php?ctl=perfil">
                                         <input type="hidden" value="<?= $solicitud['id'] ?>" name="perfilUsuario">
-                                        <h3 class="media-heading" onclick="$(this).parent().submit()" style="color: #33cbad;cursor:pointer;"><?= $solicitud['nombre'] . " " . $solicitud['apellidos'] ?></h3>
+                                        <h3 class="media-heading" onclick="$(this).parent().submit()" style="color: #33cbad;cursor:pointer;"><?= $solicitud['nombre'] . " " . $solicitud['apellidos'] ?>
+                                            <?php if ($solicitud['verificado'] != null) { ?>
+                                                <i style="color:#33cbad;font-size: 0.8em" title="Perfil verificado" class="fas fa-check-circle"></i>
+                                            <?php } ?></h3>
                                     </form>
                                     <div class="d-flex justify-content-end align-items-center">
                                         <form method='post' class='form-inline my-2 my-md-0 mr-1 form-aceptar'>
